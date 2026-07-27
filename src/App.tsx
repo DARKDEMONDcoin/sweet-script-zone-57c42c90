@@ -745,6 +745,29 @@ const App = () => {
 
   return (
     <TranslationWrapper>
+      {queryPersister ? (
+        <PersistQueryClientProvider
+          client={queryClient}
+          persistOptions={{
+            persister: queryPersister,
+            // buster ties the persisted cache to the current build — every
+            // new deploy invalidates old cached pages automatically.
+            buster: __BUILD_ID__,
+            maxAge: 24 * 60 * 60 * 1000,
+            dehydrateOptions: {
+              // Never persist auth/session/secret queries or failed ones.
+              shouldDehydrateQuery: (q) => {
+                if (q.state.status !== "success") return false;
+                const key = String(q.queryKey?.[0] ?? "").toLowerCase();
+                if (key.startsWith("auth") || key.startsWith("session") || key.startsWith("secret") || key.startsWith("user") || key.startsWith("profile")) return false;
+                return true;
+              },
+            },
+          }}
+        >
+          {(() => null)()}
+        </PersistQueryClientProvider>
+      ) : null}
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
           <ErrorBoundary>
