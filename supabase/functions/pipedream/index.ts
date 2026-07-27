@@ -394,6 +394,14 @@ async function handleWebhook(req: Request, rawBody: string): Promise<Response> {
     if (prof?.id) validUserId = prof.id;
   }
 
+  if (!validUserId) {
+    // No matching user — ack to avoid provider retries, but do not create an orphan job.
+    console.warn("[pipedream:webhook] event without valid user_id; skipping insert", { eventType });
+    return new Response(JSON.stringify({ ok: true, skipped: "no_user" }), {
+      headers: { "Content-Type": "application/json", ...CORS },
+    });
+  }
+
   const { error } = await supabase.from("background_jobs").insert({
     user_id: validUserId,
     kind: `pipedream:${eventType}`,
