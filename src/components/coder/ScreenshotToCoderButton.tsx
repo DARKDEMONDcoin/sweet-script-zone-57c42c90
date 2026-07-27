@@ -1,10 +1,9 @@
 /** @doc Screenshot → Code button — pick a design image, convert it into a Coder prompt, and route it through the composer bridge. */
 import { useRef, useState } from "react";
-import { Image as ImageIcon } from "lucide-react";
+import { Image as ImageIcon, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { buildScreenshotToCodePrompt } from "@/lib/coderVision";
 import { cn } from "@/lib/utils";
-import { Spinner } from "@/components/ui/spinner";
 
 interface Props {
   className?: string;
@@ -42,11 +41,11 @@ export default function ScreenshotToCoderButton({ className, label = "Screenshot
         onClick={handlePick}
         disabled={busy}
         className={cn(
-          "inline-flex items-center gap-1.5 h-8 px-3 rounded-full text-[12px] font-medium border border-border/15 bg-muted/5 hover:bg-muted/10 text-muted-foreground transition disabled:opacity-50",
+          "inline-flex items-center gap-1.5 h-8 px-3 rounded-full text-[12px] font-medium border border-white/15 bg-white/5 hover:bg-white/10 text-white/80 transition disabled:opacity-50",
           className,
         )}
       >
-        {busy ? <Spinner className="w-3.5 h-3.5" /> : <ImageIcon className="w-3.5 h-3.5" />}
+        {busy ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <ImageIcon className="w-3.5 h-3.5" />}
         {label}
       </button>
       <input ref={inputRef} type="file" accept="image/*" className="hidden" onChange={handleFile} />

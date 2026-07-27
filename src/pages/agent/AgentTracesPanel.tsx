@@ -117,7 +117,7 @@ export default function AgentTracesPanel() {
                         </span>
                       )}
                       {cacheRate > 0 && (
-                        <span className="inline-flex items-center gap-1 text-[11px] text-primary dark:text-primary">
+                        <span className="inline-flex items-center gap-1 text-[11px] text-emerald-600 dark:text-emerald-400">
                           <Zap className="h-3 w-3" /> cache {cacheRate}%
                         </span>
                       )}

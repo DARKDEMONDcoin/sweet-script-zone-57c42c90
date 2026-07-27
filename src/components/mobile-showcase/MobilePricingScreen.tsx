@@ -10,7 +10,6 @@ import { BrandIcon } from "@/components/chat/media/BrandIcon";
 import { useUserLang } from "@/lib/authI18n";
 import { type PlanTier } from "@/data/pricingData";
 import megsyLogo from "@/assets/megsy-project-logo.png";
-import { Spinner } from "@/components/ui/spinner";
 
 interface Props {
   isYearly: boolean;
@@ -176,14 +175,14 @@ export default function MobilePricingScreen({
         <MobileSidebarButton
           onClick={() => onMenuClick?.()}
           ariaLabel={isAr ? "القائمة" : "Menu"}
-          className="!text-foreground"
+          className="!text-white"
         />
       </header>
 
       {/* Hero copy with Megsy logo */}
       <div className="px-6 pt-8 text-center">
         <h1
-          className="mx-auto font-normal leading-[1.02] text-foreground"
+          className="mx-auto font-normal leading-[1.02] text-white"
           style={{
             fontFamily: '"Instrument Serif", "Fraunces", Georgia, serif',
             fontSize: "clamp(28px, 7.6vw, 38px)",
@@ -383,7 +382,7 @@ export default function MobilePricingScreen({
             <div className="mt-2 flex items-baseline gap-1.5 tabular-nums overflow-hidden" dir="ltr">
               <span
                 key={currentPrices.yearly.price + plan}
-                className="text-[15px] font-semibold text-foreground animate-fade-in"
+                className="text-[15px] font-semibold text-white animate-fade-in"
               >
                 ${currentPrices.yearly.price}
               </span>
@@ -416,7 +415,7 @@ export default function MobilePricingScreen({
             <div className="mt-2 flex items-baseline gap-1.5 tabular-nums overflow-hidden" dir="ltr">
               <span
                 key={currentPrices.monthly.price + plan}
-                className="text-[15px] font-semibold text-foreground animate-fade-in"
+                className="text-[15px] font-semibold text-white animate-fade-in"
               >
                 ${currentPrices.monthly.price}
               </span>
@@ -443,9 +442,9 @@ export default function MobilePricingScreen({
           style={{ background: "#fff" }}
         >
           {isLoading ? (
-            <Spinner className="size-4" />
+            <span className="h-4 w-4 animate-spin rounded-full border-2 border-black/30 border-t-black" />
           ) : (
-            <span className="!text-primary-foreground">
+            <span className="!text-black">
               {t.subscribe(plan === "pro" ? t.pro : t.max)}
             </span>
           )}

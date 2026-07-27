@@ -37,8 +37,9 @@ const importForPath = (key: string): Promise<unknown> | null => {
   if (key.startsWith("/settings")) {
     return import("@/pages/settings/SettingsPage");
   }
-  // Pricing is registered in the shared routePrefetch registry. Keeping a
-  // second importer here made touch/pointer intent race two prefetch systems.
+  if (key.startsWith("/pricing")) {
+    return import("@/pages/marketing/PricingPage");
+  }
   if (
     key === "/auth" ||
     key === "/login" ||

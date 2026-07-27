@@ -3,9 +3,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { m as motion } from "framer-motion";
-import { ScrollText } from "lucide-react";
+import { Loader2, ScrollText } from "lucide-react";
 import { GlassPage, GlassCard, glassStagger } from "@/components/settings/glass/GlassShell";
-import { Spinner } from "@/components/ui/spinner";
 
 interface AuditEntry {
   id: string;
@@ -62,7 +61,7 @@ const OperatorAuditPage = () => {
 
         {loading ? (
           <div className="flex justify-center py-12">
-            <Spinner className="w-6 h-6 text-[color:var(--amb-gold-2)]" />
+            <Loader2 className="w-6 h-6 animate-spin text-[color:var(--amb-gold-2)]" />
           </div>
         ) : entries.length === 0 ? (
           <div className="amb-plate p-8 text-center">
@@ -88,7 +87,7 @@ const OperatorAuditPage = () => {
                     <p className="text-sm font-medium text-[color:var(--amb-cream)]">{e.action}</p>
                     {e.payload && Object.keys(e.payload).length > 0 && (
                       <pre
-                        className="mt-2 text-[10px] text-[color:var(--amb-cream-dim)] bg-background/40 border border-[color:var(--amb-line)] p-2 rounded-lg overflow-x-auto max-h-32"
+                        className="mt-2 text-[10px] text-[color:var(--amb-cream-dim)] bg-black/40 border border-[color:var(--amb-line)] p-2 rounded-lg overflow-x-auto max-h-32"
                         dir="ltr"
                       >
                         {JSON.stringify(e.payload, null, 2)}

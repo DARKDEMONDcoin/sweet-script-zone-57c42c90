@@ -77,7 +77,7 @@ const MarqueeRow = ({
         {track.map((p, i) => (
           <div
             key={`${p.title}-${i}`}
-            className="flex items-center gap-2.5 rounded-full border border-border/10 bg-muted/40 px-4 py-2.5 md:px-5 md:py-3 shrink-0 transition-colors hover:border-border/25"
+            className="flex items-center gap-2.5 rounded-full border border-white/10 bg-white/[0.03] backdrop-blur-sm px-4 py-2.5 md:px-5 md:py-3 shrink-0 transition-colors hover:border-white/25"
           >
             <span
               className="flex h-8 w-8 md:h-9 md:w-9 items-center justify-center rounded-full shrink-0"

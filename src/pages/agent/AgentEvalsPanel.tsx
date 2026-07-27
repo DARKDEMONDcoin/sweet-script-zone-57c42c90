@@ -3,8 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { RefreshCw, Play, CheckCircle2, XCircle } from "lucide-react";
-import { Spinner } from "@/components/ui/spinner";
+import { Loader2, RefreshCw, Play, CheckCircle2, XCircle } from "lucide-react";
 
 type EvalRow = {
   id: string;
@@ -80,7 +79,7 @@ export default function AgentEvalsPanel() {
         </div>
         <div className="rounded-md border p-3">
           <div className="text-xs text-muted-foreground">نجاح / فشل</div>
-          <div className="text-lg font-semibold text-primary">
+          <div className="text-lg font-semibold text-emerald-600">
             {passed} <span className="text-muted-foreground">/</span>{" "}
             <span className="text-destructive">{failed}</span>
           </div>
@@ -107,7 +106,7 @@ export default function AgentEvalsPanel() {
         />
         <div className="flex gap-2">
           <Button size="sm" onClick={runJudge} disabled={running}>
-            {running ? <Spinner className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+            {running ? <Loader2 className="h-4 w-4 animate-spin" /> : <Play className="h-4 w-4" />}
             <span className="ml-2">تقييم</span>
           </Button>
           <Button size="sm" variant="outline" onClick={load} disabled={loading}>
@@ -134,7 +133,7 @@ export default function AgentEvalsPanel() {
               <div className="flex-1">
                 <div className="flex items-center gap-2 text-sm">
                   {r.passed ? (
-                    <CheckCircle2 className="h-4 w-4 text-primary" />
+                    <CheckCircle2 className="h-4 w-4 text-emerald-600" />
                   ) : (
                     <XCircle className="h-4 w-4 text-destructive" />
                   )}

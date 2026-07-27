@@ -3,11 +3,10 @@
 
 import { useEffect, useRef, useState } from "react";
 import { m as motion, AnimatePresence } from "framer-motion";
-import { Download, Eye, ArrowLeft, Share2 } from "lucide-react";
+import { Download, Eye, ArrowLeft, Loader2, Share2 } from "lucide-react";
 import MegsyStar from "@/components/files/MegsyStar";
 import { supabase } from "@/integrations/supabase/client";
 import { useFullscreenBodyClass } from "@/hooks/useFullscreenBodyClass";
-import { Spinner } from "@/components/ui/spinner";
 
 interface Props {
   title: string;
@@ -110,7 +109,7 @@ const ImageSlidesCard = ({ title, url, slideCount, chatName }: Props) => {
           )}
           {!preview && (
             <div className="absolute inset-0 flex items-center justify-center text-foreground/70">
-              <Spinner className="w-6 h-6" />
+              <Loader2 className="w-6 h-6 animate-spin" />
             </div>
           )}
         </button>
@@ -220,7 +219,7 @@ const PdfPreviewModal = ({ url, chatName, onClose }: ModalProps) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-toast bg-background flex flex-col"
+      className="fixed inset-0 z-toast bg-black flex flex-col"
     >
       <header className="flex items-center gap-3 px-4 py-3 shrink-0">
         <button
@@ -253,7 +252,7 @@ const PdfPreviewModal = ({ url, chatName, onClose }: ModalProps) => {
               key={i}
               src={src}
               alt={`slide ${i + 1}`}
-              className="max-w-full rounded-lg shadow-[0_10px_40px_rgba(0,0,0,0.4)] bg-primary"
+              className="max-w-full rounded-lg shadow-[0_10px_40px_rgba(0,0,0,0.4)] bg-white"
             />
           ))}
           {loading && (

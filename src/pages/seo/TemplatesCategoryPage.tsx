@@ -29,6 +29,7 @@ export default function TemplatesCategoryPage() {
       </Helmet>
 
       <section className="px-6 pt-20 pb-10 max-w-5xl mx-auto text-center">
+        <div className="text-6xl mb-4">{data.emoji}</div>
         <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-4">{data.name}</h1>
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">{data.description}</p>
         <Link to="/auth">
@@ -100,7 +101,7 @@ export default function TemplatesCategoryPage() {
               to={`/templates/${t.slug}`}
               className="text-sm px-3 py-1.5 rounded-full border hover:bg-accent"
             >
-              {t.name}
+              {t.emoji} {t.name}
             </Link>
           ))}
         </div>

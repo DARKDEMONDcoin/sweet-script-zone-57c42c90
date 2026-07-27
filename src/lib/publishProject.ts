@@ -119,45 +119,11 @@ function scanForSecrets(files: ProjectFile[]): string | null {
     [/-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----/, "Private key"],
     [/xox[baprs]-[A-Za-z0-9-]{10,}/, "Slack token"],
     [/ghp_[A-Za-z0-9]{20,}/, "GitHub personal access token"],
-    [/gh[opsu]_[A-Za-z0-9]{20,}/, "GitHub token"],
-    [/sk_test_[A-Za-z0-9]{20,}/, "Stripe test secret key"],
-    [/rk_live_[A-Za-z0-9]{20,}/, "Stripe restricted key"],
-    [/sk-ant-[A-Za-z0-9\-_]{20,}/, "Anthropic API key"],
-    [/eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}/, "JWT / service-role token"],
-    [/SUPABASE_SERVICE_ROLE_KEY\s*[:=]\s*['"`][^'"`]{10,}/, "Supabase service role key"],
-    [/sb_secret_[A-Za-z0-9_-]{10,}/, "Supabase secret key"],
-    [/(?:api[_-]?key|secret|password|token)\s*[:=]\s*['"`][A-Za-z0-9_\-]{24,}['"`]/i, "Hardcoded credential"],
   ];
   for (const f of files) {
     for (const [re, label] of patterns) if (re.test(f.content)) return `${label} detected in ${f.path}`;
   }
   return null;
-}
-
-/**
- * Inject a Content-Security-Policy + referrer policy into the published page.
- * The runtime needs inline scripts/styles and the CDNs it loads from, but we
- * still lock down framing, objects, form targets and base URI.
- */
-function withSecurityHeaders(html: string): string {
-  if (/http-equiv=["']Content-Security-Policy/i.test(html)) return html;
-  const csp = [
-    "default-src 'self' data: blob:",
-    "script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: data: https://cdn.tailwindcss.com https://unpkg.com https://esm.sh https://cdn.jsdelivr.net",
-    "style-src 'self' 'unsafe-inline' https: data:",
-    "img-src 'self' data: blob: https:",
-    "font-src 'self' data: https:",
-    "connect-src 'self' https: data: blob:",
-    "frame-ancestors *",
-    "object-src 'none'",
-    "base-uri 'self'",
-    "form-action 'self'",
-  ].join("; ");
-  const tags =
-    `<meta http-equiv="Content-Security-Policy" content="${csp}">` +
-    `<meta name="referrer" content="strict-origin-when-cross-origin">`;
-  if (/<head[^>]*>/i.test(html)) return html.replace(/<head[^>]*>/i, (m) => `${m}\n${tags}`);
-  return `${tags}\n${html}`;
 }
 
 export async function publishProject(
@@ -176,11 +142,10 @@ export async function publishProject(
   // Priority: 1) plain static HTML site (buildProjectPreviewHtml returns non-null
   // only for runnable index.html) → 2) React/Vite project → real in-browser runtime
   // → 3) last-resort: readable file bundle listing.
-  const html = withSecurityHeaders(
+  const html =
     buildProjectPreviewHtml(files) ||
-      (isReactProject(files) ? buildReactRuntimeHtml(files, title) : null) ||
-      buildProjectBundleHtml(files, title),
-  );
+    (isReactProject(files) ? buildReactRuntimeHtml(files, title) : null) ||
+    buildProjectBundleHtml(files, title);
 
   const slug = randomSlug();
   const publishedUrl = `${window.location.origin}/s/${slug}`;

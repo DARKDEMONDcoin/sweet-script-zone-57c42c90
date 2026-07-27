@@ -64,9 +64,6 @@ function integrationAppTokenDevPlugin(): Plugin {
 }
 
 export default defineConfig({
-  define: {
-    __BUILD_ID__: JSON.stringify(String(Date.now())),
-  },
   plugins: [
     react({
       babel: {
@@ -82,57 +79,26 @@ export default defineConfig({
     VitePWA({
       registerType: "autoUpdate",
       injectRegister: null,
-      strategies: "generateSW",
       filename: "sw.js",
       devOptions: { enabled: false },
-      // Icons, favicons, maskable icon and every iOS splash screen come from
-      // pwa-assets.config.ts (@vite-pwa/assets-generator). The plugin also
-      // injects all the <link> head tags automatically — nothing hand-written.
-      pwaAssets: {
-        config: true,
-        overrideManifestIcons: true,
-        injectThemeColor: true,
-      },
-      includeAssets: ["offline.html", "robots.txt"],
+      includeAssets: [
+        "favicon.ico",
+        "robots.txt",
+        "apple-touch-icon.png",
+        "pwa-192.png",
+        "pwa-512.png",
+      ],
       manifestFilename: "site.webmanifest",
-      // Single source of truth for the web app manifest (generated at build).
-      manifest: {
-        name: "Megsy AI — All-in-One AI Platform",
-        short_name: "Megsy",
-        description: "Chat, images, video, slides and agents in one AI workspace.",
-        id: "/",
-        start_url: "/?source=pwa",
-        scope: "/",
-        display: "standalone",
-        display_override: ["standalone", "minimal-ui", "browser"],
-        orientation: "portrait",
-        background_color: "#0a0a0a",
-        theme_color: "#0a0a0a",
-        dir: "ltr",
-        lang: "en",
-        categories: ["productivity", "utilities", "photo"],
-        shortcuts: [
-          { name: "New chat", url: "/chat" },
-          { name: "Pricing", url: "/pricing" },
-          { name: "Library", url: "/library" },
-        ],
-      },
-
+      manifest: false,
       workbox: {
         globPatterns: ["**/*.{js,css,html,ico,png,svg,webp,woff2}"],
         globIgnores: ["**/megsy-push-sw.js", "**/service-worker.js"],
         navigateFallback: "/index.html",
-        navigateFallbackDenylist: [
-          /^\/~oauth/,
-          /^\/api\//,
-          /^\/auth\//,
-          /^https:\/\/[^/]+\.supabase\.co\//,
-          /^https:\/\/[^/]+\.supabase\.in\//,
-        ],
+        navigateFallbackDenylist: [/^\/~oauth/, /^\/api\//, /^\/auth\//],
         cleanupOutdatedCaches: true,
         clientsClaim: true,
         skipWaiting: true,
-        maximumFileSizeToCacheInBytes: 10 * 1024 * 1024,
+        maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
         runtimeCaching: [
           {
             urlPattern: ({ request }) => request.mode === "navigate",
@@ -141,29 +107,12 @@ export default defineConfig({
               cacheName: "html-nav",
               networkTimeoutSeconds: 4,
               expiration: { maxEntries: 40, maxAgeSeconds: 24 * 60 * 60 },
-              // If both the network and the precache miss (e.g. index.html
-              // hasn't been cached yet on a brand-new offline install), fall
-              // back to the static offline page instead of a broken request.
-              plugins: [
-                {
-                  handlerDidError: async () => caches.match("/offline.html"),
-                },
-              ],
-            },
-          },
-          {
-            // Hashed, immutable build output — safe to cache aggressively.
-            urlPattern: ({ url, sameOrigin }) => sameOrigin && url.pathname.startsWith("/assets/"),
-            handler: "CacheFirst",
-            options: {
-              cacheName: "build-assets",
-              expiration: { maxEntries: 200, maxAgeSeconds: 365 * 24 * 60 * 60 },
             },
           },
           {
             urlPattern: ({ url, sameOrigin }) =>
               sameOrigin && /\.(?:png|jpe?g|webp|avif|svg|gif|ico)$/i.test(url.pathname),
-            handler: "StaleWhileRevalidate",
+            handler: "CacheFirst",
             options: {
               cacheName: "img-assets",
               expiration: { maxEntries: 200, maxAgeSeconds: 30 * 24 * 60 * 60 },
@@ -172,7 +121,7 @@ export default defineConfig({
           {
             urlPattern: ({ url, sameOrigin }) =>
               sameOrigin && /\.(?:woff2?|ttf|otf)$/i.test(url.pathname),
-            handler: "StaleWhileRevalidate",
+            handler: "CacheFirst",
             options: {
               cacheName: "fonts",
               expiration: { maxEntries: 30, maxAgeSeconds: 365 * 24 * 60 * 60 },

@@ -4,7 +4,6 @@ import { m as motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 interface ToolCardProps {
-  /** Deprecated — the unified card design is icon-free; this slot is ignored. */
   icon?: ReactNode;
   title?: ReactNode;
   subtitle?: ReactNode;
@@ -17,7 +16,7 @@ interface ToolCardProps {
 }
 
 const ToolCard = forwardRef<HTMLDivElement, ToolCardProps>(function ToolCard(
-  { title, subtitle, trailing, footer, dir, className, children, tone = "default" },
+  { icon, title, subtitle, trailing, footer, dir, className, children, tone = "default" },
   ref,
 ) {
   return (
@@ -28,13 +27,18 @@ const ToolCard = forwardRef<HTMLDivElement, ToolCardProps>(function ToolCard(
       dir={dir}
       className={cn(
         "my-2 w-full max-w-[640px] rounded-ios-lg border border-border/50 p-4 text-card-foreground",
-        "bg-card/80 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_-12px_rgba(0,0,0,0.15)] dark:bg-card/60 dark:shadow-[0_1px_2px_rgba(0,0,0,0.3),0_8px_24px_-12px_rgba(0,0,0,0.5)]",
+        "bg-card/80 backdrop-blur-xl shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_-12px_rgba(0,0,0,0.15)] dark:bg-card/60 dark:shadow-[0_1px_2px_rgba(0,0,0,0.3),0_8px_24px_-12px_rgba(0,0,0,0.5)]",
         tone === "muted" && "bg-card/60",
         className,
       )}
     >
-      {(title || subtitle || trailing) && (
+      {(icon || title || subtitle || trailing) && (
         <div className="mb-3 flex items-start gap-3">
+          {icon && (
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-ios-md bg-primary/10 text-primary ring-1 ring-primary/15">
+              {icon}
+            </div>
+          )}
           <div className="min-w-0 flex-1">
             {title && <div className="truncate text-sm font-semibold leading-tight">{title}</div>}
             {subtitle && (

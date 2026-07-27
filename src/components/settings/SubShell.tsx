@@ -34,7 +34,7 @@ export function SubShell({ title, subtitle, backTo = "/settings", action, childr
         <div className="relative z-10 mx-auto max-w-3xl">
           <button
             onClick={goBack}
-            className="mb-6 inline-flex items-center gap-1.5 text-[12.5px] text-muted-foreground hover:text-[#e6c56a] transition-colors group"
+            className="mb-6 inline-flex items-center gap-1.5 text-[12.5px] text-white/60 hover:text-[#e6c56a] transition-colors group"
           >
             <ChevronLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" strokeWidth={2} />
             Settings
@@ -76,7 +76,7 @@ export function SubShell({ title, subtitle, backTo = "/settings", action, childr
               </div>
               {action && <div className="shrink-0">{action}</div>}
             </header>
-            <div className="px-8 py-6 space-y-2 text-foreground">{children}</div>
+            <div className="px-8 py-6 space-y-2 text-white">{children}</div>
           </div>
         </div>
       </DesktopSettingsLayout>
@@ -126,13 +126,13 @@ export function SubSection({ title, description, children }: SubSectionProps) {
     );
   }
   return (
-    <section className="py-6 border-t border-border/8 first:border-t-0 first:pt-2">
+    <section className="py-6 border-t border-white/8 first:border-t-0 first:pt-2">
       <div className="mb-3">
-        <h2 className="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+        <h2 className="text-[11px] font-semibold uppercase tracking-[0.16em] text-white/55">
           {title}
         </h2>
         {description && (
-          <p className="mt-1.5 text-[12.5px] text-muted-foreground leading-relaxed">
+          <p className="mt-1.5 text-[12.5px] text-white/60 leading-relaxed">
             {description}
           </p>
         )}
@@ -153,7 +153,7 @@ export function SubCard({
   return (
     <div
       className={cn(
-        "rounded-2xl border border-border/10 bg-muted/40 overflow-hidden",
+        "rounded-2xl border border-white/10 bg-white/[0.05] backdrop-blur-xl overflow-hidden",
         !flush && "p-5",
         className
       )}
@@ -168,7 +168,7 @@ export function SubCard({
 // ============================================================================
 export function SubRowList({ children }: { children: ReactNode }) {
   return (
-    <div className="rounded-2xl border border-border/10 bg-muted/40 overflow-hidden divide-y divide-border/50">
+    <div className="rounded-2xl border border-white/10 bg-white/[0.05] backdrop-blur-xl overflow-hidden divide-y divide-white/[0.06]">
       {children}
     </div>
   );
@@ -196,7 +196,7 @@ export function SubRow({ label, hint, icon: Icon, trailing, onClick, danger, dis
       disabled={disabled}
       className={cn(
         "w-full flex items-center gap-3 px-4 py-3.5 text-left transition-colors",
-        isClickable && "hover:bg-muted/40 active:bg-muted/40",
+        isClickable && "hover:bg-white/[0.05] active:bg-white/[0.08]",
         disabled && "opacity-50 cursor-not-allowed"
       )}
     >
@@ -204,7 +204,7 @@ export function SubRow({ label, hint, icon: Icon, trailing, onClick, danger, dis
         <Icon
           className={cn(
             "w-[18px] h-[18px] shrink-0",
-            danger ? "text-rose-400" : "text-muted-foreground"
+            danger ? "text-rose-400" : "text-white/75"
           )}
           strokeWidth={1.8}
         />
@@ -213,21 +213,21 @@ export function SubRow({ label, hint, icon: Icon, trailing, onClick, danger, dis
         <p
           className={cn(
             "text-[14.5px] font-medium truncate",
-            danger ? "text-rose-400" : "text-foreground"
+            danger ? "text-rose-400" : "text-white"
           )}
         >
           {label}
         </p>
         {hint && (
-          <p className="text-[12.5px] text-muted-foreground truncate mt-0.5">{hint}</p>
+          <p className="text-[12.5px] text-white/55 truncate mt-0.5">{hint}</p>
         )}
       </div>
       {trailing !== undefined ? (
-        <div className="shrink-0 flex items-center gap-2 text-muted-foreground">
+        <div className="shrink-0 flex items-center gap-2 text-white/60">
           {trailing}
         </div>
       ) : isClickable ? (
-        <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />
+        <ChevronRight className="w-4 h-4 text-white/45 shrink-0" />
       ) : null}
     </Comp>
   );
@@ -242,16 +242,16 @@ export function SubStatStrip({ items }: { items: { label: string; value: string;
       {items.map((it) => (
         <div
           key={it.label}
-          className="rounded-xl border border-border/10 bg-muted/40 px-4 py-3.5"
+          className="rounded-xl border border-white/10 bg-white/[0.05] backdrop-blur-xl px-4 py-3.5"
         >
-          <p className="text-[10.5px] uppercase tracking-[0.14em] text-muted-foreground font-medium">
+          <p className="text-[10.5px] uppercase tracking-[0.14em] text-white/60 font-medium">
             {it.label}
           </p>
-          <p className="mt-1.5 text-[18px] font-semibold tabular-nums text-foreground leading-none">
+          <p className="mt-1.5 text-[18px] font-semibold tabular-nums text-white leading-none">
             {it.value}
           </p>
           {it.sub && (
-            <p className="mt-1 text-[11.5px] text-muted-foreground">{it.sub}</p>
+            <p className="mt-1 text-[11.5px] text-white/55">{it.sub}</p>
           )}
         </div>
       ))}

@@ -81,6 +81,7 @@ export default function IndustryInCityPage() {
         <div className="inline-flex items-center gap-2 text-sm text-muted-foreground mb-4">
           <MapPin className="h-4 w-4" /> {loc.name}, {loc.country}
         </div>
+        <div className="text-5xl mb-3">{ind.emoji}</div>
         <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-4">
           AI Website Builder for {ind.name} in {loc.name}
         </h1>
@@ -215,7 +216,7 @@ export default function IndustryInCityPage() {
                 to={`/for/${i.slug}/in/${loc.slug}`}
                 className="text-sm px-3 py-1.5 rounded-full border hover:bg-accent"
               >
-                {i.name}
+                {i.emoji} {i.name}
               </Link>
             ))}
           </div>

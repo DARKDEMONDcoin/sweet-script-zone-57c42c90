@@ -1,6 +1,6 @@
 /** @doc About Megsy — glassmorphism hero with video, founders, values and stats. */
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { ArrowUpRight, ChevronRight, Sparkles } from "lucide-react";
 import SEOHead from "@/components/common/SEOHead";
 import { Helmet } from "react-helmet-async";
@@ -40,8 +40,8 @@ const stats = [
 const HERO_VIDEO =
   "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260428_193507_4286c423-2fd9-4efd-92bd-91a939453fc1.mp4";
 
-const INK = "hsl(var(--foreground) / 0.9)";
-const INK_SOFT = "hsl(var(--foreground) / 0.6)";
+const INK = "rgba(30,50,90,0.9)";
+const INK_SOFT = "rgba(30,50,90,0.6)";
 
 /* ---------- sub components ---------- */
 const HeroBadge = () => (
@@ -49,7 +49,7 @@ const HeroBadge = () => (
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ duration: 0.6, ease: "easeOut" }}
-    className="flex items-center gap-2 px-4 py-2 rounded-full bg-muted/60 border border-border/40 mx-auto mb-4 w-fit"
+    className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/60 backdrop-blur-md border border-white/40 mx-auto mb-4 w-fit"
   >
     <Sparkles className="w-3.5 h-3.5" style={{ color: INK }} />
     <span className="text-[12px] font-normal" style={{ color: INK }}>
@@ -85,10 +85,10 @@ const Navbar = ({ onCta }: { onCta: () => void }) => (
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
         onClick={onCta}
-        className="flex items-center bg-primary text-foreground rounded-full pl-2 pr-4 md:pr-6 py-1.5 md:py-2 gap-2 md:gap-3 hover:bg-primary/90 transition-colors group"
+        className="flex items-center bg-[rgba(30,50,90,0.85)] text-white rounded-full pl-2 pr-4 md:pr-6 py-1.5 md:py-2 gap-2 md:gap-3 hover:bg-[rgba(30,50,90,1)] transition-colors group"
       >
-        <span className="bg-muted/15 rounded-full w-7 h-7 md:w-8 md:h-8 flex items-center justify-center">
-          <ArrowUpRight className="w-4 h-4 md:w-5 md:h-5 text-foreground transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+        <span className="bg-white/15 rounded-full w-7 h-7 md:w-8 md:h-8 flex items-center justify-center">
+          <ArrowUpRight className="w-4 h-4 md:w-5 md:h-5 text-white transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
         </span>
         <span className="text-xs md:text-sm font-normal">Try Megsy</span>
       </motion.button>
@@ -101,7 +101,7 @@ const BottomLeftCard = ({ onCta }: { onCta: () => void }) => (
     initial={{ x: -20, opacity: 0 }}
     animate={{ x: 0, opacity: 1 }}
     transition={{ duration: 0.8, delay: 0.2 }}
-    className="absolute bottom-28 right-4 left-auto md:left-6 md:right-auto md:bottom-6 lg:bottom-10 lg:left-10 p-3 md:p-4 lg:p-5 rounded-[1.2rem] md:rounded-[1.5rem] lg:rounded-[2.2rem] bg-muted/30 border border-border/30 flex flex-col gap-2 lg:gap-3 min-w-[150px] md:min-w-[170px] lg:min-w-[200px] w-fit"
+    className="absolute bottom-28 right-4 left-auto md:left-6 md:right-auto md:bottom-6 lg:bottom-10 lg:left-10 p-3 md:p-4 lg:p-5 rounded-[1.2rem] md:rounded-[1.5rem] lg:rounded-[2.2rem] bg-white/30 backdrop-blur-xl border border-white/30 flex flex-col gap-2 lg:gap-3 min-w-[150px] md:min-w-[170px] lg:min-w-[200px] w-fit"
   >
     <div className="flex flex-col">
       <span className="text-2xl md:text-3xl font-normal tracking-tight" style={{ color: INK }}>
@@ -115,9 +115,9 @@ const BottomLeftCard = ({ onCta }: { onCta: () => void }) => (
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       onClick={onCta}
-      className="flex items-center bg-primary rounded-full pl-1.5 pr-5 py-1.5 gap-2 hover:bg-muted/90 transition-colors self-start group"
+      className="flex items-center bg-white rounded-full pl-1.5 pr-5 py-1.5 gap-2 hover:bg-white/90 transition-colors self-start group"
     >
-      <span className="bg-muted rounded-full w-7 h-7 flex items-center justify-center">
+      <span className="bg-[rgba(30,50,90,0.08)] rounded-full w-7 h-7 flex items-center justify-center">
         <ArrowUpRight className="w-4 h-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" style={{ color: INK }} />
       </span>
       <span className="text-[14px] font-normal" style={{ color: INK }}>
@@ -133,17 +133,17 @@ const BottomRightCorner = ({ onClick }: { onClick: () => void }) => (
     animate={{ y: 0, opacity: 1 }}
     transition={{ duration: 0.8, delay: 0.4 }}
     onClick={onClick}
-    className="absolute bottom-0 right-0 p-3 pt-5 pl-8 sm:p-4 sm:pt-6 sm:pl-10 md:p-6 md:pt-8 md:pl-14 bg-card rounded-tl-[1.5rem] sm:rounded-tl-[2rem] md:rounded-tl-[3.5rem] flex items-center gap-3 sm:gap-4 md:gap-6 cursor-pointer group"
+    className="absolute bottom-0 right-0 p-3 pt-5 pl-8 sm:p-4 sm:pt-6 sm:pl-10 md:p-6 md:pt-8 md:pl-14 bg-[#f0f0f0] rounded-tl-[1.5rem] sm:rounded-tl-[2rem] md:rounded-tl-[3.5rem] flex items-center gap-3 sm:gap-4 md:gap-6 cursor-pointer group"
   >
     {/* corner masks */}
-    <div className="absolute -top-4 right-0 w-4 h-4 bg-card" style={{ clipPath: "path('M 0 16 A 16 16 0 0 0 16 0 L 16 16 Z')" }} />
-    <div className="absolute bottom-0 -left-4 w-4 h-4 bg-card" style={{ clipPath: "path('M 16 0 A 16 16 0 0 1 0 16 L 16 16 Z')" }} />
+    <div className="absolute -top-4 right-0 w-4 h-4 bg-[#f0f0f0]" style={{ clipPath: "path('M 0 16 A 16 16 0 0 0 16 0 L 16 16 Z')" }} />
+    <div className="absolute bottom-0 -left-4 w-4 h-4 bg-[#f0f0f0]" style={{ clipPath: "path('M 16 0 A 16 16 0 0 1 0 16 L 16 16 Z')" }} />
 
-    <div className="bg-foreground/5 w-10 h-10 md:w-14 md:h-14 rounded-full flex items-center justify-center border border-foreground/10 transition-transform group-hover:scale-105">
-      <ArrowUpRight className="w-4 h-4 md:w-6 md:h-6" style={{ color: "hsl(var(--foreground) / 0.8)" }} />
+    <div className="bg-[rgba(30,50,90,0.05)] w-10 h-10 md:w-14 md:h-14 rounded-full flex items-center justify-center border border-[rgba(30,50,90,0.1)] transition-transform group-hover:scale-105">
+      <ArrowUpRight className="w-4 h-4 md:w-6 md:h-6" style={{ color: "rgba(30,50,90,0.8)" }} />
     </div>
     <div className="flex flex-col">
-      <span className="text-[16px] md:text-[20px] font-normal" style={{ color: "hsl(var(--foreground) / 0.95)" }}>
+      <span className="text-[16px] md:text-[20px] font-normal" style={{ color: "rgba(30,50,90,0.95)" }}>
         Documentation
       </span>
       <span className="flex items-center gap-1 text-[12px] md:text-[13px] font-normal" style={{ color: INK_SOFT }}>
@@ -162,7 +162,7 @@ const AboutPage = () => {
   const goContact = () => navigate("/contact");
 
   return (
-    <div className="font-helvetica-hero min-h-screen w-full bg-card" style={{ color: INK }}>
+    <div className="font-helvetica-hero min-h-screen w-full bg-[#f0f0f0]" style={{ color: INK }}>
       <SEOHead
         title="About Megsy AI — One Workspace for Chat, Image, Video & Code"
         description="Megsy AI unifies chat, image, video, code and file analysis in a single workspace, priced in one credit. Independently built in Cairo."
@@ -236,7 +236,7 @@ const AboutPage = () => {
 
       {/* ============== STATS ============== */}
       <section className="px-4 sm:px-6 md:px-8 mt-6 md:mt-10">
-        <div className="mx-auto max-w-6xl rounded-[1.5rem] md:rounded-[2rem] bg-muted/60 border border-border/40 p-6 md:p-10 grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div className="mx-auto max-w-6xl rounded-[1.5rem] md:rounded-[2rem] bg-white/60 backdrop-blur-xl border border-white/40 p-6 md:p-10 grid grid-cols-2 md:grid-cols-4 gap-6">
           {stats.map((s, i) => (
             <motion.div
               key={s.k}
@@ -260,7 +260,7 @@ const AboutPage = () => {
       {/* ============== MISSION ============== */}
       <section className="px-4 sm:px-6 md:px-8 mt-16 md:mt-24">
         <div className="mx-auto max-w-4xl text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-muted/60 border border-border/40 mb-5">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/60 backdrop-blur-md border border-white/40 mb-5">
             <span className="text-[11px] uppercase tracking-[0.22em]" style={{ color: INK_SOFT }}>
               Why we built it
             </span>
@@ -296,7 +296,7 @@ const AboutPage = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: i * 0.1 }}
-                className="rounded-[1.5rem] md:rounded-[2rem] overflow-hidden bg-muted/60 border border-border/40"
+                className="rounded-[1.5rem] md:rounded-[2rem] overflow-hidden bg-white/60 backdrop-blur-xl border border-white/40"
               >
                 <div className="relative aspect-[4/5] overflow-hidden">
                   <img
@@ -344,7 +344,7 @@ const AboutPage = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.08 }}
-                className="rounded-[1.25rem] md:rounded-[1.5rem] p-5 md:p-6 bg-muted/60 border border-border/40"
+                className="rounded-[1.25rem] md:rounded-[1.5rem] p-5 md:p-6 bg-white/60 backdrop-blur-xl border border-white/40"
               >
                 <p className="text-[16px] md:text-[18px] font-normal tracking-tight" style={{ color: INK }}>
                   {v.t}
@@ -360,7 +360,7 @@ const AboutPage = () => {
 
       {/* ============== CTA ============== */}
       <section className="px-4 sm:px-6 md:px-8 mt-16 md:mt-24 pb-16 md:pb-24">
-        <div className="mx-auto max-w-4xl rounded-[1.5rem] md:rounded-[2.5rem] bg-muted/60 border border-border/40 p-8 md:p-14 text-center">
+        <div className="mx-auto max-w-4xl rounded-[1.5rem] md:rounded-[2.5rem] bg-white/60 backdrop-blur-xl border border-white/40 p-8 md:p-14 text-center">
           <h2 className="text-3xl md:text-5xl lg:text-6xl font-normal tracking-tight leading-[1.05]" style={{ color: "#5E6470" }}>
             Try Megsy for yourself.
           </h2>
@@ -372,10 +372,10 @@ const AboutPage = () => {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={goSignup}
-              className="flex items-center bg-foreground/90 text-foreground rounded-full pl-2 pr-6 py-2 gap-3 hover:bg-primary/90 transition-colors group"
+              className="flex items-center bg-[rgba(30,50,90,0.9)] text-white rounded-full pl-2 pr-6 py-2 gap-3 hover:bg-[rgba(30,50,90,1)] transition-colors group"
             >
-              <span className="bg-muted/15 rounded-full w-8 h-8 flex items-center justify-center">
-                <ArrowUpRight className="w-5 h-5 text-foreground transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+              <span className="bg-white/15 rounded-full w-8 h-8 flex items-center justify-center">
+                <ArrowUpRight className="w-5 h-5 text-white transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
               </span>
               <span className="text-sm font-normal">Start free</span>
             </motion.button>
@@ -383,9 +383,9 @@ const AboutPage = () => {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={goContact}
-              className="flex items-center bg-primary rounded-full pl-2 pr-6 py-2 gap-3 border border-border/60 hover:bg-muted/90 transition-colors group"
+              className="flex items-center bg-white rounded-full pl-2 pr-6 py-2 gap-3 border border-white/60 hover:bg-white/90 transition-colors group"
             >
-              <span className="bg-muted rounded-full w-8 h-8 flex items-center justify-center">
+              <span className="bg-[rgba(30,50,90,0.08)] rounded-full w-8 h-8 flex items-center justify-center">
                 <ArrowUpRight className="w-5 h-5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" style={{ color: INK }} />
               </span>
               <span className="text-sm font-normal" style={{ color: INK }}>Talk to us</span>

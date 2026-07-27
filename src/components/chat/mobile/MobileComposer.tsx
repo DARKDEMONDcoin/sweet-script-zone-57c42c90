@@ -130,14 +130,14 @@ export default function MobileComposer({
         onClick={() => { dismissHint(); onPlus?.(); }}
         whileTap={{ scale: 0.9 }}
         transition={TAP_SPRING}
-        className="shrink-0 flex items-center justify-center text-foreground/75 hover:text-foreground active:text-foreground transition-colors border-0 bg-transparent"
+        className="shrink-0 flex items-center justify-center text-foreground/90 hover:text-foreground transition-colors border-0 bg-transparent"
         style={{
-          height: "2.75rem",
-          width: "2.75rem",
+          height: "2.5rem",
+          width: "2.5rem",
           borderRadius: "999px",
         }}
       >
-        <Plus className="w-5 h-5" strokeWidth={1.8} />
+        <Plus className="w-5 h-5" strokeWidth={2.2} />
       </motion.button>
 
 
@@ -152,7 +152,7 @@ export default function MobileComposer({
         placeholder={ph}
         rows={1}
         dir="auto"
-        className="flex-1 resize-none bg-transparent border-0 outline-none text-[16px] leading-6 px-2 py-2.5 max-h-40 text-foreground placeholder:text-foreground/55"
+        className="flex-1 resize-none bg-transparent border-0 outline-none text-[15px] leading-6 px-2 py-2 max-h-40 text-foreground placeholder:text-foreground/45"
       />
 
       {isLoading ? (
@@ -163,7 +163,7 @@ export default function MobileComposer({
           onClick={onCancel}
           whileTap={{ scale: 0.9 }}
           transition={TAP_SPRING}
-          className="theme-fixed shrink-0 flex items-center justify-center bg-destructive text-foreground shadow-[0_2px_10px_rgba(0,0,0,0.3)]"
+          className="theme-fixed shrink-0 flex items-center justify-center bg-destructive text-white shadow-[0_2px_10px_rgba(0,0,0,0.3)]"
           style={{ height: "2.75rem", width: "2.75rem", borderRadius: "999px" }}
         >
           <Square className="w-4 h-4" />
@@ -178,7 +178,7 @@ export default function MobileComposer({
           disabled={!canSend}
           whileTap={canSend ? { scale: 0.88 } : undefined}
           transition={TAP_SPRING}
-          className="theme-fixed shrink-0 flex items-center justify-center bg-primary text-primary-foreground shadow-[0_2px_10px_rgba(0,0,0,0.3)] disabled:opacity-40 disabled:bg-foreground/15 disabled:text-foreground/60 disabled:shadow-none"
+          className="theme-fixed shrink-0 flex items-center justify-center bg-white text-black shadow-[0_2px_10px_rgba(0,0,0,0.3)] disabled:opacity-40 disabled:bg-foreground/15 disabled:text-foreground/60 disabled:shadow-none"
           style={{ height: "2.75rem", width: "2.75rem", borderRadius: "999px" }}
         >
           <ArrowUp className="w-5 h-5" />

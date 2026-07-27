@@ -9,10 +9,10 @@ const ShowcaseVideoSection = () => {
   return (
     <section
       aria-label="Product showcase video"
-      className="relative w-full bg-background"
+      className="relative w-full bg-black"
     >
       <div className="mx-auto max-w-6xl px-4 py-10 md:py-16">
-        <div className="relative overflow-hidden rounded-2xl border border-border/10 shadow-2xl bg-background">
+        <div className="relative overflow-hidden rounded-2xl border border-white/10 shadow-2xl bg-black">
           <video
             src={SHOWCASE_VIDEO_SRC}
             autoPlay

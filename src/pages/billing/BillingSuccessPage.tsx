@@ -3,7 +3,6 @@ import { useEffect, useMemo, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { m as motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
-import { Spinner } from "@/components/ui/spinner";
 
 const mobileFont =
   "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', system-ui, sans-serif";
@@ -183,7 +182,7 @@ const BillingSuccessPage = () => {
               <span
                 className={`font-medium ${
                   status === "success"
-                    ? "text-primary"
+                    ? "text-emerald-400"
                     : status === "pending"
                       ? "text-amber-400"
                       : "text-foreground/70"
@@ -250,7 +249,7 @@ const BillingSuccessPage = () => {
 
           {status === "loading" && (
             <div className="flex items-center justify-center py-4">
-              <Spinner className="size-5" />
+              <span className="w-5 h-5 border-2 border-foreground/25 border-t-foreground rounded-full animate-spin" />
             </div>
           )}
         </div>

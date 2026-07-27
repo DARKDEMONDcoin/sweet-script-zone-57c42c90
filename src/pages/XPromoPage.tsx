@@ -2,7 +2,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
-import { Spinner } from "@/components/ui/spinner";
 
 const PROMPT_TEXT = `Create a highly polished, responsive Hero Section using a single HTML file. Use Tailwind CSS via CDN for styling, Google Fonts for typography, and vanilla JavaScript for interactivity.
 
@@ -15,16 +14,16 @@ Follow these strict structural and styling requirements exactly:
 - Create .stagger-item + delay classes: .delay-bg (0.2s), .delay-nav (1.0s), .delay-h1 (1.8s), .delay-p (2.6s), .delay-btn (3.4s).
 
 2. Main Container & Background Video:
-- Wrapper: relative w-full max-w-[1400px] aspect-[4/3] md:aspect-[16/9] min-h-[600px] md:min-h-[800px] rounded-[2rem] overflow-hidden shadow-2xl bg-background. .delay-bg.
+- Wrapper: relative w-full max-w-[1400px] aspect-[4/3] md:aspect-[16/9] min-h-[600px] md:min-h-[800px] rounded-[2rem] overflow-hidden shadow-2xl bg-black. .delay-bg.
 - <video> autoplay loop muted playsinline object-cover opacity-90.
 - Video URL: https://cdn.sceneai.art/Hero%20Section%20Video/e988037c-bf57-4b3b-8ba9-b69167028de8.mp4
-- Overlay: absolute inset-0 bg-background/20.
+- Overlay: absolute inset-0 bg-black/20.
 
 3. Navigation (top): logo "Ratw", desktop nav (Home, Pricing, About, Insights, Contact), "Get template" button, mobile hamburger → dropdown.
 
 4. Hero Content (bottom):
 - H1: text-[58px] font-semibold, "Plan better, <br> start your day right". Word "right" in Playfair Display italic.
-- P: text-foreground 18-20px, "A smarter planner for tasks<br>priorities and daily structure".
+- P: text-white/90 18-20px, "A smarter planner for tasks<br>priorities and daily structure".
 - CTA: "Create your plan" white bg rounded-full.`;
 
 const VIDEO_URL = "https://cdn.sceneai.art/Hero%20Section%20Video/e988037c-bf57-4b3b-8ba9-b69167028de8.mp4";
@@ -71,7 +70,7 @@ export default function XPromoPage() {
       style={{ fontFamily: "Inter, system-ui, -apple-system, sans-serif" }}
     >
       {/* Main container */}
-      <div className="stagger-item delay-bg relative aspect-[4/3] min-h-[600px] w-full max-w-[1400px] overflow-hidden rounded-[2rem] bg-background shadow-2xl md:aspect-[16/9] md:min-h-[800px]">
+      <div className="stagger-item delay-bg relative aspect-[4/3] min-h-[600px] w-full max-w-[1400px] overflow-hidden rounded-[2rem] bg-black shadow-2xl md:aspect-[16/9] md:min-h-[800px]">
         {/* Background video */}
         <div className="absolute inset-0 h-full w-full">
           <video
@@ -82,7 +81,7 @@ export default function XPromoPage() {
             muted
             playsInline
           />
-          <div className="absolute inset-0 bg-background/30" />
+          <div className="absolute inset-0 bg-black/30" />
           <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/70" />
         </div>
 
@@ -90,7 +89,7 @@ export default function XPromoPage() {
         <div className="stagger-item delay-nav absolute left-0 top-0 z-30 flex w-full items-start justify-between p-6 md:items-center md:p-10">
           <button
             onClick={() => navigate("/")}
-            className="text-2xl font-bold uppercase tracking-[0.2em] text-foreground"
+            className="text-2xl font-bold uppercase tracking-[0.2em] text-white"
           >
             Megsy
           </button>
@@ -105,14 +104,14 @@ export default function XPromoPage() {
               <button
                 key={l.label}
                 onClick={() => navigate(l.to)}
-                className="text-[14px] font-medium text-foreground transition hover:text-foreground"
+                className="text-[14px] font-medium text-white/95 transition hover:text-white"
               >
                 {l.label}
               </button>
             ))}
             <button
               onClick={() => navigate("/pricing")}
-              className="rounded-full bg-primary px-5 py-2 text-[13px] font-semibold text-primary-foreground transition hover:scale-105"
+              className="rounded-full bg-white px-5 py-2 text-[13px] font-semibold text-black transition hover:scale-105"
             >
               Get Offer
             </button>
@@ -122,7 +121,7 @@ export default function XPromoPage() {
           <div className="relative md:hidden">
             <button
               onClick={() => setMenuOpen((v) => !v)}
-              className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground transition"
+              className="flex h-12 w-12 items-center justify-center rounded-full bg-white text-black transition"
               aria-label="menu"
             >
               {menuOpen ? (
@@ -136,7 +135,7 @@ export default function XPromoPage() {
               )}
             </button>
             <div
-              className={`absolute right-0 top-16 w-64 rounded-2xl bg-primary p-4 shadow-2xl transition-all duration-300 ${
+              className={`absolute right-0 top-16 w-64 rounded-2xl bg-white p-4 shadow-2xl transition-all duration-300 ${
                 menuOpen
                   ? "visible translate-y-0 scale-100 opacity-100"
                   : "invisible -translate-y-2 scale-95 opacity-0"
@@ -151,7 +150,7 @@ export default function XPromoPage() {
                 <button
                   key={l.label}
                   onClick={() => { setMenuOpen(false); navigate(l.to); }}
-                  className="block w-full rounded-lg px-3 py-2 text-right text-[14px] font-medium text-primary-foreground transition hover:bg-background/5"
+                  className="block w-full rounded-lg px-3 py-2 text-right text-[14px] font-medium text-black transition hover:bg-black/5"
                 >
                   {l.label}
                 </button>
@@ -163,16 +162,16 @@ export default function XPromoPage() {
         {/* Hero content */}
         <div className="absolute inset-0 z-20 flex flex-col items-center justify-end px-4 pb-12 text-center md:pb-24">
           {/* Discount badge */}
-          <div className="stagger-item delay-h1 mb-6 inline-flex items-center gap-2 rounded-full border border-border/25 bg-muted/10 px-4 py-1.5 text-[12px] font-medium text-foreground">
-            <span className="inline-block h-2 w-2 animate-pulse rounded-full bg-primary" />
+          <div className="stagger-item delay-h1 mb-6 inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-1.5 text-[12px] font-medium text-white backdrop-blur-md">
+            <span className="inline-block h-2 w-2 animate-pulse rounded-full bg-emerald-400" />
             خصم 7% على الشهر الأول • عرض محدود
           </div>
 
-          <h1 className="stagger-item delay-h1 text-[42px] font-semibold leading-[1.05] tracking-[-0.02em] text-foreground md:text-[58px]">
+          <h1 className="stagger-item delay-h1 text-[42px] font-semibold leading-[1.05] tracking-[-0.02em] text-white md:text-[58px]">
             Unlimited Access,
             <br className="hidden md:block" /> at your{" "}
             <span
-              className="italic text-foreground"
+              className="italic text-white/95"
               style={{ fontFamily: "'Playfair Display', serif", fontWeight: 500 }}
             >
               fingertips
@@ -181,7 +180,7 @@ export default function XPromoPage() {
 
           <p
             dir="rtl"
-            className="stagger-item delay-p mt-5 max-w-[540px] text-[16px] font-medium leading-[1.6] text-foreground md:text-[18px]"
+            className="stagger-item delay-p mt-5 max-w-[540px] text-[16px] font-medium leading-[1.6] text-white/90 md:text-[18px]"
           >
             خصم 7% على الشهر الأول
             <br />
@@ -193,7 +192,7 @@ export default function XPromoPage() {
             {["GPT-5", "Claude", "Gemini", "DeepSeek", "Grok", "Qwen"].map((m) => (
               <span
                 key={m}
-                className="rounded-full border border-border/25 bg-muted/10 px-3 py-1 text-[11.5px] font-medium text-foreground"
+                className="rounded-full border border-white/25 bg-white/10 px-3 py-1 text-[11.5px] font-medium text-white/95 backdrop-blur-md"
               >
                 {m} • Unlimited
               </span>
@@ -205,11 +204,13 @@ export default function XPromoPage() {
             <button
               onClick={handleCopy}
               disabled={copying}
-              className="x-cta group relative inline-flex items-center gap-2 rounded-full bg-primary px-8 py-3.5 text-[15px] font-medium text-primary-foreground transition-all hover:scale-[1.04] active:scale-[0.98] disabled:opacity-80"
+              className="x-cta group relative inline-flex items-center gap-2 rounded-full bg-white px-8 py-3.5 text-[15px] font-medium text-black transition-all hover:scale-[1.04] active:scale-[0.98] disabled:opacity-80"
             >
               {copying ? (
                 <>
-                  <Spinner className="size-4" />
+                  <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" strokeDasharray="60" strokeLinecap="round" />
+                  </svg>
                   جاري النسخ...
                 </>
               ) : (
@@ -224,7 +225,7 @@ export default function XPromoPage() {
             </button>
             <button
               onClick={() => navigate("/pricing")}
-              className="text-[13px] font-medium text-muted-foreground underline-offset-4 transition hover:text-foreground hover:underline"
+              className="text-[13px] font-medium text-white/80 underline-offset-4 transition hover:text-white hover:underline"
             >
               أو انتقل مباشرة إلى الأسعار
             </button>

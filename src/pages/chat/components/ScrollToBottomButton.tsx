@@ -22,7 +22,7 @@ const ScrollToBottomButtonImpl = ({
           exit={{ opacity: 0, y: 12, scale: 0.85 }}
           transition={{ type: "spring", stiffness: 360, damping: 26 }}
           onClick={onClick}
-          className={`fixed bottom-[calc(env(safe-area-inset-bottom)+7.5rem)] md:bottom-40 left-1/2 -translate-x-1/2 z-20 inline-flex items-center justify-center rounded-full backdrop-blur-md transition-all ring-1 ring-border shadow-[0_8px_24px_-8px_rgba(0,0,0,0.45)] ${
+          className={`fixed bottom-40 left-1/2 -translate-x-1/2 z-20 inline-flex items-center justify-center rounded-full transition-all backdrop-blur-md ring-1 ring-border ${
             newMessagesCount > 0
               ? "h-10 px-4 gap-2 text-primary-foreground"
               : "w-11 h-11 bg-background/85 text-foreground/80 hover:bg-background"

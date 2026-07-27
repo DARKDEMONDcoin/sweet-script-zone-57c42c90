@@ -3,9 +3,8 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Check, X, MessageSquare, Users } from "lucide-react";
+import { Loader2, Check, X, MessageSquare, Users } from "lucide-react";
 import { toast } from "sonner";
-import { Spinner } from "@/components/ui/spinner";
 
 interface InviteDetails {
   invite_id: string;
@@ -95,7 +94,7 @@ export default function AcceptInvitePage() {
   if (loading) {
     return (
       <div className="min-h-dvh flex items-center justify-center bg-background">
-        <Spinner className="w-6 h-6 text-muted-foreground" />
+        <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
       </div>
     );
   }
@@ -177,7 +176,7 @@ export default function AcceptInvitePage() {
             className="flex-1 rounded-full bg-foreground text-background hover:bg-foreground/90"
           >
             {accepting ? (
-              <Spinner className="w-4 h-4" />
+              <Loader2 className="w-4 h-4 animate-spin" />
             ) : user ? (
               <>
                 <Check className="w-4 h-4 mr-1.5" /> Accept

@@ -86,7 +86,7 @@ const DemoVideo = ({ src }: { src: string }) => {
         type="button"
         onClick={toggleMute}
         aria-label={muted ? "Unmute video" : "Mute video"}
-        className="absolute bottom-3 right-3 w-11 h-11 rounded-full flex items-center justify-center active:scale-95 transition"
+        className="absolute bottom-3 right-3 w-11 h-11 rounded-full flex items-center justify-center backdrop-blur-md active:scale-95 transition"
         style={{
           background: "var(--overlay-black-55)",
           border: "1px solid var(--overlay-white-18)",

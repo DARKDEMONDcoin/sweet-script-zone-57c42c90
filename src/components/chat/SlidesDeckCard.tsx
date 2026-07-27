@@ -1,13 +1,23 @@
 import { useState, useEffect, useRef, useLayoutEffect } from "react";
 import { m as motion, AnimatePresence } from "framer-motion";
 import { useNavigate, useInRouterContext } from "react-router-dom";
-import { ChevronLeft, ChevronRight, X, Maximize2, Download, FileCode2, FileType2, MoveHorizontal, MoveVertical } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  X,
+  Maximize2,
+  Download,
+  Loader2,
+  FileCode2,
+  FileType2,
+  MoveHorizontal,
+  MoveVertical,
+} from "lucide-react";
 import { toast } from "sonner";
 import { exportDeckHtml, exportDeckPptx } from "@/lib/slidesExport";
 import { findSlidesTemplate } from "@/lib/slidesTemplates";
 import { useFullscreenBodyClass } from "@/hooks/useFullscreenBodyClass";
 import { stashSlidesDeckForPreview } from "@/lib/slidesPreviewStore";
-import { Spinner } from "@/components/ui/spinner";
 
 export interface SlideData {
   type?: string;
@@ -559,10 +569,7 @@ const SlidesDeckCard = ({ deck, hideCard = false, autoOpen = false, onClose }: P
     };
   }, [open, orientation]);
   const dir: "ltr" | "rtl" = deck.language?.startsWith("ar") ? "rtl" : "ltr";
-  // Persisted decks can be partial (interrupted job, old schema): never index
-  // into a missing array — that used to crash the whole chat view on open.
-  const slides = Array.isArray(deck?.slides) ? deck.slides : [];
-  const total = slides.length;
+  const total = deck.slides.length;
 
   useEffect(() => {
     if (!open) return;
@@ -604,13 +611,11 @@ const SlidesDeckCard = ({ deck, hideCard = false, autoOpen = false, onClose }: P
   };
 
   // Card preview
-  const cover = slides[0];
-  // Empty deck => render nothing rather than throwing inside the message list.
-  if (!cover) return null;
+  const cover = deck.slides[0];
   return (
     <>
       {!hideCard && (
-      <div className="mt-3 group relative max-w-[420px] rounded-ios-xl overflow-hidden bg-zinc-950 border border-border/5 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.6)] transition-all duration-700 hover:border-border/10">
+      <div className="mt-3 group relative max-w-[420px] rounded-ios-xl overflow-hidden bg-zinc-950 border border-white/5 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.6)] transition-all duration-700 hover:border-white/10">
         <button
           onClick={() => {
             setIdx(0);
@@ -627,7 +632,7 @@ const SlidesDeckCard = ({ deck, hideCard = false, autoOpen = false, onClose }: P
             />
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-transparent pointer-events-none" />
-          <div className="absolute top-4 right-4 inline-flex items-center gap-1 rounded-full bg-background/50 px-2.5 py-1 text-[11px] font-medium text-foreground opacity-0 group-hover:opacity-100 transition">
+          <div className="absolute top-4 right-4 inline-flex items-center gap-1 rounded-full bg-black/50 backdrop-blur px-2.5 py-1 text-[11px] font-medium text-foreground opacity-0 group-hover:opacity-100 transition">
             <Maximize2 className="w-3 h-3" /> Open
           </div>
         </button>
@@ -650,10 +655,10 @@ const SlidesDeckCard = ({ deck, hideCard = false, autoOpen = false, onClose }: P
             <button
               onClick={handlePptx}
               disabled={exportingPptx}
-              className="flex-1 flex items-center justify-center gap-2 py-3 bg-zinc-900 text-zinc-400 hover:text-foreground font-medium rounded-2xl border border-border/5 transition-all hover:bg-zinc-800 active:scale-[0.97] disabled:opacity-50 text-[13px]"
+              className="flex-1 flex items-center justify-center gap-2 py-3 bg-zinc-900 text-zinc-400 hover:text-foreground font-medium rounded-2xl border border-white/5 transition-all hover:bg-zinc-800 active:scale-[0.97] disabled:opacity-50 text-[13px]"
             >
               {exportingPptx ? (
-                <Spinner className="w-3.5 h-3.5" />
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
               ) : (
                 <Download className="w-3.5 h-3.5" />
               )}
@@ -663,10 +668,10 @@ const SlidesDeckCard = ({ deck, hideCard = false, autoOpen = false, onClose }: P
               onClick={handleHtml}
               disabled={exportingHtml}
               aria-label="HTML"
-              className="w-11 h-11 flex items-center justify-center bg-zinc-900 text-zinc-400 hover:text-foreground rounded-2xl border border-border/5 transition-all hover:bg-zinc-800 active:scale-[0.97] disabled:opacity-50"
+              className="w-11 h-11 flex items-center justify-center bg-zinc-900 text-zinc-400 hover:text-foreground rounded-2xl border border-white/5 transition-all hover:bg-zinc-800 active:scale-[0.97] disabled:opacity-50"
             >
               {exportingHtml ? (
-                <Spinner className="w-3.5 h-3.5" />
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
               ) : (
                 <FileCode2 className="w-4 h-4" />
               )}
@@ -679,7 +684,7 @@ const SlidesDeckCard = ({ deck, hideCard = false, autoOpen = false, onClose }: P
       <AnimatePresence>
         {open && (
           <motion.div
-            className="fixed inset-0 z-modal bg-background/95 flex flex-col"
+            className="fixed inset-0 z-modal bg-black/95 backdrop-blur flex flex-col"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -692,12 +697,12 @@ const SlidesDeckCard = ({ deck, hideCard = false, autoOpen = false, onClose }: P
                 <span className="text-sm font-semibold text-foreground truncate">{deck.title}</span>
               </div>
               <div className="flex items-center gap-1.5 shrink-0">
-                <div className="flex items-center rounded-full bg-muted/10 p-0.5">
+                <div className="flex items-center rounded-full bg-white/10 p-0.5">
                   <button
                     onClick={() => setOrientation("horizontal")}
                     aria-label="Horizontal scroll"
                     title="Horizontal"
-                    className={`h-8 px-2.5 rounded-full text-xs font-medium flex items-center gap-1.5 transition ${orientation === "horizontal" ? "bg-primary text-foreground" : "text-foreground/70 hover:text-foreground"}`}
+                    className={`h-8 px-2.5 rounded-full text-xs font-medium flex items-center gap-1.5 transition ${orientation === "horizontal" ? "bg-white text-foreground" : "text-foreground/70 hover:text-foreground"}`}
                   >
                     <MoveHorizontal className="w-3.5 h-3.5" />
                   </button>
@@ -705,14 +710,14 @@ const SlidesDeckCard = ({ deck, hideCard = false, autoOpen = false, onClose }: P
                     onClick={() => setOrientation("vertical")}
                     aria-label="Vertical scroll"
                     title="Vertical"
-                    className={`h-8 px-2.5 rounded-full text-xs font-medium flex items-center gap-1.5 transition ${orientation === "vertical" ? "bg-primary text-foreground" : "text-foreground/70 hover:text-foreground"}`}
+                    className={`h-8 px-2.5 rounded-full text-xs font-medium flex items-center gap-1.5 transition ${orientation === "vertical" ? "bg-white text-foreground" : "text-foreground/70 hover:text-foreground"}`}
                   >
                     <MoveVertical className="w-3.5 h-3.5" />
                   </button>
                 </div>
                 <button
                   onClick={closePreview}
-                  className="h-9 w-9 rounded-full bg-muted/10 hover:bg-muted/20 text-foreground flex items-center justify-center"
+                  className="h-9 w-9 rounded-full bg-white/10 hover:bg-white/20 text-foreground flex items-center justify-center"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -724,7 +729,7 @@ const SlidesDeckCard = ({ deck, hideCard = false, autoOpen = false, onClose }: P
                 <button
                   onClick={() => setIdx((i) => Math.max(0, i - 1))}
                   disabled={idx === 0}
-                  className="absolute left-2 sm:left-4 h-11 w-11 rounded-full bg-muted/10 hover:bg-muted/20 disabled:opacity-30 text-foreground flex items-center justify-center z-10"
+                  className="absolute left-2 sm:left-4 h-11 w-11 rounded-full bg-white/10 hover:bg-white/20 disabled:opacity-30 text-foreground flex items-center justify-center z-10"
                 >
                   <ChevronLeft />
                 </button>
@@ -739,7 +744,7 @@ const SlidesDeckCard = ({ deck, hideCard = false, autoOpen = false, onClose }: P
                       className="absolute inset-0"
                     >
                       <ScaledSlide>
-                        <SlideRender slide={slides[idx] ?? slides[0]} palette={deck.palette} dir={dir} />
+                        <SlideRender slide={deck.slides[idx]} palette={deck.palette} dir={dir} />
                       </ScaledSlide>
                     </motion.div>
                   </AnimatePresence>
@@ -747,7 +752,7 @@ const SlidesDeckCard = ({ deck, hideCard = false, autoOpen = false, onClose }: P
                 <button
                   onClick={() => setIdx((i) => Math.min(total - 1, i + 1))}
                   disabled={idx === total - 1}
-                  className="absolute right-2 sm:right-4 h-11 w-11 rounded-full bg-muted/10 hover:bg-muted/20 disabled:opacity-30 text-foreground flex items-center justify-center z-10"
+                  className="absolute right-2 sm:right-4 h-11 w-11 rounded-full bg-white/10 hover:bg-white/20 disabled:opacity-30 text-foreground flex items-center justify-center z-10"
                 >
                   <ChevronRight />
                 </button>
@@ -759,7 +764,7 @@ const SlidesDeckCard = ({ deck, hideCard = false, autoOpen = false, onClose }: P
                 style={{ scrollBehavior: "smooth" }}
               >
                 <div className="flex flex-col items-center gap-4 py-4">
-                  {slides.map((s, i) => (
+                  {deck.slides.map((s, i) => (
                     <div
                       key={i}
                       ref={(el) => {
@@ -777,15 +782,15 @@ const SlidesDeckCard = ({ deck, hideCard = false, autoOpen = false, onClose }: P
             )}
 
             {/* Filmstrip — quick navigation across slides */}
-            <div className="shrink-0 border-t border-border/10 bg-background/40 px-3 py-2.5 overflow-x-auto">
+            <div className="shrink-0 border-t border-white/10 bg-black/40 backdrop-blur px-3 py-2.5 overflow-x-auto">
               <div className="flex items-center gap-2 min-w-min mx-auto w-fit">
-                {slides.map((s, i) => (
+                {deck.slides.map((s, i) => (
                   <button
                     key={i}
                     onClick={() => setIdx(i)}
                     aria-label={`Slide ${i + 1}`}
                     className={`relative shrink-0 w-32 aspect-[16/9] rounded-md overflow-hidden transition ring-2 ${
-                      i === idx ? "ring-primary" : "ring-transparent opacity-60 hover:opacity-100"
+                      i === idx ? "ring-white" : "ring-transparent opacity-60 hover:opacity-100"
                     }`}
                   >
                     <div className="absolute inset-0 pointer-events-none">
@@ -793,7 +798,7 @@ const SlidesDeckCard = ({ deck, hideCard = false, autoOpen = false, onClose }: P
                         <SlideRender slide={s} palette={deck.palette} dir={dir} />
                       </ScaledSlide>
                     </div>
-                    <span className="absolute bottom-0.5 right-1 text-[9px] font-mono text-foreground/80 bg-background/40 rounded px-1">
+                    <span className="absolute bottom-0.5 right-1 text-[9px] font-mono text-foreground/80 bg-black/40 rounded px-1">
                       {i + 1}
                     </span>
                   </button>

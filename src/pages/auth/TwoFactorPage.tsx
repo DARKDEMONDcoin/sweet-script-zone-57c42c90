@@ -283,7 +283,7 @@ const TwoFactorPage = () => {
             <div className="flex items-start gap-3">
               <div className={`grid h-10 w-10 shrink-0 place-items-center rounded-full border ${
                 enabled
-                  ? "border-primary/30 bg-primary/[0.08] text-primary"
+                  ? "border-emerald-500/30 bg-emerald-500/[0.08] text-emerald-300"
                   : "border-border/70 bg-muted/30 text-muted-foreground"
               }`}>
                 {enabled ? <ShieldCheck className="w-5 h-5" strokeWidth={1.8} /> : <Shield className="w-5 h-5" strokeWidth={1.8} />}
@@ -300,7 +300,7 @@ const TwoFactorPage = () => {
             <div className="mt-5 flex items-center justify-end gap-2">
               {enabled ? (
                 <button onClick={disable2FA} disabled={busy}
-                  className="px-4 py-2 rounded-lg text-[13px] font-medium bg-rose-500/90 text-foreground hover:bg-rose-500 disabled:opacity-40 transition-colors">
+                  className="px-4 py-2 rounded-lg text-[13px] font-medium bg-rose-500/90 text-white hover:bg-rose-500 disabled:opacity-40 transition-colors">
                   {busy ? "Disabling…" : "Disable 2FA"}
                 </button>
               ) : (
@@ -320,7 +320,7 @@ const TwoFactorPage = () => {
             <SubCard>
               <div className="flex flex-col items-center">
                 {qr && (
-                  <div className="p-3 rounded-xl bg-primary">
+                  <div className="p-3 rounded-xl bg-white">
                     <img src={qr} alt="2FA QR" width={192} height={192} />
                   </div>
                 )}
@@ -330,7 +330,7 @@ const TwoFactorPage = () => {
                 <button onClick={copySecret}
                   className="mt-2 inline-flex items-center gap-2 px-3 py-2 rounded-lg text-[12px] font-mono bg-background/60 border border-border/70 text-foreground hover:border-foreground/40 transition-colors">
                   <span className="break-all">{secret}</span>
-                  {copied ? <Check className="w-3.5 h-3.5 shrink-0 text-primary" /> : <Copy className="w-3.5 h-3.5 shrink-0 text-muted-foreground" />}
+                  {copied ? <Check className="w-3.5 h-3.5 shrink-0 text-emerald-400" /> : <Copy className="w-3.5 h-3.5 shrink-0 text-muted-foreground" />}
                 </button>
               </div>
             </SubCard>

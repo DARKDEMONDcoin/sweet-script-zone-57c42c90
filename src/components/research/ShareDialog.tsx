@@ -163,7 +163,7 @@ export default function ShareDialog({ open, onOpenChange, url, title, isRtl }: P
                 onClick={copy}
                 className={`inline-flex items-center gap-1.5 rounded-xl px-5 py-2.5 text-xs font-bold tracking-wider uppercase transition-all active:scale-95 ${
                   copied
-                    ? "bg-primary/15 text-primary dark:text-primary"
+                    ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400"
                     : "bg-foreground text-background hover:opacity-90"
                 }`}
               >

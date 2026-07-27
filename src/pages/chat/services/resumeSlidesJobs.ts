@@ -135,35 +135,8 @@ export async function resumeSlidesJobs({
             /* best-effort */
           }
         },
-        onError: async (msg) => {
+        onError: (msg) => {
           clearSlidesTimeout(jobId);
-          // Provider unavailable → render the deck locally instead of failing.
-          try {
-            const { buildLocalDeck } = await import("@/lib/slides/localDeck");
-            const deck = await buildLocalDeck({
-              topic: String(meta.topic || ""),
-              templateId: meta.templateId,
-            });
-            if (deck) {
-              setMessages((prev) =>
-                prev.map((x) =>
-                  x.id === messageId
-                    ? { ...x, slidesDeck: deck, slidesJobId: undefined, mode: "slides" }
-                    : x,
-                ),
-              );
-              void supabase
-                .from("messages")
-                .update({
-                  content: `Generated ${deck.slides.length} slides`,
-                  metadata: { kind: "slidesDeck", slidesDeck: deck } as any,
-                })
-                .eq("id", messageId);
-              return;
-            }
-          } catch {
-            /* fall through to error state */
-          }
           void supabase
             .from("messages")
             .update({
@@ -188,7 +161,6 @@ export async function resumeSlidesJobs({
             ),
           );
         },
-
         onStale: async (row) => {
           clearSlidesTimeout(jobId);
           try {

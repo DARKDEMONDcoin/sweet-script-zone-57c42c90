@@ -44,7 +44,7 @@ const ParallaxShowcase = () => {
         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
         className="mx-auto w-full max-w-6xl px-4 md:px-6"
       >
-        <div className="relative overflow-hidden rounded-2xl border border-border/10 md:rounded-[28px]">
+        <div className="relative overflow-hidden rounded-2xl border border-white/10 md:rounded-[28px]">
           <LazyVideo src={videoUrl} className="aspect-video w-full" />
         </div>
 

@@ -1,6 +1,6 @@
 import { MobileSidebarButton } from "@/components/shared/MobileSidebarButton";
 import { ChatOptionsDropdown } from "./ChatOptionsDropdown";
-import UpgradeCtaButton from "@/components/chat/UpgradeCtaButton";
+import MegsyStar from "@/components/files/MegsyStar";
 import { prefetchRoute } from "@/hooks/usePrefetchRoute";
 import ComposerModelMenu from "../ComposerModelMenu";
 import { MediaSettingsPanel } from "@/components/chat/mobile/MediaSettingsMenu";
@@ -60,6 +60,9 @@ interface DesktopChatHeaderProps {
 export function DesktopChatHeader(props: DesktopChatHeaderProps) {
   const { chatMode, hasConversation, setSidebarOpen, conversationId, navigate, chatUserId } = props;
   const lang = useUserLang();
+  const prefetchPricing = () => {
+    void prefetchRoute("/pricing");
+  };
   const prefetchAuth = () => {
     void prefetchRoute("/auth");
   };
@@ -125,7 +128,26 @@ export function DesktopChatHeader(props: DesktopChatHeaderProps) {
 
       <div className="flex items-center gap-2">
         {chatUserId ? (
-          <UpgradeCtaButton userId={chatUserId} userPlan={props.userPlan} />
+          <button
+            type="button"
+            onPointerDown={prefetchPricing}
+            onMouseEnter={prefetchPricing}
+            onFocus={prefetchPricing}
+            onClick={() => {
+              prefetchPricing();
+              navigate("/pricing");
+            }}
+            aria-label="Get Plus"
+            className="relative inline-flex items-center gap-1.5 h-9 px-3.5 rounded-full text-[12.5px] font-bold shrink-0 transition-all hover:-translate-y-[1px] active:translate-y-[1px] active:shadow-none bg-black text-white border border-black hover:bg-white hover:text-black"
+            style={{
+              boxShadow:
+                "inset 1px 1px 1px 0 var(--overlay-white-18), inset -1px -1px 1px 0 var(--overlay-white-08), 0 4px 12px rgba(0,0,0,0.18)",
+            }}
+          >
+            <MegsyStar size={16} static className="text-white shrink-0" />
+
+            <span>Get Plus</span>
+          </button>
         ) : (
           <button
             type="button"
@@ -137,7 +159,7 @@ export function DesktopChatHeader(props: DesktopChatHeaderProps) {
               navigate("/auth");
             }}
             aria-label={uiT("Sign in", lang)}
-            className="relative inline-flex items-center justify-center h-9 px-5 rounded-full text-[13px] font-medium shrink-0 transition-colors bg-primary text-primary-foreground border border-primary hover:bg-primary/90"
+            className="relative inline-flex items-center justify-center h-9 px-5 rounded-full text-[12.5px] font-bold shrink-0 transition-all hover:-translate-y-[1px] active:translate-y-[1px] active:shadow-none bg-primary text-primary-foreground border border-primary hover:bg-primary/90 hover:text-primary-foreground shadow-lg"
           >
             {uiT("Sign in", lang)}
           </button>

@@ -358,20 +358,6 @@ html:not(.dark) .ambient-bg__blob { opacity: 0.10; }
   animation: chat-skeleton-shimmer 1.8s ease-in-out infinite;
 }
 
-/* Chat message entrance — soft rise, Claude-like calm rhythm */
-@keyframes chat-msg-in {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-.chat-msg-in {
-  animation: chat-msg-in 0.34s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-@media (prefers-reduced-motion: reduce) {
-  .chat-msg-in,
-  .chat-skeleton-in { animation: none; opacity: 1; }
-}
-
-
 /* iOS-style image loading shimmer (used by IOSImage component) */
 @keyframes iosShimmer {
   0% { background-position: 200% 0; }
@@ -408,13 +394,13 @@ body {
   -webkit-overflow-scrolling: touch;
 }
 
-/* Dark-only app: pure-black background for every theme. */
+/* Force pure-black background across the whole app (mobile + desktop),
+   regardless of theme. Per user request. */
 html,
 body,
 #root {
   background-color: #000 !important;
 }
-
 html.settings-page-active,
 html.settings-page-active body,
 html.settings-page-active #root {
@@ -428,13 +414,13 @@ html.settings-page-active #root {
   background-image: none !important;
 }
 
-html,
+:root,
+[data-theme="light"],
 [data-theme="dark"],
 [data-theme="ocean"],
 [data-theme="sunset"] {
   --background: 0 0% 0% !important;
 }
-
 img,
 video,
 svg {
@@ -678,8 +664,6 @@ button[data-slides-preview-button] svg,
     --warning: 38 92% 50%;
     --value-yellow: 38 92% 55%;
     --value-ink: 240 6% 8%;
-    --user-bubble: hsl(330 70% 55%);
-    --user-bubble-text: hsl(0 0% 100%);
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5% 18%;
     --sidebar-primary: 240 6% 12%;
@@ -692,49 +676,46 @@ button[data-slides-preview-button] svg,
     --font-body: "Inter", sans-serif;
   }
 
-  /* Monochrome — pure black with neutral grays (unified app identity) */
+  /* Noir & Gold — deep black with warm gold accents */
   [data-theme="dark"] {
     --background: 0 0% 3%;              /* #080808 */
-    --foreground: 0 0% 96%;
+    --foreground: 40 15% 94%;           /* warm off-white */
     --card: 0 0% 7%;                    /* #121212 */
-    --card-foreground: 0 0% 96%;
+    --card-foreground: 40 15% 94%;
     --popover: 0 0% 8%;                 /* #141414 */
-    --popover-foreground: 0 0% 96%;
-    --primary: 0 0% 96%;
+    --popover-foreground: 40 15% 94%;
+    --primary: 43 55% 55%;              /* #c9a84c gold */
     --primary-foreground: 0 0% 6%;
     --secondary: 0 0% 10%;              /* #1a1a1a */
-    --secondary-foreground: 0 0% 92%;
-    --muted: 0 0% 11%;
-    --muted-foreground: 0 0% 63%;
-    --accent: 0 0% 16%;
-    --accent-foreground: 0 0% 96%;
+    --secondary-foreground: 40 15% 90%;
+    --muted: 0 0% 10%;                  /* #1a1a1a — darker to avoid grey wash */
+    --muted-foreground: 40 8% 62%;      /* readable warm grey */
+    --accent: 43 60% 70%;               /* #f0d78c soft gold */
+    --accent-foreground: 0 0% 6%;
     --destructive: 0 65% 52%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 17%;
+    --border: 43 15% 18%;               /* subtle warm border */
     --input: 0 0% 12%;
-    --ring: 0 0% 45%;
+    --ring: 43 55% 55%;                 /* gold focus ring */
     --glass: 0 0% 6% / 0.78;
-    --glass-border: 0 0% 20%;
+    --glass-border: 43 20% 22%;
     --glass-blur: 24px;
-    --silver: 0 0% 70%;
-    --silver-bright: 0 0% 88%;
-    --silver-dark: 0 0% 45%;
-    --success: 0 0% 80%;
-    --warning: 0 0% 70%;
-    --value-yellow: 0 0% 80%;
+    --silver: 43 40% 70%;
+    --silver-bright: 43 60% 78%;
+    --silver-dark: 43 20% 45%;
+    --success: 142 55% 48%;
+    --warning: 43 85% 60%;
+    --value-yellow: 43 85% 60%;
     --value-ink: 0 0% 0%;
-    --user-bubble: hsl(330 70% 55%);
-    --user-bubble-text: hsl(0 0% 100%);
     --sidebar-background: 0 0% 3%;
-    --sidebar-foreground: 0 0% 88%;
-    --sidebar-primary: 0 0% 96%;
+    --sidebar-foreground: 40 12% 88%;
+    --sidebar-primary: 43 55% 55%;
     --sidebar-primary-foreground: 0 0% 6%;
     --sidebar-accent: 0 0% 10%;
-    --sidebar-accent-foreground: 0 0% 96%;
-    --sidebar-border: 0 0% 17%;
-    --sidebar-ring: 0 0% 45%;
+    --sidebar-accent-foreground: 40 15% 94%;
+    --sidebar-border: 43 15% 18%;
+    --sidebar-ring: 43 55% 55%;
   }
-
 
 
   /* Megsy theme tokens remain shared across all locales and zones. */
@@ -867,10 +848,22 @@ html:not(.dark) .theme-fixed .bg-white,
 html:not(.dark) .theme-fixed.bg-white {
   background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1)) !important;
 }
+html.dark .theme-fixed [class*="bg-white/"],
+html.dark .theme-fixed[class*="bg-white/"],
+html:not(.dark) .theme-fixed [class*="bg-white/"],
+html:not(.dark) .theme-fixed[class*="bg-white/"] {
+  background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1)) !important;
+}
 html.dark .theme-fixed .bg-black,
 html.dark .theme-fixed.bg-black,
 html:not(.dark) .theme-fixed .bg-black,
 html:not(.dark) .theme-fixed.bg-black {
+  background-color: rgb(0 0 0 / var(--tw-bg-opacity, 1)) !important;
+}
+html.dark .theme-fixed [class*="bg-black/"],
+html.dark .theme-fixed[class*="bg-black/"],
+html:not(.dark) .theme-fixed [class*="bg-black/"],
+html:not(.dark) .theme-fixed[class*="bg-black/"] {
   background-color: rgb(0 0 0 / var(--tw-bg-opacity, 1)) !important;
 }
 html.dark .theme-fixed .text-white,
@@ -879,18 +872,36 @@ html:not(.dark) .theme-fixed .text-white,
 html:not(.dark) .theme-fixed.text-white {
   color: rgb(255 255 255 / var(--tw-text-opacity, 1)) !important;
 }
+html.dark .theme-fixed [class*="text-white/"],
+html.dark .theme-fixed[class*="text-white/"],
+html:not(.dark) .theme-fixed [class*="text-white/"],
+html:not(.dark) .theme-fixed[class*="text-white/"] {
+  color: rgb(255 255 255 / var(--tw-text-opacity, 1)) !important;
+}
 html.dark .theme-fixed .text-black,
 html.dark .theme-fixed.text-black,
 html:not(.dark) .theme-fixed .text-black,
 html:not(.dark) .theme-fixed.text-black {
   color: rgb(0 0 0 / var(--tw-text-opacity, 1)) !important;
 }
-/* NOTE: alpha variants (bg-white/5, text-white/60, border-white/10) are NOT
-   re-declared here. Tailwind v3 compiles them to literal rgb(... / 0.05) and
-   never sets --tw-*-opacity, so an !important override with
-   var(--tw-bg-opacity, 1) collapsed them to SOLID white/black for every
-   descendant of a .theme-fixed element. Letting Tailwind's own value win keeps
-   translucency correct. */
+html.dark .theme-fixed [class*="text-black/"],
+html.dark .theme-fixed[class*="text-black/"],
+html:not(.dark) .theme-fixed [class*="text-black/"],
+html:not(.dark) .theme-fixed[class*="text-black/"] {
+  color: rgb(0 0 0 / var(--tw-text-opacity, 1)) !important;
+}
+html.dark .theme-fixed [class*="border-white/"],
+html.dark .theme-fixed[class*="border-white/"],
+html:not(.dark) .theme-fixed [class*="border-white/"],
+html:not(.dark) .theme-fixed[class*="border-white/"] {
+  border-color: rgb(255 255 255 / var(--tw-border-opacity, 1)) !important;
+}
+html.dark .theme-fixed [class*="border-black/"],
+html.dark .theme-fixed[class*="border-black/"],
+html:not(.dark) .theme-fixed [class*="border-black/"],
+html:not(.dark) .theme-fixed[class*="border-black/"] {
+  border-color: rgb(0 0 0 / var(--tw-border-opacity, 1)) !important;
+}
 
 /* Borders */
 html:not(.dark) [class*="border-white/"]:not(.theme-fixed) {
@@ -899,50 +910,6 @@ html:not(.dark) [class*="border-white/"]:not(.theme-fixed) {
 html.dark [class*="border-black/"]:not(.theme-fixed) {
   border-color: hsl(var(--border)) !important;
 }
-
-/* Coder is intentionally a fixed dark builder surface. It uses translucent
-   Tailwind white/black utilities as glass layers; the global theme remapper
-   above must not collapse those utilities into solid card/background colors. */
-html.dark .coder-fixed.coder-fixed :where(.bg-white\/5),
-html:not(.dark) .coder-fixed.coder-fixed :where(.bg-white\/5) { background-color: rgb(255 255 255 / 0.05) !important; }
-html.dark .coder-fixed.coder-fixed :where(.bg-white\/10),
-html:not(.dark) .coder-fixed.coder-fixed :where(.bg-white\/10) { background-color: rgb(255 255 255 / 0.10) !important; }
-html.dark .coder-fixed.coder-fixed :where(.bg-white\/15),
-html:not(.dark) .coder-fixed.coder-fixed :where(.bg-white\/15) { background-color: rgb(255 255 255 / 0.15) !important; }
-html.dark .coder-fixed.coder-fixed :where(.bg-white\/20),
-html:not(.dark) .coder-fixed.coder-fixed :where(.bg-white\/20) { background-color: rgb(255 255 255 / 0.20) !important; }
-html.dark .coder-fixed.coder-fixed :where(.bg-white\/30),
-html:not(.dark) .coder-fixed.coder-fixed :where(.bg-white\/30) { background-color: rgb(255 255 255 / 0.30) !important; }
-html.dark .coder-fixed.coder-fixed :where(.bg-black\/20),
-html:not(.dark) .coder-fixed.coder-fixed :where(.bg-black\/20) { background-color: rgb(0 0 0 / 0.20) !important; }
-html.dark .coder-fixed.coder-fixed :where(.bg-black\/30),
-html:not(.dark) .coder-fixed.coder-fixed :where(.bg-black\/30) { background-color: rgb(0 0 0 / 0.30) !important; }
-html.dark .coder-fixed.coder-fixed :where(.bg-black\/40),
-html:not(.dark) .coder-fixed.coder-fixed :where(.bg-black\/40) { background-color: rgb(0 0 0 / 0.40) !important; }
-html.dark .coder-fixed.coder-fixed :where(.bg-black\/60),
-html:not(.dark) .coder-fixed.coder-fixed :where(.bg-black\/60) { background-color: rgb(0 0 0 / 0.60) !important; }
-html.dark .coder-fixed.coder-fixed :where(.bg-black\/70),
-html:not(.dark) .coder-fixed.coder-fixed :where(.bg-black\/70) { background-color: rgb(0 0 0 / 0.70) !important; }
-html.dark .coder-fixed.coder-fixed :where(.bg-black\/80),
-html:not(.dark) .coder-fixed.coder-fixed :where(.bg-black\/80) { background-color: rgb(0 0 0 / 0.80) !important; }
-html.dark .coder-fixed.coder-fixed :where(.text-white\/40),
-html:not(.dark) .coder-fixed.coder-fixed :where(.text-white\/40) { color: rgb(255 255 255 / 0.40) !important; }
-html.dark .coder-fixed.coder-fixed :where(.text-white\/50),
-html:not(.dark) .coder-fixed.coder-fixed :where(.text-white\/50) { color: rgb(255 255 255 / 0.50) !important; }
-html.dark .coder-fixed.coder-fixed :where(.text-white\/60),
-html:not(.dark) .coder-fixed.coder-fixed :where(.text-white\/60) { color: rgb(255 255 255 / 0.60) !important; }
-html.dark .coder-fixed.coder-fixed :where(.text-white\/70),
-html:not(.dark) .coder-fixed.coder-fixed :where(.text-white\/70) { color: rgb(255 255 255 / 0.70) !important; }
-html.dark .coder-fixed.coder-fixed :where(.text-white\/80),
-html:not(.dark) .coder-fixed.coder-fixed :where(.text-white\/80) { color: rgb(255 255 255 / 0.80) !important; }
-html.dark .coder-fixed.coder-fixed :where(.text-white\/85),
-html:not(.dark) .coder-fixed.coder-fixed :where(.text-white\/85) { color: rgb(255 255 255 / 0.85) !important; }
-html.dark .coder-fixed.coder-fixed :where(.text-white\/90),
-html:not(.dark) .coder-fixed.coder-fixed :where(.text-white\/90) { color: rgb(255 255 255 / 0.90) !important; }
-html.dark .coder-fixed.coder-fixed :where(.border-white\/10),
-html:not(.dark) .coder-fixed.coder-fixed :where(.border-white\/10) { border-color: rgb(255 255 255 / 0.10) !important; }
-html.dark .coder-fixed.coder-fixed :where(.border-white\/15),
-html:not(.dark) .coder-fixed.coder-fixed :where(.border-white\/15) { border-color: rgb(255 255 255 / 0.15) !important; }
 
 /* Mobile sidebar footer: fixed white controls that should not be remapped by
    global dark/light hardcoded-color overrides. Keep this scoped and class-based
@@ -4627,9 +4594,8 @@ input:-webkit-autofill:active {
   background: hsl(var(--background));
 }
 .settings-desktop-canvas[data-settings-home="true"] {
-  background: hsl(var(--background));
+  background: transparent !important;
 }
-
 /* Settings desktop must always use the active theme's foreground tokens,
    even when the chat section's Claude reskin has forced body color to ink. */
 html[data-section="chat"] body .settings-desktop-canvas,
@@ -5867,18 +5833,18 @@ button[aria-label*="Scroll to bottom" i] {
   border-radius: 9999px !important;
 }
 
-/* User message bubbles — pink accent, high contrast */
+/* User message bubbles — brand primary, high contrast */
 [data-message-role="user"] .message-bubble,
 [data-role="user"] .message-bubble,
 .chat-bubble-user,
 .user-bubble {
-  background: var(--user-bubble, hsl(var(--primary))) !important;
-  color: var(--user-bubble-text, hsl(var(--primary-foreground))) !important;
-  border: 1px solid color-mix(in srgb, var(--user-bubble, hsl(var(--primary))) 60%, transparent) !important;
+  background: hsl(var(--primary)) !important;
+  color: hsl(var(--primary-foreground)) !important;
+  border: 1px solid hsl(var(--primary) / 0.6) !important;
   border-radius: 22px 22px 6px 22px !important;
   box-shadow:
     0 1px 0 hsl(0 0% 100% / 0.06) inset,
-    0 6px 20px -8px color-mix(in srgb, var(--user-bubble, hsl(var(--primary))) 45%, transparent) !important;
+    0 6px 20px -8px hsl(var(--primary) / 0.45) !important;
   font-weight: 500;
 }
 html[dir="rtl"] [data-message-role="user"] .message-bubble,
@@ -7062,107 +7028,4 @@ html[dir="rtl"] .keep-ltr {
   color: #fff !important;
   -webkit-text-fill-color: #fff !important;
   stroke: currentColor !important;
-}
-
-/* ── Accessibility: minimum touch targets on coarse pointers ──────────────
-   Small icon buttons (h-8/h-9/size-8/size-9) get an invisible expanded hit
-   area via a pseudo-element, so tap targets reach ~44px without changing
-   any visual layout. */
-@media (pointer: coarse) {
-  :is(button, [role="button"]):is(
-      [class*="h-8"],
-      [class*="h-9"],
-      [class*="size-8"],
-      [class*="size-9"]
-    ) {
-    position: relative;
-  }
-  :is(button, [role="button"]):is(
-      [class*="h-8"],
-      [class*="h-9"],
-      [class*="size-8"],
-      [class*="size-9"]
-    )::after {
-    content: "";
-    position: absolute;
-    inset: -6px;
-    border-radius: inherit;
-  }
-}
-
-/* Chat upgrade CTA — "Emerald glow glass".
-   Refined dark-native pill: hairline border, glass surface, emerald accent.
-   Aligns with Linear/Vercel/Arc/Raycast style of quietly premium marks. */
-.upgrade-cta {
-  background: rgba(255, 255, 255, 0.03);
-  color: rgb(244, 244, 245); /* zinc-100 */
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  transition:
-    background-color 300ms ease,
-    border-color 300ms ease,
-    transform 200ms ease,
-    box-shadow 300ms ease;
-}
-.upgrade-cta:hover {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(16, 185, 129, 0.35); /* emerald-500/35 */
-  color: #ffffff;
-  box-shadow: 0 6px 20px -10px rgba(16, 185, 129, 0.45);
-}
-.upgrade-cta:focus-visible {
-  outline: 2px solid rgba(16, 185, 129, 0.6);
-  outline-offset: 2px;
-}
-.upgrade-cta__icon {
-  color: rgb(52, 211, 153) !important; /* emerald-400 */
-  stroke: rgb(52, 211, 153) !important;
-  transition: color 300ms ease, stroke 300ms ease;
-}
-.upgrade-cta:hover .upgrade-cta__icon {
-  color: rgb(110, 231, 183) !important; /* emerald-300 */
-  stroke: rgb(110, 231, 183) !important;
-}
-/* Soft emerald underglow — appears on hover only */
-.upgrade-cta__halo {
-  position: absolute;
-  inset: 0;
-  border-radius: 9999px;
-  background: rgba(16, 185, 129, 0.10);
-  filter: blur(10px);
-  opacity: 0;
-  transition: opacity 500ms ease;
-  pointer-events: none;
-  z-index: 0;
-}
-.upgrade-cta:hover .upgrade-cta__halo { opacity: 1; }
-/* Sophisticated single-pass shine sweep on hover */
-.upgrade-cta__shine-wrap {
-  position: absolute;
-  inset: 0;
-  border-radius: 9999px;
-  overflow: hidden;
-  pointer-events: none;
-  z-index: 1;
-}
-.upgrade-cta__shine {
-  position: absolute;
-  top: 0;
-  left: -100%;
-  height: 100%;
-  width: 50%;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.08) 50%,
-    transparent 100%
-  );
-  transform: skewX(-25deg);
-  transition: left 1000ms ease-in-out;
-}
-.upgrade-cta:hover .upgrade-cta__shine { left: 150%; }
-@media (prefers-reduced-motion: reduce) {
-  .upgrade-cta__shine { transition: none; left: -100%; }
-  .upgrade-cta__halo { transition: none; }
 }

@@ -77,7 +77,7 @@ const SystemStatusPage = () => {
   const allOperational = currentlyDown.length === 0;
 
   return (
-    <div className="min-h-screen w-full bg-background text-[#f5f5f5]">
+    <div className="min-h-screen w-full bg-black text-[#f5f5f5]">
       <div className="mx-auto w-full max-w-md px-6 py-8">
         {/* Top bar */}
         <div className="mb-6 flex items-center">
@@ -187,7 +187,7 @@ const SystemStatusPage = () => {
                     <div className="flex min-w-0 items-start gap-2.5">
                       <span
                         className={`mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full ${
-                          isResolved ? "bg-primary" : "bg-rose-400"
+                          isResolved ? "bg-emerald-400" : "bg-rose-400"
                         }`}
                       />
                       <div className="min-w-0">

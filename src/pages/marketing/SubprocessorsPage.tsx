@@ -79,7 +79,7 @@ const SubprocessorsPage = () => (
     eyebrow="Compliance"
     title="Sub-processors"
     subtitle="The third parties that help us deliver Megsy AI, what they do, and how we keep them accountable under GDPR Article 28."
-    lastUpdated="July 27, 2026"
+    lastUpdated="May 19, 2026"
     sections={sections}
     seoTitle="Sub-processor List — Megsy AI"
     seoDescription="Up-to-date list of sub-processors Megsy AI engages to deliver hosting, AI inference, payments, communications, and analytics."

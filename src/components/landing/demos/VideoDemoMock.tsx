@@ -20,7 +20,7 @@ const VideoDemoMock = () => {
   return (
     <div className="h-full w-full bg-[#0a0a0a] flex flex-col text-foreground font-sans overflow-hidden">
       {/* Top bar */}
-      <div className="flex items-center justify-between px-5 py-3 border-b border-border/5">
+      <div className="flex items-center justify-between px-5 py-3 border-b border-white/5">
         <div className="flex items-center gap-2">
           <span className="text-sm font-semibold">Video Studio</span>
         </div>
@@ -28,7 +28,7 @@ const VideoDemoMock = () => {
 
       {/* Preview */}
       <div className="flex-1 p-5 flex items-center justify-center bg-[#050505] relative">
-        <div className="aspect-video w-[88%] rounded-xl border border-border/10 bg-background overflow-hidden relative">
+        <div className="aspect-video w-[88%] rounded-xl border border-white/10 bg-black overflow-hidden relative">
           <AnimatePresence mode="wait">
             <motion.video
               key={`v-${idx}`}

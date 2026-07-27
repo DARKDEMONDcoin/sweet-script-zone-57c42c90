@@ -9992,7 +9992,6 @@ export type Database = {
         Returns: string
       }
       admin_grant_pro_monthly: { Args: { target_email: string }; Returns: Json }
-      assert_model_access: { Args: { _model_id: string }; Returns: Json }
       block_v0_key: {
         Args: { p_id: string; p_reason: string }
         Returns: undefined
@@ -10142,16 +10141,6 @@ export type Database = {
       }
       consume_free_image_use: {
         Args: { p_limit?: number; p_user_id: string }
-        Returns: Json
-      }
-      consume_model_use: {
-        Args: {
-          _cost?: number
-          _description?: string
-          _feature: string
-          _free_per_day?: number
-          _model_id: string
-        }
         Returns: Json
       }
       create_notification: {
@@ -10367,10 +10356,6 @@ export type Database = {
           role: string
           similarity: number
         }[]
-      }
-      model_requires_paid_plan: {
-        Args: { _model_id: string }
-        Returns: boolean
       }
       move_to_dead_letter: {
         Args: {

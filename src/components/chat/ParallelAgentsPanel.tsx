@@ -1,10 +1,9 @@
 import { memo, useMemo } from "react";
 import { m as motion } from "framer-motion";
-
+import { Loader2 } from "lucide-react";
 import MegsyStar from "@/components/files/MegsyStar";
 import { resolveToolActivity, brandIconUrl } from "@/lib/toolActivity";
 import StatusBadge from "./primitives/StatusBadge";
-import { Spinner } from "@/components/ui/spinner";
 
 export interface ParallelAgentTask {
   id: string;
@@ -79,7 +78,7 @@ const ParallelAgentsPanel = ({ tasks, active = true }: Props) => {
           </div>
         </div>
         {active && running > 0 && (
-          <Spinner className="h-4 w-4 text-muted-foreground" />
+          <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
         )}
       </div>
       <div className="space-y-1">

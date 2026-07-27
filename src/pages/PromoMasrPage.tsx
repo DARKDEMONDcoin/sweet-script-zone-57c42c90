@@ -127,14 +127,14 @@ const PromoMasrPage = () => {
         {/* eyebrow — Egypt badge */}
         <div className="flex items-center justify-center mb-6">
           <span
-            className="inline-flex items-center gap-2 rounded-full border border-border/15 bg-background/40 px-3.5 py-1.5 text-[10px] uppercase tracking-[0.24em] text-foreground"
+            className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-black/40 backdrop-blur-md px-3.5 py-1.5 text-[10px] uppercase tracking-[0.24em] text-white/95"
             style={{ animation: "fade-in 600ms ease-out both" }}
           >
             <span aria-hidden className="text-base leading-none">🇪🇬</span>
             مصر × أستراليا · 1-1
-            <span className="mx-1 h-1 w-1 rounded-full bg-muted/40" />
+            <span className="mx-1 h-1 w-1 rounded-full bg-white/40" />
             فوز بركلات الترجيح
-            <span className="mx-1 h-1 w-1 rounded-full bg-muted/40" />
+            <span className="mx-1 h-1 w-1 rounded-full bg-white/40" />
             دور الـ16
           </span>
         </div>
@@ -156,7 +156,7 @@ const PromoMasrPage = () => {
             مبروك يا مصر 🇪🇬
           </h1>
           <p
-            className="mt-4 text-muted-foreground text-[15.5px] leading-[1.85] font-medium"
+            className="mt-4 text-white/85 text-[15.5px] leading-[1.85] font-medium"
             style={{ animation: "fade-in 800ms ease-out 80ms both" }}
           >
             الفراعنة كسبوا بركلات الترجيح
@@ -188,12 +188,12 @@ const PromoMasrPage = () => {
             50<span style={{ fontSize: "0.5em", verticalAlign: "super", marginInlineStart: "0.02em" }}>%</span>
           </div>
           <div
-            className="mt-2 inline-flex items-center gap-3 text-[10px] uppercase tracking-[0.35em] text-muted-foreground"
+            className="mt-2 inline-flex items-center gap-3 text-[10px] uppercase tracking-[0.35em] text-white/70"
             style={{ animation: "fade-in 900ms ease-out 120ms both" }}
           >
-            <span className="h-px w-6 bg-muted/30" />
+            <span className="h-px w-6 bg-white/30" />
             خصم 50% · كريدت أعلى للشهر الأول
-            <span className="h-px w-6 bg-muted/30" />
+            <span className="h-px w-6 bg-white/30" />
           </div>
         </div>
 
@@ -210,15 +210,15 @@ const PromoMasrPage = () => {
               return (
                 <div key={label as string} className="flex items-start gap-3">
                   <div className="flex flex-col items-center">
-                    <div className="font-light tabular-nums text-[36px] leading-none tracking-tight text-foreground">
+                    <div className="font-light tabular-nums text-[36px] leading-none tracking-tight text-white">
                       {str}
                     </div>
-                    <div className="mt-2 text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
+                    <div className="mt-2 text-[10px] uppercase tracking-[0.3em] text-white/60">
                       {label}
                     </div>
                   </div>
                   {i < 3 && (
-                    <span className="text-[28px] font-light text-muted-foreground leading-none mt-1">:</span>
+                    <span className="text-[28px] font-light text-white/20 leading-none mt-1">:</span>
                   )}
                 </div>
               );
@@ -226,7 +226,7 @@ const PromoMasrPage = () => {
           </div>
         )}
         {expiresLabel && (
-          <p className="mt-3 text-center text-[11px] text-muted-foreground">
+          <p className="mt-3 text-center text-[11px] text-white/50">
             العرض ساري حتى {expiresLabel}
           </p>
         )}
@@ -234,9 +234,9 @@ const PromoMasrPage = () => {
         {/* benefits */}
         <ul className="mt-8 space-y-3">
           {BENEFITS.map((b) => (
-            <li key={b} className="flex items-center gap-3 text-[14px] text-foreground">
+            <li key={b} className="flex items-center gap-3 text-[14px] text-white">
               <span className="inline-flex h-5 w-5 items-center justify-center shrink-0">
-                <MegsyStar size={16} static className="text-foreground" />
+                <MegsyStar size={16} static className="text-white" />
               </span>
               <span>{b}</span>
             </li>
@@ -254,17 +254,17 @@ const PromoMasrPage = () => {
           </Link>
           <Link
             to="/pricing"
-            className="block text-center text-[12px] text-muted-foreground hover:text-foreground transition"
+            className="block text-center text-[12px] text-white/80 hover:text-white transition"
           >
             اعرف الأسعار ←
           </Link>
         </div>
 
         {/* Local payment methods */}
-        <div className="mt-10 rounded-2xl border border-border/10 bg-background/40 p-5">
+        <div className="mt-10 rounded-2xl border border-white/10 bg-black/40 backdrop-blur-md p-5">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-[13px] font-semibold text-foreground">طرق الدفع المحلية</h2>
-            <span className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
+            <h2 className="text-[13px] font-semibold text-white">طرق الدفع المحلية</h2>
+            <span className="text-[10px] uppercase tracking-[0.25em] text-white/50">
               متاح في مصر
             </span>
           </div>
@@ -272,19 +272,19 @@ const PromoMasrPage = () => {
             {PAYMENT_METHODS.map((p) => (
               <div
                 key={p.name}
-                className="rounded-xl border border-border/10 bg-muted/40 px-3 py-2.5"
+                className="rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2.5"
               >
-                <div className="text-[13px] text-foreground leading-tight">{p.name}</div>
-                <div className="text-[10px] text-muted-foreground mt-0.5">{p.sub}</div>
+                <div className="text-[13px] text-white leading-tight">{p.name}</div>
+                <div className="text-[10px] text-white/50 mt-0.5">{p.sub}</div>
               </div>
             ))}
           </div>
-          <p className="mt-4 text-[11px] text-muted-foreground leading-relaxed">
+          <p className="mt-4 text-[11px] text-white/60 leading-relaxed">
             الدفع بالجنيه المصري متاح — اختار الطريقة اللي تناسبك من صفحة الفوترة.
           </p>
         </div>
 
-        <p className="mt-6 text-center text-[11px] text-muted-foreground">
+        <p className="mt-6 text-center text-[11px] text-white/40">
           العرض لفترة محدودة · شكراً لكل المصريين والعرب 💚
         </p>
       </div>

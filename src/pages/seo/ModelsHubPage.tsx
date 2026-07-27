@@ -1,19 +1,9 @@
 /** @doc AI Models hub (/models) — lists every chat, image, and video model available on Megsy AI. */
 import { useEffect, useState } from "react";
+import { PrefetchLink as Link } from "@/components/common/PrefetchLink";
 import { Helmet } from "react-helmet-async";
 import { supabase } from "@/integrations/supabase/client";
-import OrganicHero from "@/components/landing/heroes/OrganicHero";
-import { BrandIcon, hasBrandIcon } from "@/components/chat/media/BrandIcon";
-import { Spinner } from "@/components/ui/spinner";
-import {
-  Section,
-  SectionTitle,
-  Grid,
-  CardLink,
-  CardTitle,
-  CardMeta,
-  CardBody,
-} from "@/components/landing/sections/SectionKit";
+import { Sparkles, Image as ImageIcon, Video, MessageSquare } from "lucide-react";
 
 type ModelLite = {
   slug: string;
@@ -26,12 +16,11 @@ type ModelLite = {
   isPremium?: boolean;
 };
 
-const KIND_LABEL: Record<string, string> = {
-  chat: "Chat & code models",
-  image: "Image models",
-  video: "Video models",
+const KIND_META: Record<string, { label: string; icon: typeof Sparkles; color: string }> = {
+  chat: { label: "Chat & Code Models", icon: MessageSquare, color: "from-blue-500 to-cyan-500" },
+  image: { label: "Image Models", icon: ImageIcon, color: "from-purple-500 to-pink-500" },
+  video: { label: "Video Models", icon: Video, color: "from-orange-500 to-red-500" },
 };
-
 
 export function chatIdToSlug(id: string): string {
   return (
@@ -123,64 +112,74 @@ export default function ModelsHubPage() {
         <meta property="og:type" content="website" />
       </Helmet>
 
-      <OrganicHero
-        title="EVERY AI MODEL"
-        titleAccent="IN ONE PLACE"
-        subtitle="Image, video, chat and code — switch between providers in one click. No separate subscriptions, no API keys, no quota juggling."
-        ctaLabel="Start free"
-        ctaHref="/auth"
-        secondaryLabel="View pricing"
-        secondaryHref="/pricing"
-        bullets={["130+ models", "One subscription", "No API keys"]}
-      />
+      <section className="px-6 pt-20 pb-12 max-w-5xl mx-auto text-center">
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border bg-card text-sm mb-6">
+          <Sparkles className="h-4 w-4 text-primary" />
+          <span>130+ models, one platform</span>
+        </div>
+        <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-4">
+          Every AI model you'll ever need
+        </h1>
+        <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
+          Image, video, chat and code. Switch between providers in one click — no separate
+          subscriptions, no API keys, no quota juggling.
+        </p>
+      </section>
 
-      {(["image", "video", "chat"] as const).map((kind) => {
-        const list = grouped(kind);
-        if (loading && list.length === 0) {
-          return (
-            <Section key={kind}>
-              <div className="flex items-center justify-center gap-3 text-sm text-muted-foreground">
-                <Spinner className="h-4 w-4" />
-                Loading models
+      <section className="px-6 pb-20 max-w-6xl mx-auto space-y-16">
+        {(["image", "video", "chat"] as const).map((kind) => {
+          const list = grouped(kind);
+          if (loading && list.length === 0) {
+            return (
+              <div key={kind} className="text-center text-muted-foreground">
+                Loading models…
               </div>
-            </Section>
-          );
-        }
-        if (list.length === 0) return null;
-        return (
-          <Section key={kind} width="max-w-6xl" className="py-10">
-            <SectionTitle count={list.length}>{KIND_LABEL[kind]}</SectionTitle>
-            <Grid>
-              {list.map((m) => (
-                <CardLink key={m.slug} to={`/models/${m.slug}`} className="h-full">
-                  <div className="flex items-start gap-3">
-                    <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border/50 text-muted-foreground transition-colors group-hover:text-foreground">
-                      {hasBrandIcon(m.name, m.provider) ? (
-                        <BrandIcon name={m.name} provider={m.provider} size={18} variant="mono" />
-                      ) : (
-                        <span className="text-xs font-medium">{m.name.slice(0, 1)}</span>
+            );
+          }
+          if (list.length === 0) return null;
+          const meta = KIND_META[kind];
+          const Icon = meta.icon;
+          return (
+            <div key={kind}>
+              <div className="flex items-center gap-3 mb-6">
+                <div
+                  className={`rounded-xl bg-gradient-to-br ${meta.color} p-2.5 text-white shadow-md`}
+                >
+                  <Icon className="h-5 w-5" />
+                </div>
+                <h2 className="text-2xl md:text-3xl font-bold">{meta.label}</h2>
+                <span className="text-sm text-muted-foreground">({list.length})</span>
+              </div>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                {list.map((m) => (
+                  <Link
+                    key={m.slug}
+                    to={`/models/${m.slug}`}
+                    className="group rounded-xl border bg-card p-5 hover:shadow-lg hover:border-primary transition relative"
+                  >
+                    <div className="flex items-start justify-between gap-2 mb-2">
+                      <h3 className="font-semibold leading-tight group-hover:text-primary transition">
+                        {m.name}
+                      </h3>
+                      {(m.badge || m.isNew || m.isPremium) && (
+                        <span className="text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 rounded-full bg-primary/10 text-primary whitespace-nowrap">
+                          {m.badge || (m.isNew ? "NEW" : "PRO")}
+                        </span>
                       )}
-                    </span>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-start justify-between gap-2">
-                        <CardTitle>{m.name}</CardTitle>
-                        {m.badge || m.isNew || m.isPremium ? (
-                          <span className="shrink-0 rounded-full border border-border/50 px-2 py-0.5 text-[10px] uppercase tracking-wider text-muted-foreground">
-                            {m.badge || (m.isNew ? "New" : "Pro")}
-                          </span>
-                        ) : null}
-                      </div>
-                      <CardMeta>{m.provider}</CardMeta>
-                      {m.description ? <CardBody>{m.description}</CardBody> : null}
                     </div>
-                  </div>
-                </CardLink>
-              ))}
-            </Grid>
-          </Section>
-        );
-      })}
+                    <p className="text-xs text-muted-foreground capitalize mb-1">by {m.provider}</p>
+                    {m.description && (
+                      <p className="text-sm text-muted-foreground line-clamp-2 mt-2">
+                        {m.description}
+                      </p>
+                    )}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          );
+        })}
+      </section>
     </main>
   );
 }
-

@@ -102,7 +102,7 @@ const EgyptPage = () => {
   }, []);
 
   return (
-    <div data-theme="dark" className="min-h-dvh overflow-x-hidden bg-background text-foreground">
+    <div data-theme="dark" className="min-h-dvh overflow-x-hidden bg-black text-foreground">
       <SEOHead
         title="Built in Egypt — The Story Behind Megsy AI"
         description="Megsy AI is built in Egypt. Discover the country's mega projects, talent and ambition that fuel our all-in-one AI platform."
@@ -125,7 +125,7 @@ const EgyptPage = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-sm md:text-base uppercase tracking-[0.3em] text-foreground/80 mb-8 font-medium"
+            className="text-sm md:text-base uppercase tracking-[0.3em] text-yellow-500/80 mb-8 font-medium"
           >
             The Cradle of Civilization
           </motion.p>
@@ -154,12 +154,12 @@ const EgyptPage = () => {
           transition={{ duration: 1, delay: 1 }}
           className="absolute bottom-10 left-1/2 -translate-x-1/2"
         >
-          <div className="w-px h-16 bg-gradient-to-b from-foreground/60 to-transparent" />
+          <div className="w-px h-16 bg-gradient-to-b from-yellow-500/60 to-transparent" />
         </motion.div>
       </section>
 
       {/* ===== STATS BAR ===== */}
-      <section className="py-24 border-y border-border/50">
+      <section className="py-24 border-y border-white/[0.06]">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-10 md:gap-12">
             {stats.map((stat, i) => (
@@ -171,7 +171,7 @@ const EgyptPage = () => {
                 transition={{ duration: 0.6, delay: i * 0.07 }}
                 className="text-center"
               >
-                <div className="font-display text-3xl md:text-5xl font-black text-foreground mb-2">
+                <div className="font-display text-3xl md:text-5xl font-black text-yellow-500 mb-2">
                   {stat.value}
                 </div>
                 <div className="text-foreground/30 text-xs md:text-sm uppercase tracking-widest">
@@ -193,7 +193,7 @@ const EgyptPage = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.9 }}
             >
-              <p className="text-xs uppercase tracking-[0.3em] text-foreground/70 mb-6 font-medium">
+              <p className="text-xs uppercase tracking-[0.3em] text-yellow-500/70 mb-6 font-medium">
                 About Egypt
               </p>
               <h2 className="font-display text-4xl md:text-6xl font-black text-foreground leading-[1.05] mb-8">
@@ -201,7 +201,7 @@ const EgyptPage = () => {
                 <br />
                 Glory Meets
                 <br />
-                <span className="text-foreground">Modern Ambition</span>
+                <span className="text-yellow-500">Modern Ambition</span>
               </h2>
               <p className="text-foreground/40 text-base md:text-lg leading-relaxed mb-6">
                 Egypt is not just a country — it is the birthplace of human civilization itself.
@@ -235,7 +235,7 @@ const EgyptPage = () => {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
                 <div className="absolute bottom-8 left-8 right-8">
-                  <p className="text-xs uppercase tracking-[0.2em] text-foreground/80 mb-2">
+                  <p className="text-xs uppercase tracking-[0.2em] text-yellow-500/80 mb-2">
                     Luxor Temple
                   </p>
                   <p className="text-sm text-foreground/50">
@@ -250,7 +250,7 @@ const EgyptPage = () => {
       </section>
 
       {/* ===== PRESIDENT SECTION ===== */}
-      <section className="py-32 md:py-44 bg-muted/40">
+      <section className="py-32 md:py-44 bg-white/[0.015]">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid md:grid-cols-2 gap-16 md:gap-24 items-center">
             <motion.div
@@ -260,7 +260,7 @@ const EgyptPage = () => {
               transition={{ duration: 0.9 }}
               className="order-2 md:order-1"
             >
-              <p className="text-xs uppercase tracking-[0.3em] text-foreground/70 mb-6 font-medium">
+              <p className="text-xs uppercase tracking-[0.3em] text-yellow-500/70 mb-6 font-medium">
                 Presidential Leadership
               </p>
               <h2 className="font-display text-4xl md:text-6xl font-black text-foreground leading-[1.05] mb-8">
@@ -268,7 +268,7 @@ const EgyptPage = () => {
                 <br />
                 Abdel Fattah
                 <br />
-                <span className="text-foreground">El-Sisi</span>
+                <span className="text-yellow-500">El-Sisi</span>
               </h2>
               <p className="text-foreground/40 text-base md:text-lg leading-relaxed mb-6">
                 President Abdel Fattah El-Sisi has led Egypt through its most ambitious era of
@@ -310,7 +310,7 @@ const EgyptPage = () => {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                 <div className="absolute bottom-8 left-8 right-8">
-                  <p className="text-xs uppercase tracking-[0.2em] text-foreground/80 mb-2">
+                  <p className="text-xs uppercase tracking-[0.2em] text-yellow-500/80 mb-2">
                     President of the Arab Republic of Egypt
                   </p>
                   <p className="text-2xl font-display font-bold text-foreground">
@@ -330,7 +330,7 @@ const EgyptPage = () => {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 1.2 }}
-          className="font-display text-[15vw] font-black uppercase leading-[0.85] tracking-tighter text-foreground/[0.07] text-center whitespace-nowrap"
+          className="font-display text-[15vw] font-black uppercase leading-[0.85] tracking-tighter text-yellow-500/[0.07] text-center whitespace-nowrap"
         >
           BUILDING THE FUTURE
         </motion.h2>
@@ -345,7 +345,7 @@ const EgyptPage = () => {
             viewport={{ once: true }}
             className="mb-20 max-w-3xl"
           >
-            <p className="text-xs uppercase tracking-[0.3em] text-foreground/70 mb-6 font-medium">
+            <p className="text-xs uppercase tracking-[0.3em] text-yellow-500/70 mb-6 font-medium">
               National Mega Projects
             </p>
             <h2 className="font-display text-4xl md:text-7xl font-black text-foreground leading-[1.05] mb-6">
@@ -381,7 +381,7 @@ const EgyptPage = () => {
                   </div>
                 </div>
                 <div className={i % 2 === 1 ? "md:[direction:ltr]" : ""}>
-                  <span className="text-foreground/40 font-display text-5xl md:text-8xl font-black leading-none">
+                  <span className="text-yellow-500/40 font-display text-5xl md:text-8xl font-black leading-none">
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <h3 className="font-display text-2xl md:text-4xl font-black text-foreground mt-4 mb-6">
@@ -394,7 +394,7 @@ const EgyptPage = () => {
                     {project.stats.map((stat) => (
                       <span
                         key={stat}
-                        className="px-4 py-2 rounded-full border border-foreground/20 text-foreground/70 text-xs font-medium"
+                        className="px-4 py-2 rounded-full border border-yellow-500/20 text-yellow-500/70 text-xs font-medium"
                       >
                         {stat}
                       </span>
@@ -414,14 +414,14 @@ const EgyptPage = () => {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 1.2 }}
-          className="font-display text-[15vw] font-black uppercase leading-[0.85] tracking-tighter text-foreground/[0.07] text-center whitespace-nowrap"
+          className="font-display text-[15vw] font-black uppercase leading-[0.85] tracking-tighter text-yellow-500/[0.07] text-center whitespace-nowrap"
         >
           INVEST IN EGYPT
         </motion.h2>
       </section>
 
       {/* ===== WHY INVEST ===== */}
-      <section className="py-32 md:py-44 bg-muted/40">
+      <section className="py-32 md:py-44 bg-white/[0.015]">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid md:grid-cols-2 gap-16 md:gap-24">
             <motion.div
@@ -430,13 +430,13 @@ const EgyptPage = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
             >
-              <p className="text-xs uppercase tracking-[0.3em] text-foreground/70 mb-6 font-medium">
+              <p className="text-xs uppercase tracking-[0.3em] text-yellow-500/70 mb-6 font-medium">
                 Investment Opportunity
               </p>
               <h2 className="font-display text-4xl md:text-6xl font-black text-foreground leading-[1.05] mb-8">
                 Why Invest
                 <br />
-                in <span className="text-foreground">Egypt</span>?
+                in <span className="text-yellow-500">Egypt</span>?
               </h2>
               <p className="text-foreground/40 text-base md:text-lg leading-relaxed mb-8">
                 Egypt offers one of the most compelling investment propositions in the emerging
@@ -466,9 +466,9 @@ const EgyptPage = () => {
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.4, delay: i * 0.05 }}
-                    className="flex items-start gap-4 py-3 border-b border-border/50"
+                    className="flex items-start gap-4 py-3 border-b border-white/[0.04]"
                   >
-                    <span className="text-foreground/40 font-display text-sm font-bold shrink-0 mt-0.5">
+                    <span className="text-yellow-500/40 font-display text-sm font-bold shrink-0 mt-0.5">
                       {String(i + 1).padStart(2, "0")}
                     </span>
                     <p className="text-foreground/50 text-sm md:text-base">{reason}</p>
@@ -489,7 +489,7 @@ const EgyptPage = () => {
             viewport={{ once: true }}
             className="mb-20 max-w-3xl"
           >
-            <p className="text-xs uppercase tracking-[0.3em] text-foreground/70 mb-6 font-medium">
+            <p className="text-xs uppercase tracking-[0.3em] text-yellow-500/70 mb-6 font-medium">
               Key Sectors
             </p>
             <h2 className="font-display text-4xl md:text-7xl font-black text-foreground leading-[1.05] mb-6">
@@ -510,9 +510,9 @@ const EgyptPage = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: i * 0.08 }}
-                className="group rounded-2xl border border-border/50 bg-muted/40 p-8 hover:border-foreground/20 transition-all duration-500"
+                className="group rounded-2xl border border-white/[0.06] bg-white/[0.02] p-8 hover:border-yellow-500/20 transition-all duration-500"
               >
-                <span className="text-foreground/30 font-display text-5xl font-black leading-none">
+                <span className="text-yellow-500/30 font-display text-5xl font-black leading-none">
                   {String(i + 1).padStart(2, "0")}
                 </span>
                 <h3 className="font-display text-xl font-bold text-foreground mt-4 mb-4">
@@ -526,7 +526,7 @@ const EgyptPage = () => {
       </section>
 
       {/* ===== ECONOMIC REFORMS ===== */}
-      <section className="py-32 md:py-44 bg-muted/40">
+      <section className="py-32 md:py-44 bg-white/[0.015]">
         <div className="max-w-5xl mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -534,7 +534,7 @@ const EgyptPage = () => {
             viewport={{ once: true }}
             className="text-center mb-20"
           >
-            <p className="text-xs uppercase tracking-[0.3em] text-foreground/70 mb-6 font-medium">
+            <p className="text-xs uppercase tracking-[0.3em] text-yellow-500/70 mb-6 font-medium">
               Economic Vision
             </p>
             <h2 className="font-display text-4xl md:text-7xl font-black text-foreground leading-[1.05] mb-6">
@@ -575,7 +575,7 @@ const EgyptPage = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: i * 0.1 }}
-                className="border-l-2 border-foreground/20 pl-8"
+                className="border-l-2 border-yellow-500/20 pl-8"
               >
                 <h3 className="font-display text-xl md:text-2xl font-bold text-foreground mb-4">
                   {item.title}
@@ -596,7 +596,7 @@ const EgyptPage = () => {
             viewport={{ once: true }}
             className="text-center mb-20"
           >
-            <p className="text-xs uppercase tracking-[0.3em] text-foreground/70 mb-6 font-medium">
+            <p className="text-xs uppercase tracking-[0.3em] text-yellow-500/70 mb-6 font-medium">
               Tourism & Culture
             </p>
             <h2 className="font-display text-4xl md:text-7xl font-black text-foreground leading-[1.05] mb-6">
@@ -632,7 +632,7 @@ const EgyptPage = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: i * 0.1 }}
-                className="group rounded-2xl overflow-hidden border border-border/50"
+                className="group rounded-2xl overflow-hidden border border-white/[0.06]"
               >
                 <div className="h-64 overflow-hidden">
                   <img loading="lazy" decoding="async"
@@ -667,7 +667,7 @@ const EgyptPage = () => {
       </section>
 
       {/* ===== PRIDE MESSAGE ===== */}
-      <section className="py-32 md:py-44 border-t border-border/50">
+      <section className="py-32 md:py-44 border-t border-white/[0.06]">
         <div className="max-w-4xl mx-auto px-6 text-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -675,13 +675,13 @@ const EgyptPage = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-            <p className="text-xs uppercase tracking-[0.3em] text-foreground/70 mb-8 font-medium">
+            <p className="text-xs uppercase tracking-[0.3em] text-yellow-500/70 mb-8 font-medium">
               A Message from the Heart
             </p>
             <h2 className="font-display text-4xl md:text-6xl font-black text-foreground mb-8 leading-[1.1]">
               We Love Egypt.
               <br />
-              <span className="text-foreground">We Are Proud.</span>
+              <span className="text-yellow-500">We Are Proud.</span>
             </h2>
             <p className="text-foreground/40 text-lg leading-relaxed max-w-2xl mx-auto mb-6">
               From the depths of our hearts, we love Egypt and everything it stands for. This

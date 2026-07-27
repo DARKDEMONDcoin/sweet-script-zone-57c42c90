@@ -248,7 +248,7 @@ const ModelPickerSheet = ({
 
             {hasTools && !detailModel && (
               <div className="max-w-2xl mx-auto px-4 pb-2">
-                <div className="flex rounded-full p-1 border border-foreground/15 bg-foreground/[0.08]">
+                <div className="flex rounded-full p-1 border border-foreground/15 bg-foreground/[0.08] backdrop-blur-xl">
                   {["Image", "Tools"].map((label, i) => {
                     const isActive = (i === 0 && tab === "models") || (i === 1 && tab === "tools");
                     return (
@@ -298,7 +298,7 @@ const ModelPickerSheet = ({
                   {detailModel.credits > 0 ? (
                     <span className="text-lg font-bold text-primary">{detailModel.credits} MC</span>
                   ) : (
-                    <span className="text-primary text-sm font-semibold">Free</span>
+                    <span className="text-emerald-400 text-sm font-semibold">Free</span>
                   )}
                 </div>
                 <p className="text-sm text-muted-foreground leading-relaxed">

@@ -24,7 +24,7 @@ const ClarifyDialog = ({ questions, onSubmit, onSkip }: Props) => {
     <motion.div
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      className="mb-3 rounded-2xl border border-violet-500/30 bg-violet-500/5 p-4"
+      className="mb-3 rounded-2xl border border-violet-500/30 bg-violet-500/5 p-4 backdrop-blur-sm"
     >
       <div className="flex items-start gap-2 mb-3">
         <div className="w-7 h-7 rounded-lg bg-violet-500/15 flex items-center justify-center shrink-0">
@@ -84,7 +84,7 @@ const ClarifyDialog = ({ questions, onSubmit, onSkip }: Props) => {
         <button
           disabled={!allAnswered}
           onClick={() => onSubmit(answers)}
-          className="inline-flex items-center gap-1 rounded-lg bg-violet-500 hover:bg-violet-400 disabled:opacity-40 disabled:cursor-not-allowed text-foreground text-xs px-3 py-1.5 transition-colors"
+          className="inline-flex items-center gap-1 rounded-lg bg-violet-500 hover:bg-violet-400 disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs px-3 py-1.5 transition-colors"
         >
           Continue <ArrowRight className="w-3 h-3" />
         </button>

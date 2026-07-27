@@ -1,14 +1,13 @@
 /** @doc Memory — Noir & Gold redesign. */
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Trash2, RotateCcw, Plus, Pencil, Check, X } from "lucide-react";
+import { Loader2, Trash2, RotateCcw, Plus, Pencil, Check, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import ProfileGlassShell, {
   GlassSection,
   GlassCard,
 } from "@/components/profile/ProfileGlassShell";
-import { Spinner } from "@/components/ui/spinner";
 
 interface MemoryEntry {
   id: string;
@@ -139,7 +138,7 @@ const MemoryPage = () => {
   if (loading) {
     return (
       <ProfileGlassShell title="Memory">
-        <div className="flex justify-center py-16"><Spinner className="w-5 h-5" style={{ color: "#c9a84c" }} /></div>
+        <div className="flex justify-center py-16"><Loader2 className="w-5 h-5 animate-spin" style={{ color: "#c9a84c" }} /></div>
       </ProfileGlassShell>
     );
   }
@@ -165,7 +164,7 @@ const MemoryPage = () => {
                 <button onClick={() => { setAddOpen(false); setNewTitle(""); setNewSummary(""); }}
                   className="ng-btn ng-btn-secondary" style={{ height: 40 }}>Cancel</button>
                 <button onClick={add} disabled={adding} className="ng-btn ng-btn-primary" style={{ height: 40 }}>
-                  {adding ? <Spinner className="w-4 h-4" /> : "Save"}
+                  {adding ? <Loader2 className="w-4 h-4 animate-spin" /> : "Save"}
                 </button>
               </div>
             </div>
@@ -205,7 +204,7 @@ const MemoryPage = () => {
               <span style={{ color: "rgba(235,220,205,0.5)", fontSize: 12.5 }}>Compute embeddings for memories missing one. Improves recall.</span>
             </div>
             <button onClick={backfill} disabled={busy} className="mem-danger-btn" style={{ color: "#f0d78c", borderColor: "rgba(201,168,76,0.4)" }}>
-              {busy ? <Spinner className="w-3.5 h-3.5" /> : <><RotateCcw className="w-3.5 h-3.5" /> Rebuild</>}
+              {busy ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <><RotateCcw className="w-3.5 h-3.5" /> Rebuild</>}
             </button>
           </div>
         </GlassSection>
@@ -231,7 +230,7 @@ const MemoryPage = () => {
                 <button onClick={() => setResetOpen(false)} className="ng-btn ng-btn-secondary" style={{ height: 40 }}>Cancel</button>
                 <button onClick={reset} disabled={busy}
                   className="ng-btn" style={{ height: 40, background: "#ef4444", color: "#fff" }}>
-                  {busy ? <Spinner className="w-4 h-4" /> : "Reset everything"}
+                  {busy ? <Loader2 className="w-4 h-4 animate-spin" /> : "Reset everything"}
                 </button>
               </div>
             </div>
@@ -286,7 +285,7 @@ function MemGroup({ title, items, onDelete, onSave, deletingId }: {
                     </button>
                     <button onClick={commitEdit} disabled={saving} className="mem-del" aria-label="Save edit"
                       style={{ color: "#c9a84c" }}>
-                      {saving ? <Spinner className="w-3.5 h-3.5" /> : <Check className="w-3.5 h-3.5" />}
+                      {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5" />}
                     </button>
                   </div>
                 </div>
@@ -301,7 +300,7 @@ function MemGroup({ title, items, onDelete, onSave, deletingId }: {
                   </button>
                   <button onClick={() => onDelete(e.id)} disabled={deletingId === e.id}
                     className="mem-del" aria-label="Delete">
-                    {deletingId === e.id ? <Spinner className="w-3.5 h-3.5" /> : <Trash2 className="w-3.5 h-3.5" />}
+                    {deletingId === e.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
                   </button>
                 </>
               )}

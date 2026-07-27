@@ -79,19 +79,6 @@ function detectFilenameFromContent(lang: string, code: string): string | null {
   return null;
 }
 
-function safeProjectPath(raw: string): string {
-  const cleaned = String(raw || "")
-    .replace(/\\/g, "/")
-    .replace(/^[a-zA-Z]:/, "")
-    .replace(/[\u0000-\u001f]/g, "");
-  const out: string[] = [];
-  for (const part of cleaned.split("/")) {
-    if (!part || part === "." || part === "..") continue;
-    out.push(part);
-  }
-  return out.join("/");
-}
-
 export function extractProjectFiles(content: string): ProjectFile[] {
   if (!content) return [];
   // ```lang[:filename] or ```lang filename
@@ -104,10 +91,6 @@ export function extractProjectFiles(content: string): ProjectFile[] {
     const explicit = m[2] || "";
     const body = m[3] || "";
     const lang = normalizeLang(langRaw);
-    // CRITICAL: never treat search/replace patch blocks as whole files —
-    // doing so overwrites the real source with patch markers.
-    if (lang === "patch" || lang === "diff") continue;
-    if (/<{5,}\s*SEARCH[\s\S]*?={5,}[\s\S]*?>{5,}\s*REPLACE/.test(body)) continue;
     if (!lang || lang === "json") {
       // skip json control blocks used elsewhere
       if (lang === "json" && /\"type\"\s*:\s*\"(questions|flow|cards)\"/.test(body)) continue;
@@ -121,8 +104,6 @@ export function extractProjectFiles(content: string): ProjectFile[] {
       path = n === 0 ? base : base.replace(/(\.[^.]+)?$/, `-${n}$1`);
     }
     const ext = EXT_BY_LANG[lang] || lang || "txt";
-    path = safeProjectPath(path);
-    if (!path) continue;
     if (!/\.[a-z0-9]+$/i.test(path)) path = `${path}.${ext}`;
     files.push({ path, lang, content: body });
   }
@@ -185,72 +166,5 @@ export function buildProjectPreviewHtml(files: ProjectFile[]): string | null {
     if (/<\/body>/i.test(out)) out = out.replace(/<\/body>/i, `${extraScripts}\n</body>`);
     else out = `${out}\n${extraScripts}`;
   }
-  return out;
-}
-/**
- * Ensure a generated project has the bare essentials so it can actually run:
- * an entry `index.html` (with SEO meta) and, for React/TS projects, a
- * `package.json`. Never overwrites files the model already produced.
- */
-export function ensureProjectScaffold(files: ProjectFile[], projectName = "app"): ProjectFile[] {
-  if (!files.length) return files;
-  const out = [...files];
-  const has = (re: RegExp) => out.some((f) => re.test(f.path));
-  const isReact = out.some((f) => /\.(tsx|jsx)$/i.test(f.path));
-
-  if (!has(/(^|\/)index\.html$/i)) {
-    const entry =
-      out.find((f) => /(^|\/)(main|index)\.(tsx|jsx|ts|js)$/i.test(f.path))?.path ||
-      out.find((f) => /\.(tsx|jsx|js)$/i.test(f.path))?.path;
-    const css = out.find((f) => /\.css$/i.test(f.path))?.path;
-    out.push({
-      path: "index.html",
-      lang: "html",
-      content: `<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>${projectName}</title>
-    <meta name="description" content="${projectName} — built with Megsy Coder." />
-    <meta property="og:title" content="${projectName}" />
-    <meta property="og:description" content="${projectName} — built with Megsy Coder." />
-    <meta property="og:type" content="website" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>" />
-${css ? `    <link rel="stylesheet" href="/${css.replace(/^\.?\//, "")}" />\n` : ""}  </head>
-  <body>
-    <div id="root"></div>
-${entry ? `    <script type="module" src="/${entry.replace(/^\.?\//, "")}"></script>\n` : ""}  </body>
-</html>
-`,
-    });
-  }
-
-  if (isReact && !has(/(^|\/)package\.json$/i)) {
-    const ts = out.some((f) => /\.tsx?$/i.test(f.path));
-    out.push({
-      path: "package.json",
-      lang: "json",
-      content: JSON.stringify(
-        {
-          name: projectName.toLowerCase().replace(/[^a-z0-9-]+/g, "-").replace(/^-|-$/g, "") || "app",
-          private: true,
-          version: "0.0.0",
-          type: "module",
-          scripts: { dev: "vite", build: "vite build", preview: "vite preview" },
-          dependencies: { react: "^18.3.1", "react-dom": "^18.3.1" },
-          devDependencies: {
-            vite: "^5.4.0",
-            "@vitejs/plugin-react": "^4.3.1",
-            ...(ts ? { typescript: "^5.5.0" } : {}),
-          },
-        },
-        null,
-        2,
-      ) + "\n",
-    });
-  }
-
   return out;
 }

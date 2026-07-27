@@ -1,7 +1,4 @@
-import { useEffect, useState, lazy, Suspense } from "react";
-
-const ImageToolsBar = lazy(() => import("@/components/chat/media/ImageToolsBar"));
-const VideoToolsBar = lazy(() => import("@/components/chat/media/VideoToolsBar"));
+import { useEffect, useState } from "react";
 import { Settings2, Volume2, Film, Layers, ChevronDown } from "lucide-react";
 import {
   DropdownMenu as AnimateDropdownMenu,
@@ -157,21 +154,6 @@ export function MediaSettingsPanel({
 
   return (
     <div className={`space-y-1 ${className}`}>
-      <Suspense fallback={null}>
-        {isVideo ? (
-          <VideoToolsBar />
-        ) : (
-          <ImageToolsBar
-            onAttach={(f) =>
-              window.dispatchEvent(new CustomEvent("megsy:image-tool-attach", { detail: f }))
-            }
-            onUseCharacter={(c) =>
-              window.dispatchEvent(new CustomEvent("megsy:image-tool-character", { detail: c }))
-            }
-          />
-        )}
-      </Suspense>
-
       {showHeader && (
         <div className="flex items-center justify-between gap-3">
           <div className="min-w-0">

@@ -1,4 +1,18 @@
-import { ChevronLeft, Copy, Globe, Lock, MoreHorizontal, MoreVertical, Pencil, Pin, Plus, Share2, Trash2, UserPlus } from "lucide-react";
+import {
+  ChevronLeft,
+  Copy,
+  Globe,
+  Loader2,
+  Lock,
+  MoreHorizontal,
+  MoreVertical,
+  Pencil,
+  Pin,
+  Plus,
+  Share2,
+  Trash2,
+  UserPlus,
+} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,7 +22,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { t as uiT, translateExactText, useUserLang } from "@/lib/authI18n";
-import { Spinner } from "@/components/ui/spinner";
 
 export type ChatMenuView = "main" | "rename" | "invite" | "share" | "delete" | "pin";
 
@@ -131,16 +144,16 @@ export function ChatOptionsDropdown(props: ChatOptionsDropdownProps) {
         {isDesktop ? (
           <button
             aria-label={tx("Chat options")}
-            className="flex items-center justify-center h-9 w-9 rounded-full text-foreground border border-border/60 bg-card/60 hover:bg-muted/40 transition-colors"
+            className="flex items-center gap-1 px-2.5 py-1.5 rounded-full text-[14px] font-black text-brand-parchment bg-surface-1 border-2 border-surface-4 active:translate-x-[2px] active:translate-y-[2px] transition-all"
           >
-            <MoreHorizontal className="w-[18px] h-[18px]" strokeWidth={1.8} />
+            <MoreHorizontal className="w-[18px] h-[18px] text-white" color="#ffffff" strokeWidth={2.6} />
           </button>
         ) : (
           <button
             className="md:hidden w-9 h-9 flex items-center justify-center rounded-full text-brand-ink bg-brand-action border-2 border-brand-ink shadow-[2px_2px_0_rgba(59,130,246,0.35)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
             aria-label={tx("More options")}
           >
-            <MoreVertical className="w-[18px] h-[18px]" strokeWidth={1.8} />
+            <MoreVertical className="w-[20px] h-[20px]" />
           </button>
         )}
       </DropdownMenuTrigger>
@@ -162,7 +175,7 @@ export function ChatOptionsDropdown(props: ChatOptionsDropdownProps) {
                 className="chat-options-glass-item rounded-[16px] px-2.5 py-2.5 text-[14px] gap-3 cursor-pointer font-semibold text-foreground focus:bg-foreground/10 data-[highlighted]:bg-foreground/10"
               >
                 <span className="w-8 h-8 flex items-center justify-center shrink-0">
-                  <Icon className="w-[17px] h-[17px] text-foreground/85" strokeWidth={1.8} />
+                  <Icon className="w-[17px] h-[17px] text-foreground/85" strokeWidth={2} />
                 </span>
                 <span className="flex-1 truncate">{label}</span>
               </DropdownMenuItem>
@@ -241,7 +254,7 @@ export function ChatOptionsDropdown(props: ChatOptionsDropdownProps) {
                 disabled={inviteLoading || !inviteEmail.trim()}
                 className="px-3 h-9 rounded-full text-xs font-black bg-brand-action text-brand-ink border-2 border-brand-ink disabled:opacity-40"
               >
-                {inviteLoading ? <Spinner className="w-3.5 h-3.5" /> : tx("Invite")}
+                {inviteLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : tx("Invite")}
               </button>
             </div>
             {inviteLink ? (

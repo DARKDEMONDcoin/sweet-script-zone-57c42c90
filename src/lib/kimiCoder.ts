@@ -34,7 +34,7 @@ function buildContextPreamble(files?: KimiFile[]): string {
   const CRITICAL = /(^|\/)(App|main|index|routes?|router)\.(tsx?|jsx?)$|package\.json$|index\.html$/i;
   // Aggressive budget so follow-ups stream fast. Bigger context = slower model.
   const totalSize = files.reduce((n, f) => n + f.content.length, 0);
-  const TOTAL_BUDGET = totalSize > 200_000 ? 24_000 : totalSize > 100_000 ? 32_000 : 48_000;
+  const TOTAL_BUDGET = totalSize > 200_000 ? 18_000 : totalSize > 100_000 ? 24_000 : 32_000;
   const sorted = [...files].sort((a, b) => {
     const ac = CRITICAL.test(a.path) ? 0 : 1;
     const bc = CRITICAL.test(b.path) ? 0 : 1;
@@ -110,7 +110,7 @@ export async function runKimiCoder({
       apikey: anon,
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({ prompt: finalPrompt, history: (history ?? []).slice(-8) }),
+    body: JSON.stringify({ prompt: finalPrompt, history: (history ?? []).slice(-4) }),
     signal,
   });
   if (!resp.ok || !resp.body) {
@@ -149,71 +149,26 @@ export async function runKimiCoder({
   const reader = resp.body.getReader();
   const dec = new TextDecoder();
   let buf = "";
-  let stop = false;
-  let sawTerminal = false;
-  let truncated = false;
-
-  const normalizeEventName = (value: unknown): string | undefined => {
-    const name = typeof value === "string" ? value.trim() : "";
-    if (!name) return undefined;
-    if (name === "finish" || name === "finished" || name === "complete" || name === "completed") return "done";
-    if (name === "log" || name === "command") return "bash";
-    if (name === "files") return "done";
-    return name;
-  };
-
-  const handleLine = (raw: string) => {
-    let line = raw;
-    if (line.endsWith("\r")) line = line.slice(0, -1);
-    if (!line.startsWith("data: ")) return;
-    const payload = line.slice(6).trim();
-    if (!payload) return;
-    if (payload === "[DONE]") { stop = true; return; }
-    try {
-      const obj = JSON.parse(payload);
-      const ev = normalizeEventName(obj.event ?? obj.type);
-      // The model hit its output-token ceiling: the last file is very likely
-      // cut in half. Flag it so the UI can ask for a continuation instead of
-      // silently shipping a broken project.
-      const fr = obj.finish_reason ?? obj.finishReason;
-      if (fr === "length" || fr === "max_tokens") truncated = true;
-      if (!ev) return;
-      if (ev === "done" && !Array.isArray(obj.files)) obj.files = [];
-      if (ev === "done" || ev === "error") sawTerminal = true;
-      onEvent({ ...obj, type: ev } as KimiEvent);
-    } catch {
-      // ignore malformed frame
-    }
-  };
-
-  while (!stop) {
+  while (true) {
     const { done, value } = await reader.read();
     if (done) break;
     buf += dec.decode(value, { stream: true });
     let idx: number;
     while ((idx = buf.indexOf("\n")) !== -1) {
-      const line = buf.slice(0, idx);
+      let line = buf.slice(0, idx);
       buf = buf.slice(idx + 1);
-      handleLine(line);
-      if (stop) break;
+      if (line.endsWith("\r")) line = line.slice(0, -1);
+      if (!line.startsWith("data: ")) continue;
+      const payload = line.slice(6).trim();
+      if (payload === "[DONE]") return;
+      try {
+        const obj = JSON.parse(payload);
+        const ev = obj.event as string | undefined;
+        if (!ev) continue;
+        onEvent({ ...obj, type: ev } as KimiEvent);
+      } catch {
+        // ignore
+      }
     }
-  }
-  // Flush the tail: servers frequently end the stream without a trailing
-  // newline, which used to drop the final `done` frame (and with it the
-  // generated files).
-  buf += dec.decode();
-  if (!stop && buf.trim()) handleLine(buf.trim());
-
-  if (truncated && !sawTerminal) {
-    onEvent({
-      type: "error",
-      error:
-        "The generated output hit the model's length limit and may be incomplete. Ask Coder to \"continue the previous project\" to finish the remaining files.",
-    } as KimiEvent);
-  } else if (!sawTerminal) {
-    onEvent({
-      type: "error",
-      error: "The connection ended before the project finished generating. Please try again.",
-    } as KimiEvent);
   }
 }

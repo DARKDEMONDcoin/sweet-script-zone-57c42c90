@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { m as motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { Check, Building2 } from "lucide-react";
+import { Check, Loader2, Building2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { invokeFunction } from "@/lib/supabaseFunction";
@@ -9,7 +9,6 @@ import { WORKSPACE_PRODUCT_MAP } from "@/lib/workspacePlans";
 import { UnlimitedModelsButton } from "@/components/branding/UnlimitedModelsButton";
 
 import { sanitizeErrorMessage } from "@/lib/sanitizeError";
-import { Spinner } from "@/components/ui/spinner";
 const PRODUCT_IDS: Record<string, string> = Object.fromEntries(
   Object.entries(WORKSPACE_PRODUCT_MAP).map(([key, value]) => [key, value.monthly]),
 );
@@ -57,7 +56,7 @@ const plans: Plan[] = [
     price: "59",
     yearlyNote: "or $590/yr — Save $118 + 1,000 bonus MC",
     description: "For semi-pros and active creators who need maximum power",
-    nameClass: "from-primary to-teal-400",
+    nameClass: "from-emerald-300 to-teal-400",
     bestOffer: true,
     features: [
       { label: "Monthly Credits", value: "500 MC" },
@@ -125,7 +124,7 @@ const PricingPreview = () => {
   };
 
   return (
-    <section id="pricing" className="theme-fixed relative overflow-hidden py-16 md:py-32 bg-background">
+    <section id="pricing" className="theme-fixed relative overflow-hidden py-16 md:py-32 bg-black">
       <div className="mx-auto max-w-7xl px-6">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
@@ -156,13 +155,13 @@ const PricingPreview = () => {
               className="relative min-w-0"
             >
               {plan.bestOffer && (
-                <div className="absolute -top-3 left-1/2 z-10 -translate-x-1/2 rounded-md bg-primary px-5 py-1 text-xs font-bold uppercase tracking-wider text-primary-foreground shadow-lg shadow-emerald-500/30">
+                <div className="absolute -top-3 left-1/2 z-10 -translate-x-1/2 rounded-md bg-emerald-500 px-5 py-1 text-xs font-bold uppercase tracking-wider text-black shadow-lg shadow-emerald-500/30">
                   Best Offer
                 </div>
               )}
               <div
-                className={`relative h-full overflow-hidden rounded-2xl border bg-[#0a0a0a] p-5 sm:p-8 transition-all duration-300 hover:border-border/20 ${
-                  plan.bestOffer ? "border-primary/40" : "border-border/50"
+                className={`relative h-full overflow-hidden rounded-2xl border bg-[#0a0a0a] p-5 sm:p-8 transition-all duration-300 hover:border-white/20 ${
+                  plan.bestOffer ? "border-emerald-500/40" : "border-white/[0.08]"
                 }`}
               >
                 {/* Plan name */}
@@ -184,7 +183,7 @@ const PricingPreview = () => {
                     <span className="text-[11px] text-foreground/35 line-through">
                       ${plan.regularPrice}/mo
                     </span>
-                    <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-primary/20 text-primary font-medium">
+                    <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-medium">
                       First month
                     </span>
                   </div>
@@ -199,10 +198,10 @@ const PricingPreview = () => {
                 <button
                   onClick={() => handleSubscribe(plan.tier)}
                   disabled={loadingTier === plan.tier}
-                  className="mt-6 w-full rounded-full bg-violet-600 py-3 text-base font-semibold text-foreground transition-all hover:bg-violet-500 disabled:opacity-50"
+                  className="mt-6 w-full rounded-full bg-violet-600 py-3 text-base font-semibold text-white transition-all hover:bg-violet-500 disabled:opacity-50"
                 >
                   {loadingTier === plan.tier ? (
-                    <Spinner className="mx-auto h-4 w-4" />
+                    <Loader2 className="mx-auto h-4 w-4 animate-spin" />
                   ) : (
                     `Get ${plan.name.charAt(0) + plan.name.slice(1).toLowerCase()}`
                   )}
@@ -214,7 +213,7 @@ const PricingPreview = () => {
                 </p>
 
                 {/* Features */}
-                <ul className="mt-6 space-y-3.5 border-t border-border/50 pt-6">
+                <ul className="mt-6 space-y-3.5 border-t border-white/[0.06] pt-6">
                   {plan.features.map((f) => (
                     <li key={f.label} className="flex items-center justify-between text-sm">
                       <span className="text-foreground/70">{f.label}</span>
@@ -237,7 +236,7 @@ const PricingPreview = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7, delay: 0.3 }}
-          className="mt-6 rounded-2xl border border-border/50 bg-[#0a0a0a] p-8 md:flex md:items-center md:justify-between md:p-10"
+          className="mt-6 rounded-2xl border border-white/[0.08] bg-[#0a0a0a] p-8 md:flex md:items-center md:justify-between md:p-10"
         >
           <div className="flex items-start gap-4">
             <div className="rounded-xl bg-cyan-500/10 p-3">
@@ -253,7 +252,7 @@ const PricingPreview = () => {
           </div>
           <button
             onClick={() => navigate("/enterprise")}
-            className="mt-6 w-full rounded-full bg-gradient-to-r from-cyan-500 to-indigo-500 px-8 py-3 text-base font-semibold text-foreground transition-all hover:opacity-90 md:mt-0 md:w-auto"
+            className="mt-6 w-full rounded-full bg-gradient-to-r from-cyan-500 to-indigo-500 px-8 py-3 text-base font-semibold text-white transition-all hover:opacity-90 md:mt-0 md:w-auto"
           >
             Contact Sales
           </button>

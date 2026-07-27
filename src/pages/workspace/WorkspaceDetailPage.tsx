@@ -1,13 +1,12 @@
 /** @doc Workspace home — members, billing, brand, integrations, danger zone. */
 import { Outlet, useNavigate, useParams } from "react-router-dom";
 import { useState } from "react";
-import { ChevronLeft, Menu, Plus, AlertTriangle, X } from "lucide-react";
+import { ChevronLeft, Loader2, Menu, Plus, AlertTriangle, X } from "lucide-react";
 import { useWorkspaceContext } from "@/hooks/useWorkspaceContext";
 import WorkspaceSideNav from "@/components/workspace/WorkspaceSideNav";
 import PresenceBar from "@/components/workspace/PresenceBar";
 import { cn } from "@/lib/utils";
 import { goBackOr } from "@/lib/navigation";
-import { Spinner } from "@/components/ui/spinner";
 
 export default function WorkspaceDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -18,7 +17,7 @@ export default function WorkspaceDetailPage() {
   if (ctx.loading || !ctx.ws) {
     return (
       <div className="min-h-dvh grid place-items-center bg-background">
-        <Spinner className="w-5 h-5 text-muted-foreground" />
+        <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
       </div>
     );
   }
@@ -29,7 +28,7 @@ export default function WorkspaceDetailPage() {
 
   return (
     <div className="relative min-h-dvh bg-background text-foreground">
-      <header className="sticky top-0 z-30 border-b border-border/60 bg-background/80">
+      <header className="sticky top-0 z-30 border-b border-border/60 bg-background/80 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center gap-3 safe-top">
           <button
             onClick={() => goBackOr(navigate, "/settings/workspaces")}
@@ -56,7 +55,7 @@ export default function WorkspaceDetailPage() {
                 {ctx.ws.name}
               </h1>
               <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full border border-border/60">
-                <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
                 <span className="text-[10px] uppercase tracking-wider font-medium text-muted-foreground">
                   {ctx.myRole || "member"}
                 </span>

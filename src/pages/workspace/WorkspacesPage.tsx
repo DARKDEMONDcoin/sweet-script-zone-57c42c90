@@ -2,14 +2,13 @@
 // Workspaces list — unified editorial dark design across desktop + mobile.
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Plus, Lock, ChevronRight } from "lucide-react";
+import { Loader2, Plus, Lock, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useWorkspaces } from "@/hooks/useWorkspace";
 import { useUserPlan } from "@/hooks/useUserPlan";
 import { SubShell, SubSection, SubStatStrip } from "@/components/settings/SubShell";
 import { cn } from "@/lib/utils";
-import { Spinner } from "@/components/ui/spinner";
 
 const PRO_PLANS = new Set(["pro", "elite", "business", "enterprise"]);
 
@@ -87,7 +86,7 @@ export default function WorkspacesPage() {
         <div className="rounded-2xl border border-border/70 bg-card/40 overflow-hidden divide-y divide-border/60">
           {loading && allRows.length === 1 ? (
             <div className="p-6 grid place-items-center">
-              <Spinner className="w-4 h-4 text-muted-foreground" />
+              <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
             </div>
           ) : (
             allRows.map((r) => {
@@ -111,8 +110,8 @@ export default function WorkspacesPage() {
                         {r.name}
                       </p>
                       {isActive && (
-                        <span className="inline-flex items-center gap-1 text-[11px] text-primary">
-                          <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+                        <span className="inline-flex items-center gap-1 text-[11px] text-emerald-400">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
                           Active
                         </span>
                       )}

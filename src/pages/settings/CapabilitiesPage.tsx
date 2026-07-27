@@ -29,7 +29,7 @@ export default function CapabilitiesPage() {
     >
       <span
         className={[
-          "inline-block h-[26px] w-[26px] transform rounded-full bg-primary shadow-[0_1px_2px_rgba(0,0,0,0.35)] transition-transform duration-200",
+          "inline-block h-[26px] w-[26px] transform rounded-full bg-white shadow-[0_1px_2px_rgba(0,0,0,0.35)] transition-transform duration-200",
           checked ? "translate-x-[22px]" : "translate-x-[2px]",
         ].join(" ")}
         style={{ marginTop: 2 }}
@@ -74,7 +74,7 @@ export default function CapabilitiesPage() {
     const cls = [
       "flex items-center w-full text-left px-4",
       "py-[14px]",
-      last ? "" : "border-b border-border/50",
+      last ? "" : "border-b border-white/[0.05]",
     ].join(" ");
     return onClick ? (
       <button type="button" onClick={onClick} className={cls}>
@@ -105,7 +105,7 @@ export default function CapabilitiesPage() {
         onClick={() => update("toolAccess", value)}
         className={[
           "flex items-center w-full text-left px-4 py-[14px]",
-          last ? "" : "border-b border-border/50",
+          last ? "" : "border-b border-white/[0.05]",
         ].join(" ")}
       >
         <div className="flex-1 min-w-0 pr-3">
@@ -115,7 +115,7 @@ export default function CapabilitiesPage() {
         <span
           className={[
             "shrink-0 grid place-items-center w-[22px] h-[22px] rounded-full border transition-colors",
-            selected ? "border-[#4C8BF5] bg-[#4C8BF5]" : "border-border/25 bg-transparent",
+            selected ? "border-[#4C8BF5] bg-[#4C8BF5]" : "border-white/25 bg-transparent",
           ].join(" ")}
           aria-hidden
         >
@@ -136,14 +136,14 @@ export default function CapabilitiesPage() {
   );
 
   const Card = ({ children }: { children: React.ReactNode }) => (
-    <section className="rounded-[16px] bg-[#111112] border border-border/50 overflow-hidden">
+    <section className="rounded-[16px] bg-[#111112] border border-white/[0.06] overflow-hidden">
       {children}
     </section>
   );
 
   return (
     <div
-      className="min-h-[100dvh] bg-background text-[#EDE4D8]"
+      className="min-h-[100dvh] bg-black text-[#EDE4D8]"
       style={{
         fontFamily:
           '"Neue Haas Unica","Helvetica Now Display",-apple-system,"SF Pro Display",Inter,"Segoe UI",Roboto,sans-serif',

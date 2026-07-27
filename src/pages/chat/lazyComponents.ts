@@ -10,7 +10,6 @@ const retryImport = <T,>(f: () => Promise<T>): Promise<T> => f();
 export const SlidesDeckCard = lazy(() => retryImport(() => import("@/components/chat/SlidesDeckCard")));
 export const StandardSlidesCard = lazy(() => retryImport(() => import("@/components/chat/StandardSlidesCard")));
 export const ImageSlidesCard = lazy(() => retryImport(() => import("@/components/chat/ImageSlidesCard")));
-export const DocsPlanCard = lazy(() => retryImport(() => import("@/components/chat/DocsPlanCard")));
 export const SlidesOutlineCard = lazy(() => retryImport(() => import("@/components/chat/SlidesOutlineCard")));
 export const MediaPlanCard = lazy(() => retryImport(() => import("@/components/chat/media/MediaPlanCard")));
 export const MediaResultCard = lazy(() => retryImport(() => import("@/components/chat/media/MediaResultCard")));

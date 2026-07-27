@@ -1,29 +1,56 @@
-/** @doc Mobile settings — unified clean monochrome layout (tokens only, no media backgrounds). */
-import { useEffect, useMemo, useState, type ComponentType } from "react";
+/** @doc Mobile settings — coffee/warm profile hero + real settings groups. */
+import { useEffect, useMemo, useRef, useState, type FC, type SVGProps, type ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useActiveAccount } from "@/hooks/useActiveAccount";
 import { t as authT, useUserLang, AVAILABLE_LANGS } from "@/lib/authI18n";
 import { goBackOr } from "@/lib/navigation";
 import MobilePushShell from "@/components/layout/MobilePushShell";
-import OliveAvatar from "@/components/branding/OliveAvatar";
-import {
-  AccountIcon,
-  NotificationsIcon,
-  BillingIcon,
-  AppearanceIcon,
-  LanguageIcon,
-  SparkleIcon,
-  IntegrationsIcon,
-  FAQIcon,
-  PrivacyIcon,
-  StatusIcon,
-  LogoutIcon,
-} from "@/components/settings/SettingsIcons";
+import { IOS26_ICONS } from "@/assets/ios26-icons";
 
+const ICONS = IOS26_ICONS;
+
+const VIDEO_URL =
+  "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260707_003042_3d2380a6-1ce6-4407-a2e2-cfec46546407.mp4";
+
+const Laurel = ({ flip = false }: { flip?: boolean }) => (
+  <svg
+    viewBox="0 0 60 120"
+    style={{
+      height: 73,
+      opacity: 0.6,
+      transform: flip ? "scaleX(-1)" : undefined,
+    }}
+    fill="none"
+    stroke="#ede4d8"
+    strokeWidth="1.2"
+    strokeLinecap="round"
+  >
+    <path d="M40 10 C 28 30, 22 55, 26 90 C 28 100, 34 108, 42 112" />
+    {Array.from({ length: 9 }).map((_, i) => {
+      const t = i / 8;
+      const cx = 40 - 14 * t + 4 * Math.sin(t * 3);
+      const cy = 14 + t * 96;
+      return (
+        <ellipse
+          key={i}
+          cx={cx}
+          cy={cy}
+          rx="8"
+          ry="3.2"
+          fill="#ede4d8"
+          fillOpacity="0.85"
+          stroke="none"
+          transform={`rotate(${-45 + t * 20} ${cx} ${cy})`}
+        />
+      );
+    })}
+  </svg>
+);
+
+type IconDef = FC<SVGProps<SVGSVGElement>> | string;
 type Row = {
-  icon: ComponentType<{ className?: string }>;
+  icon: IconDef;
   label: string;
   path?: string;
   onClick?: () => void;
@@ -34,13 +61,17 @@ type Group = { title: string; rows: Row[] };
 
 const CoffeeProfileMobile = () => {
   const navigate = useNavigate();
+  const videoRef = useRef<HTMLVideoElement>(null);
   const account = useActiveAccount();
   const lang = useUserLang();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [userEmail, setUserEmail] = useState("");
 
   const userName = account.name || userEmail.split("@")[0] || "User";
-  const avatarUrl = account.avatarUrl;
+
+  useEffect(() => {
+    videoRef.current?.play().catch(() => {});
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -66,118 +97,115 @@ const CoffeeProfileMobile = () => {
     {
       title: authT("settingsAccount"),
       rows: [
-        { icon: AccountIcon, label: "Profile", path: "/settings/profile/edit" },
-        { icon: NotificationsIcon, label: "Notifications", path: "/settings/notifications" },
-        { icon: BillingIcon, label: authT("rowBilling"), path: "/settings/billing" },
+        { icon: ICONS.account, label: "Profile", path: "/settings/profile/edit" },
+        { icon: ICONS.notifications, label: "Notifications", path: "/settings/notifications" },
+        { icon: ICONS.billing, label: authT("rowBilling"), path: "/settings/billing" },
       ],
     },
     {
       title: authT("settingsPreferences"),
       rows: [
-        { icon: AppearanceIcon, label: authT("rowAppearance"), path: "/settings/customization" },
+        { icon: ICONS.appearance, label: authT("rowAppearance"), path: "/settings/customization" },
         {
-          icon: LanguageIcon,
+          icon: ICONS.language,
           label: authT("rowLanguage"),
           path: "/settings/language",
           trailing: currentLangLabel,
         },
-        { icon: SparkleIcon, label: "Capabilities", path: "/settings/capabilities" },
+        { icon: ICONS.sparkle, label: "Capabilities", path: "/settings/capabilities" },
       ],
     },
     {
       title: "Connections",
       rows: [
-        { icon: IntegrationsIcon, label: authT("rowIntegrations"), path: "/settings/integrations" },
-        { icon: IntegrationsIcon, label: "AI Tools", path: "/settings/pipedream-tools" },
+        { icon: ICONS.integrations, label: authT("rowIntegrations"), path: "/settings/integrations" },
       ],
     },
     {
       title: authT("settingsMore"),
       rows: [
-        { icon: FAQIcon, label: authT("rowHelp"), path: "/settings/support" },
-        { icon: PrivacyIcon, label: authT("rowPrivacy"), path: "/settings/privacy" },
-        { icon: StatusIcon, label: authT("rowStatus"), path: "/settings/system-status" },
+        { icon: ICONS.faq, label: authT("rowHelp"), path: "/settings/support" },
+        { icon: ICONS.privacy, label: authT("rowPrivacy"), path: "/settings/privacy" },
+        { icon: ICONS.status, label: authT("rowStatus"), path: "/settings/system-status" },
       ],
     },
     {
       title: "",
       rows: [
-        { icon: LogoutIcon, label: authT("rowLogout"), onClick: handleLogout, danger: true },
+        { icon: ICONS.logout, label: authT("rowLogout"), onClick: handleLogout, danger: true },
       ],
     },
   ];
 
+
   return (
     <MobilePushShell open={sidebarOpen} onOpenChange={setSidebarOpen} currentMode="settings">
-      <div className="min-h-[100dvh] w-full bg-background text-foreground">
-        <div
-          className="mx-auto w-full max-w-[430px] px-4 pb-16"
-          style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 12px)" }}
-        >
-          {/* Top bar */}
-          <div className="relative flex h-11 items-center justify-center">
-            <button
-              type="button"
-              aria-label="Back"
-              onClick={() => goBackOr(navigate, "/chat")}
-              className="absolute left-0 flex h-9 w-9 items-center justify-center rounded-full border border-border/50 bg-card/60 text-foreground transition-colors active:bg-muted/60"
-            >
-              <ChevronLeft className="h-5 w-5" strokeWidth={1.8} />
-            </button>
-            <h1 className="text-[17px] font-semibold tracking-tight">{authT("settingsTitle")}</h1>
+      <div className="cpm-root">
+        <style>{cpmCss}</style>
+        <div className="cpm-screen">
+          {/* Hero */}
+          <div className="cpm-hero">
+            <video
+              ref={videoRef}
+              className="cpm-video"
+              src={VIDEO_URL}
+              autoPlay
+              muted
+              loop
+              playsInline
+            />
+            <div className="cpm-hero-fade" />
+            <div className="cpm-topbar">
+              {/* Back button */}
+              <button
+                className="cpm-glass cpm-circle cpm-anim-drop1"
+                aria-label="Back"
+                onClick={() => goBackOr(navigate, "/chat")}
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ede4d8" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M19 12H5" />
+                  <path d="M12 19l-7-7 7-7" />
+                </svg>
+              </button>
+            </div>
           </div>
 
-          {/* Identity */}
+          {/* Identity — tap to open profile editor */}
           <button
             type="button"
+            className="cpm-identity cpm-identity-btn cpm-anim-rise1"
             onClick={() => navigate("/settings/profile/edit")}
             aria-label="Open profile"
-            className="mt-6 flex w-full flex-col items-center rounded-2xl px-4 py-4 transition-colors active:bg-muted/40"
           >
-            <div className="h-[84px] w-[84px] overflow-hidden rounded-full border border-border/60">
-              {avatarUrl ? (
-                <img src={avatarUrl} alt="" className="h-full w-full object-cover" />
-              ) : (
-                <OliveAvatar seed={userEmail || userName} className="h-full w-full" />
-              )}
-            </div>
-            <p className="mt-3 text-[19px] font-semibold tracking-tight text-foreground">{userName}</p>
-            <p className="mt-0.5 text-[13px] text-muted-foreground">{userEmail || "—"}</p>
+            <div className="cpm-laurel cpm-laurel-l cpm-anim-fade"><Laurel /></div>
+            <div className="cpm-laurel cpm-laurel-r cpm-anim-fade"><Laurel flip /></div>
+            <h1 className="cpm-name">{userName}</h1>
+            <p className="cpm-subtitle cpm-anim-rise2">{userEmail || "—"}</p>
           </button>
 
-          {/* Groups */}
-          <div className="mt-6 flex flex-col gap-5">
+
+          {/* Settings groups */}
+          <div className="cpm-groups cpm-anim-rise3">
             {groups.map((group, gIdx) => (
-              <section key={group.title || `g${gIdx}`}>
-                {group.title && (
-                  <h2 className="mb-2 px-1 text-[11px] font-medium uppercase tracking-[0.08em] text-muted-foreground">
-                    {group.title}
-                  </h2>
-                )}
-                <div className="overflow-hidden rounded-2xl border border-border/50 bg-card/60">
+              <section key={group.title || `g${gIdx}`} className="cpm-group">
+                {group.title && <h2 className="cpm-group-title">{group.title}</h2>}
+                <div className="cpm-card">
                   {group.rows.map((row, rIdx) => {
-                    const Icon = row.icon;
+                    const iconNode: ReactNode =
+                      typeof row.icon === "string" ? (
+                        <img src={row.icon} alt="" className="cpm-row-icon cpm-row-icon-img" loading="lazy" />
+                      ) : (
+                        <row.icon className="cpm-row-icon" />
+                      );
                     return (
                       <button
                         key={row.label}
-                        type="button"
                         onClick={() => (row.onClick ? row.onClick() : row.path && navigate(row.path))}
-                        className={[
-                          "flex w-full items-center gap-3 px-4 py-3.5 text-left transition-colors active:bg-muted/50",
-                          rIdx > 0 ? "border-t border-border/40" : "",
-                          row.danger ? "text-destructive" : "text-foreground",
-                        ].join(" ")}
+                        className={`cpm-row${rIdx > 0 ? " cpm-row-b" : ""}${row.danger ? " cpm-row-danger" : ""}`}
                       >
-                        <Icon
-                          className={`h-[18px] w-[18px] shrink-0 ${row.danger ? "text-destructive" : "text-muted-foreground"}`}
-                        />
-                        <span className="flex-1 text-[15px] font-medium">{row.label}</span>
-                        {row.trailing && (
-                          <span className="shrink-0 text-[13px] text-muted-foreground">{row.trailing}</span>
-                        )}
-                        {!row.danger && (
-                          <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground/60" strokeWidth={1.8} />
-                        )}
+                        {iconNode}
+                        <span className="cpm-row-label">{row.label}</span>
+                        {row.trailing && <span className="cpm-row-trailing">{row.trailing}</span>}
                       </button>
                     );
                   })}
@@ -185,10 +213,183 @@ const CoffeeProfileMobile = () => {
               </section>
             ))}
           </div>
+
+          <div className="cpm-bottom-spacer" />
         </div>
       </div>
     </MobilePushShell>
   );
 };
+
+const cpmCss = `
+.cpm-root {
+  min-height: 100dvh;
+  background: #000000;
+  color: #ede4d8;
+  font-family: "Neue Haas Unica", "Helvetica Now Display", -apple-system, "SF Pro Display", Inter, "Segoe UI", Roboto, sans-serif;
+  display: flex;
+  justify-content: center;
+}
+.cpm-screen {
+  width: 100%;
+  max-width: 430px;
+  background: #000000;
+  min-height: 100dvh;
+  overflow-x: hidden;
+  overflow-y: visible;
+  position: relative;
+  scrollbar-width: none;
+}
+
+.cpm-screen::-webkit-scrollbar { display: none; }
+
+.cpm-hero {
+  position: relative; width: 100%; height: 430px; overflow: hidden;
+}
+.cpm-video {
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center top;
+  display: block;
+  animation: cpm-heroReveal 1.9s cubic-bezier(0.16,1,0.3,1) both;
+}
+.cpm-hero-fade {
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, transparent 40%, #000000 100%);
+  pointer-events: none;
+}
+.cpm-topbar {
+  position: absolute; top: 18px; left: 0; right: 0;
+  display: flex; justify-content: space-between;
+  padding: 0 16px; z-index: 3;
+}
+
+.cpm-glass {
+  border: 0;
+  background: var(--overlay-white-05);
+  color: #ede4d8;
+  backdrop-filter: blur(2px) saturate(1.3);
+  -webkit-tap-highlight-color: transparent;
+  box-shadow: none;
+  transition: transform 0.15s ease, background-color 0.15s ease;
+  cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.cpm-glass:active { transform: scale(0.94); background: var(--overlay-white-08); }
+.cpm-circle { width: 46px; height: 44px; border-radius: 22px; }
+
+/* Identity */
+.cpm-identity {
+  position: relative;
+  margin-top: -112px;
+  padding: 0 16px;
+  text-align: center;
+  z-index: 2;
+}
+.cpm-identity-btn {
+  display: block;
+  width: calc(100% - 32px);
+  margin-left: auto; margin-right: auto;
+  background: transparent;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  padding: 8px 12px 12px;
+  border-radius: 20px;
+  transition: background-color 180ms ease, transform 180ms ease;
+}
+.cpm-identity-btn:active { transform: scale(0.985); background: var(--overlay-white-05); }
+.cpm-name {
+  font-size: 28px; font-weight: 500; margin: 0;
+  letter-spacing: -0.02em;
+}
+.cpm-subtitle {
+  margin: 4px 0 0; font-size: 14px;
+  color: rgba(235,220,205,0.55);
+}
+.cpm-laurel { position: absolute; top: 0; pointer-events: none; }
+.cpm-laurel-l { right: calc(50% + 66px); }
+.cpm-laurel-r { left: calc(50% + 66px); }
+
+
+/* Settings groups */
+.cpm-groups { padding: 28px 16px 0; display: flex; flex-direction: column; gap: 22px; }
+.cpm-group-title {
+  font-size: 12px; font-weight: 500;
+  color: rgba(235,220,205,0.5);
+  margin: 0 4px 8px;
+  text-transform: uppercase; letter-spacing: 0.06em;
+}
+.cpm-card {
+  background: var(--overlay-white-05);
+  border: 0;
+  border-radius: 20px;
+  overflow: hidden;
+  backdrop-filter: blur(6px);
+}
+.cpm-row {
+  width: 100%;
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 16px;
+  background: transparent;
+  border: 0;
+  color: #ede4d8;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  transition: background-color 180ms ease;
+}
+.cpm-row:active { background: var(--overlay-white-05); }
+.cpm-row-b { border-top: 0; }
+.cpm-row-icon {
+  width: 32px; height: 32px; flex-shrink: 0;
+  color: rgba(235,220,205,0.85);
+  background: transparent;
+  border: 0;
+  border-radius: 7px;
+  opacity: 1;
+  filter: drop-shadow(0 5px 10px rgba(0,0,0,0.28));
+}
+.cpm-row-icon-img {
+  object-fit: contain;
+  display: block;
+  background: transparent;
+}
+.cpm-row-label { flex: 1; font-size: 15px; font-weight: 500; }
+.cpm-row-trailing {
+  font-size: 13px; color: rgba(235,220,205,0.5);
+  flex-shrink: 0;
+}
+.cpm-row-danger { color: #f87171; }
+.cpm-row-danger .cpm-row-icon { color: #f87171; }
+.cpm-row-danger .cpm-row-label { color: #f87171; }
+
+.cpm-bottom-spacer { height: calc(env(safe-area-inset-bottom, 0px) + 40px); }
+
+@keyframes cpm-heroReveal {
+  from { opacity: 0; transform: scale(1.01); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes cpm-dropIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes cpm-fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes cpm-fadeRise {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.cpm-anim-drop1 { animation: cpm-dropIn 0.7s cubic-bezier(0.16,1,0.3,1) 0.35s both; }
+.cpm-anim-drop2 { animation: cpm-dropIn 0.7s cubic-bezier(0.16,1,0.3,1) 0.42s both; }
+.cpm-anim-fade  { animation: cpm-fadeIn 0.8s ease-out 0.5s both; }
+.cpm-anim-rise1 { animation: cpm-fadeRise 0.7s cubic-bezier(0.16,1,0.3,1) 0.5s both; }
+.cpm-anim-rise2 { animation: cpm-fadeRise 0.7s cubic-bezier(0.16,1,0.3,1) 0.58s both; }
+.cpm-anim-rise3 { animation: cpm-fadeRise 0.7s cubic-bezier(0.16,1,0.3,1) 0.66s both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .cpm-anim-drop1,.cpm-anim-drop2,.cpm-anim-fade,.cpm-anim-rise1,.cpm-anim-rise2,
+  .cpm-anim-rise3,.cpm-video { animation: none !important; }
+}
+`;
 
 export default CoffeeProfileMobile;

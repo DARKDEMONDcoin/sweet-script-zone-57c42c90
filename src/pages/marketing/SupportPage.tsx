@@ -227,19 +227,19 @@ const SupportPage = () => {
 
   return (
     <div
-      className="relative flex h-[100dvh] flex-col overflow-hidden bg-background text-foreground"
+      className="relative flex h-[100dvh] flex-col overflow-hidden bg-black text-[#f5f5f5]"
       style={{ fontFamily: BODY_FONT }}
     >
       {/* Top bar */}
       <div
-        className="sticky top-0 z-10 shrink-0 border-b border-border bg-background"
+        className="sticky top-0 z-10 shrink-0 border-b border-[#1a1a1a] bg-black"
         style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}
       >
         <div className="mx-auto flex h-16 w-full max-w-2xl items-center gap-3 px-5">
           <button
             onClick={goBack}
             aria-label="Back"
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-muted/40 text-foreground transition-colors hover:bg-muted/60 active:scale-95"
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-[#1a1a1a] bg-[#1a1a1a]/40 text-[#f5f5f5] transition-colors hover:bg-[#1a1a1a]/60 active:scale-95"
           >
             <ArrowLeft className="h-[17px] w-[17px]" strokeWidth={2.2} />
           </button>
@@ -250,18 +250,18 @@ const SupportPage = () => {
                 alt="Tommy"
                 width={36}
                 height={36}
-                className="h-9 w-9 rounded-full object-cover ring-1 ring-border"
+                className="h-9 w-9 rounded-full object-cover ring-1 ring-[#1a1a1a]"
               />
-              <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-primary ring-2 ring-background" />
+              <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-[#f5f5f5] ring-2 ring-black" />
             </div>
             <div className="min-w-0">
               <p
-                className="truncate text-[15px] font-semibold leading-tight text-foreground"
+                className="truncate text-[15px] font-semibold leading-tight text-[#f5f5f5]"
                 style={{ fontFamily: HEAD_FONT }}
               >
                 Tommy
               </p>
-              <p className="text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
+              <p className="text-[11px] uppercase tracking-[0.16em] text-[#a0a0a0]">
                 AI assistant · online
               </p>
             </div>
@@ -269,7 +269,7 @@ const SupportPage = () => {
           {messages.length > 0 && (
             <button
               onClick={newChat}
-              className="h-9 rounded-full border border-border bg-muted/40 px-4 text-[12.5px] font-medium text-foreground transition-colors hover:bg-muted/60 active:scale-95"
+              className="h-9 rounded-full border border-[#1a1a1a] bg-[#1a1a1a]/40 px-4 text-[12.5px] font-medium text-[#f5f5f5] transition-colors hover:bg-[#1a1a1a]/60 active:scale-95"
             >
               New chat
             </button>
@@ -287,15 +287,15 @@ const SupportPage = () => {
                 alt="Tommy"
                 width={96}
                 height={96}
-                className="mb-6 h-24 w-24 rounded-full ring-1 ring-border"
+                className="mb-6 h-24 w-24 rounded-full ring-1 ring-[#1a1a1a]"
               />
               <h1
-                className="text-[28px] font-semibold tracking-tight text-foreground"
+                className="text-[28px] font-semibold tracking-tight text-[#f5f5f5]"
                 style={{ fontFamily: HEAD_FONT }}
               >
                 Hi, I'm Tommy
               </h1>
-              <p className="mt-3 max-w-sm text-[14.5px] leading-relaxed text-muted-foreground">
+              <p className="mt-3 max-w-sm text-[14.5px] leading-relaxed text-[#a0a0a0]">
                 Your personal Megsy assistant. Ask me about subscriptions, credits, models, or
                 anything else — I'll help you out.
               </p>
@@ -304,7 +304,7 @@ const SupportPage = () => {
                   <button
                     key={s}
                     onClick={() => void send(s)}
-                    className="rounded-[20px] border border-border bg-muted/40 px-5 py-4 text-left text-[14px] text-foreground transition-all hover:bg-muted/60 active:scale-[0.98]"
+                    className="rounded-[20px] border border-[#1a1a1a] bg-[#1a1a1a]/40 px-5 py-4 text-left text-[14px] text-[#f5f5f5] transition-all hover:bg-[#1a1a1a]/60 active:scale-[0.98]"
                   >
                     {s}
                   </button>
@@ -319,29 +319,29 @@ const SupportPage = () => {
                   className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
                 >
                   {msg.role === "user" ? (
-                    <div className="max-w-[85%] whitespace-pre-wrap break-words rounded-[20px] rounded-br-md bg-primary px-4 py-2.5 text-[15px] leading-relaxed text-primary-foreground">
+                    <div className="max-w-[85%] whitespace-pre-wrap break-words rounded-[20px] rounded-br-md bg-[#f5f5f5] px-4 py-2.5 text-[15px] leading-relaxed text-black">
                       {msg.content}
                     </div>
                   ) : (
-                    <div className="max-w-[92%] text-[15px] leading-relaxed text-foreground">
+                    <div className="max-w-[92%] text-[15px] leading-relaxed text-[#f5f5f5]">
                       {msg.content ? (
-                        <div className="rounded-[20px] rounded-bl-md border border-border bg-muted/40 px-4 py-2.5">
+                        <div className="rounded-[20px] rounded-bl-md border border-[#1a1a1a] bg-[#1a1a1a]/40 px-4 py-2.5">
                           <div className="prose prose-sm prose-invert max-w-none prose-p:my-2 prose-ul:my-2 prose-ol:my-2">
                             <ReactMarkdown>{msg.content}</ReactMarkdown>
                           </div>
                         </div>
                       ) : (
-                        <div className="inline-flex items-center gap-1.5 rounded-[20px] rounded-bl-md border border-border bg-muted/40 px-4 py-3">
+                        <div className="inline-flex items-center gap-1.5 rounded-[20px] rounded-bl-md border border-[#1a1a1a] bg-[#1a1a1a]/40 px-4 py-3">
                           <span
-                            className="h-1.5 w-1.5 animate-bounce rounded-full bg-muted-foreground"
+                            className="h-1.5 w-1.5 animate-bounce rounded-full bg-[#a0a0a0]"
                             style={{ animationDelay: "0ms" }}
                           />
                           <span
-                            className="h-1.5 w-1.5 animate-bounce rounded-full bg-muted-foreground"
+                            className="h-1.5 w-1.5 animate-bounce rounded-full bg-[#a0a0a0]"
                             style={{ animationDelay: "150ms" }}
                           />
                           <span
-                            className="h-1.5 w-1.5 animate-bounce rounded-full bg-muted-foreground"
+                            className="h-1.5 w-1.5 animate-bounce rounded-full bg-[#a0a0a0]"
                             style={{ animationDelay: "300ms" }}
                           />
                         </div>
@@ -351,7 +351,7 @@ const SupportPage = () => {
                 </div>
               ))}
               {networkError && (
-                <div className="flex items-center gap-2 rounded-[20px] border border-destructive/40 bg-destructive/10 px-4 py-3 text-[13px] text-destructive">
+                <div className="flex items-center gap-2 rounded-[20px] border border-[#3a1a1a] bg-[#1a0d0d] px-4 py-3 text-[13px] text-[#e5a0a0]">
                   <AlertCircle className="h-4 w-4 shrink-0" />
                   <span className="flex-1">Something went wrong.</span>
                   <button
@@ -369,14 +369,14 @@ const SupportPage = () => {
 
       {/* Composer */}
       <div
-        className="shrink-0 border-t border-border bg-background"
+        className="shrink-0 border-t border-[#1a1a1a] bg-black"
         style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
       >
         <form
           onSubmit={handleSubmit}
           className="mx-auto flex w-full max-w-2xl items-end gap-2 px-5 py-3"
         >
-          <div className="flex flex-1 items-end gap-2 rounded-[24px] border border-border bg-card px-4 py-3 transition-colors focus-within:border-foreground/30">
+          <div className="flex flex-1 items-end gap-2 rounded-[24px] border border-[#1a1a1a] bg-[#0d0d0d] px-4 py-3 transition-colors focus-within:border-[#333]">
             <textarea
               ref={textareaRef}
               value={input}
@@ -384,7 +384,7 @@ const SupportPage = () => {
               onKeyDown={handleKeyDown}
               rows={1}
               placeholder="Message Tommy…"
-              className="max-h-40 flex-1 resize-none bg-transparent text-[15px] leading-6 text-foreground outline-none placeholder:text-muted-foreground"
+              className="max-h-40 flex-1 resize-none bg-transparent text-[15px] leading-6 text-[#f5f5f5] outline-none placeholder:text-[#6b6b6b]"
             />
           </div>
           {isStreaming ? (
@@ -392,7 +392,7 @@ const SupportPage = () => {
               type="button"
               onClick={stop}
               aria-label="Stop"
-              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground transition active:scale-95"
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#f5f5f5] text-black transition active:scale-95"
             >
               <Square className="h-4 w-4" fill="currentColor" />
             </button>
@@ -401,7 +401,7 @@ const SupportPage = () => {
               type="submit"
               disabled={!input.trim()}
               aria-label="Send"
-              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground transition active:scale-95 disabled:bg-muted disabled:text-muted-foreground"
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#f5f5f5] text-black transition active:scale-95 disabled:bg-[#1a1a1a] disabled:text-[#6b6b6b]"
             >
               <ArrowUp className="h-5 w-5" />
             </button>

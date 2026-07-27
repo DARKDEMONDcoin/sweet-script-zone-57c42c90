@@ -1,10 +1,9 @@
 // Pro+ gate for workspace features. Free / Starter users see a beautiful upgrade screen.
 import { ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
-import { Sparkles, Users, Shield, Zap, Check, ArrowRight, Lock } from "lucide-react";
+import { Loader2, Sparkles, Users, Shield, Zap, Check, ArrowRight, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useUserPlan } from "@/hooks/useUserPlan";
-import { Spinner } from "@/components/ui/spinner";
 
 const ALLOWED = new Set(["pro", "elite", "business", "enterprise"]);
 
@@ -38,7 +37,7 @@ export default function WorkspaceProGate({ children }: { children: ReactNode }) 
   if (loading) {
     return (
       <div className="min-h-dvh flex items-center justify-center bg-background">
-        <Spinner className="w-5 h-5 text-muted-foreground" />
+        <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
       </div>
     );
   }
@@ -55,7 +54,7 @@ export default function WorkspaceProGate({ children }: { children: ReactNode }) 
 
       <div className="max-w-5xl mx-auto px-6 sm:px-10 pt-24 pb-20">
         <div className="flex flex-col items-center text-center">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-border/60 bg-card/60 text-[11px] font-medium text-muted-foreground mb-6">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-border/60 bg-card/60 backdrop-blur text-[11px] font-medium text-muted-foreground mb-6">
             <Lock className="w-3 h-3" />
             Workspaces are a Pro feature
           </div>
@@ -93,7 +92,7 @@ export default function WorkspaceProGate({ children }: { children: ReactNode }) 
           {FEATURES.map((f) => (
             <div
               key={f.title}
-              className="group p-5 rounded-2xl border border-border/60 bg-card/40 hover:border-border hover:bg-card transition-all"
+              className="group p-5 rounded-2xl border border-border/60 bg-card/40 backdrop-blur-sm hover:border-border hover:bg-card transition-all"
             >
               <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-primary/15 to-primary/5 border border-primary/20 flex items-center justify-center mb-3">
                 <f.icon className="w-4 h-4 text-primary" />

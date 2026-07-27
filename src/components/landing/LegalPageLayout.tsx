@@ -111,7 +111,7 @@ const LegalPageLayout = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.35 }}
-            className="mt-8 inline-block border-l-2 border-border/20 pl-4 text-xs font-mono text-foreground/45"
+            className="mt-8 inline-block border-l-2 border-white/20 pl-4 text-xs font-mono text-foreground/45"
           >
             Last updated: {lastUpdated}
             <br />
@@ -121,7 +121,7 @@ const LegalPageLayout = ({
             <br />
             Al-Nozha District, Cairo Governorate, Arab Republic of Egypt
             <br />
-            CR 284691 · Tax 774034785
+            CR 248691 · Tax 774034785
           </motion.p>
         </div>
       </section>
@@ -139,7 +139,7 @@ const LegalPageLayout = ({
                 transition={{ duration: 0.8 }}
                 className="relative"
               >
-                <div className="mb-6 flex items-baseline gap-4 border-b border-border/50 pb-4">
+                <div className="mb-6 flex items-baseline gap-4 border-b border-white/[0.06] pb-4">
                   <span className="font-mono text-sm text-foreground/30">
                     {String(idx + 1).padStart(2, "0")}
                   </span>
@@ -156,7 +156,7 @@ const LegalPageLayout = ({
                   </p>
                 ))}
                 {section.list && (
-                  <ul className="mt-4 space-y-3 border-l border-border/50 pl-5">
+                  <ul className="mt-4 space-y-3 border-l border-white/[0.08] pl-5">
                     {section.list.map((item, li) => (
                       <li key={li} className="text-[15px] leading-relaxed text-foreground/55">
                         {item}
@@ -174,7 +174,7 @@ const LegalPageLayout = ({
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="mt-28 rounded-3xl border border-border/50 bg-muted/40 p-8 md:p-12"
+            className="mt-28 rounded-3xl border border-white/[0.08] bg-white/[0.02] p-8 md:p-12"
           >
             <p className="text-xs font-semibold uppercase tracking-[0.3em] text-foreground/35">
               Questions?
@@ -186,7 +186,7 @@ const LegalPageLayout = ({
               For any inquiry about this policy, account requests, refunds, or data protection
               rights, contact us at the address below. We respond within 5 business days.
             </p>
-            <div className="mt-8 grid gap-6 border-t border-border/50 pt-8 text-sm md:grid-cols-2">
+            <div className="mt-8 grid gap-6 border-t border-white/[0.06] pt-8 text-sm md:grid-cols-2">
               <div>
                 <p className="text-xs uppercase tracking-wider text-foreground/35">Email</p>
                 <a
@@ -207,7 +207,7 @@ const LegalPageLayout = ({
                   Sheraton Al-Matar, Al-Nozha, Cairo, Egypt
                 </p>
                 <p className="mt-1 font-mono text-xs text-foreground/45">
-                  CR 284691 · Tax 774034785
+                  CR 248691 · Tax 774034785
                 </p>
               </div>
             </div>

@@ -4,47 +4,27 @@
    prefers-reduced-motion. Scoped narrowly so we don't fight existing
    surface-specific animations (chat, showcase videos, etc.). */
 
-/* Route transition — driven by <PageTransition/> wrapper.
-   Direction-aware and RTL-safe: uses a logical inline offset so "forward"
-   always enters from the reading-direction edge. */
+/* Route transition — driven by <PageTransition/> wrapper */
 .ng-page-enter {
-  animation: ng-page-in 300ms cubic-bezier(0.22, 1, 0.36, 1) both;
-  will-change: opacity, transform;
-}
-
-.ng-page-enter--back {
-  animation-name: ng-page-in-back;
+  animation: ng-page-in 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  will-change: opacity, transform, filter;
 }
 
 @keyframes ng-page-in {
   0% {
     opacity: 0;
-    transform: translate3d(16px, 0, 0);
+    transform: translate3d(0, 8px, 0) scale(0.995);
+    filter: blur(2px);
+  }
+  60% {
+    filter: blur(0);
   }
   100% {
     opacity: 1;
-    transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0) scale(1);
+    filter: blur(0);
   }
 }
-
-@keyframes ng-page-in-back {
-  0% {
-    opacity: 0;
-    transform: translate3d(-16px, 0, 0);
-  }
-  100% {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
-  }
-}
-
-[dir="rtl"] .ng-page-enter {
-  animation-name: ng-page-in-back;
-}
-[dir="rtl"] .ng-page-enter--back {
-  animation-name: ng-page-in;
-}
-
 
 /* Staggered fade-up for direct children of a page container. Opt-in via
    `data-stagger` on the parent element so long lists don't get animated
@@ -101,57 +81,5 @@
   }
   :where(button, [role="button"], a, .ng-pressable):active:not(:disabled) {
     transform: none;
-  }
-}
-
-/* ─── Mobile UX consistency pass ─────────────────────────────────────
-   Zero-specificity (:where) rules so components can still override. */
-@media (max-width: 767px) {
-  /* No accidental sideways scrolling anywhere in the app. */
-  html,
-  body {
-    overflow-x: hidden;
-  }
-
-  /* Comfortable tap targets (Apple/Material minimum). */
-  :where(button, [role="button"], a[href], input[type="checkbox"], input[type="radio"], select):not(
-      .ng-tap-exempt
-    ) {
-    min-height: 44px;
-  }
-  :where(button, [role="button"]):not(.ng-tap-exempt) {
-    min-width: 44px;
-  }
-  /* Inline text links inside prose must stay inline-sized. */
-  :where(p, li, span, label) :where(a[href]) {
-    min-height: 0;
-  }
-
-  /* Horizontal chip/tab rails: snap + hide scrollbar instead of clipping. */
-  :where(.ng-rail) {
-    overflow-x: auto;
-    scroll-snap-type: x proximity;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-  }
-  :where(.ng-rail)::-webkit-scrollbar {
-    display: none;
-  }
-  :where(.ng-rail) > * {
-    scroll-snap-align: start;
-  }
-}
-
-/* Consistent, visible keyboard focus across the whole app. */
-:where(a, button, [role="button"], input, textarea, select, [tabindex]):focus-visible {
-  outline: 2px solid hsl(var(--ring, 265 90% 65%));
-  outline-offset: 2px;
-  border-radius: inherit;
-}
-
-/* Tap highlight cleanup on touch devices. */
-@media (hover: none) and (pointer: coarse) {
-  :where(a, button, [role="button"]) {
-    -webkit-tap-highlight-color: transparent;
   }
 }

@@ -161,16 +161,9 @@ function pickEntry(files: ProjectFile[]): ProjectFile | null {
 
 /** True when the project looks like a bundler-required React/Vite app. */
 export function isReactProject(files: ProjectFile[]): boolean {
-  if (files.some((f) => /\.(tsx|jsx)$/i.test(f.path))) return true;
-  const pkg = files.find((f) => /(^|\/)package\.json$/i.test(f.path));
-  if (!pkg) return false;
-  try {
-    const data = JSON.parse(pkg.content);
-    const deps = { ...data.dependencies, ...data.devDependencies };
-    return !!(deps.react || deps.preact || deps.solid || deps.vue || deps.svelte || deps.vite);
-  } catch {
-    return true; // assume yes if package.json is present but invalid
-  }
+  return files.some(
+    (f) => /\.(tsx|jsx)$/i.test(f.path) || /package\.json$/i.test(f.path),
+  );
 }
 
 /**
@@ -182,31 +175,7 @@ export function isReactProject(files: ProjectFile[]): boolean {
 const SHIMS: Record<string, string> = {
   "src/lib/utils.ts":
     `import { clsx, type ClassValue } from "clsx";\nimport { twMerge } from "tailwind-merge";\nexport function cn(...inputs: ClassValue[]) { return twMerge(clsx(inputs)); }\n`,
-  "src/components/ui/button.tsx":
-    `import * as React from "react";\nimport { cn } from "@/lib/utils";\ntype Props = React.ButtonHTMLAttributes<HTMLButtonElement> & { variant?: string; size?: string; asChild?: boolean };\nexport const Button = React.forwardRef<HTMLButtonElement, Props>(({ className, variant, size, asChild: _asChild, ...props }, ref) => <button ref={ref} className={cn("inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors disabled:pointer-events-none disabled:opacity-50", variant === "outline" ? "border border-input bg-background hover:bg-accent hover:text-accent-foreground" : variant === "ghost" ? "hover:bg-accent hover:text-accent-foreground" : variant === "secondary" ? "bg-secondary text-secondary-foreground hover:bg-secondary/80" : "bg-primary text-primary-foreground hover:bg-primary/90", size === "sm" && "h-9 px-3", size === "lg" && "h-11 px-8", size === "icon" && "h-10 w-10 p-0", className)} {...props} />);\nButton.displayName = "Button";\n`,
-  "src/components/ui/card.tsx":
-    `import * as React from "react";\nimport { cn } from "@/lib/utils";\nexport const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(({className,...props},ref)=><div ref={ref} className={cn("rounded-lg border bg-card text-card-foreground shadow-sm",className)} {...props}/>);\nexport const CardHeader = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(({className,...props},ref)=><div ref={ref} className={cn("flex flex-col space-y-1.5 p-6",className)} {...props}/>);\nexport const CardTitle = React.forwardRef<HTMLHeadingElement, React.HTMLAttributes<HTMLHeadingElement>>(({className,...props},ref)=><h3 ref={ref} className={cn("text-2xl font-semibold leading-none tracking-tight",className)} {...props}/>);\nexport const CardDescription = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<HTMLParagraphElement>>(({className,...props},ref)=><p ref={ref} className={cn("text-sm text-muted-foreground",className)} {...props}/>);\nexport const CardContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(({className,...props},ref)=><div ref={ref} className={cn("p-6 pt-0",className)} {...props}/>);\nexport const CardFooter = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(({className,...props},ref)=><div ref={ref} className={cn("flex items-center p-6 pt-0",className)} {...props}/>);\n`,
-  "src/components/ui/input.tsx":
-    `import * as React from "react";\nimport { cn } from "@/lib/utils";\nexport const Input = React.forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTMLInputElement>>(({className,type,...props},ref)=><input type={type} ref={ref} className={cn("flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50",className)} {...props}/>);\nInput.displayName="Input";\n`,
-  "src/components/ui/textarea.tsx":
-    `import * as React from "react";\nimport { cn } from "@/lib/utils";\nexport const Textarea = React.forwardRef<HTMLTextAreaElement, React.TextareaHTMLAttributes<HTMLTextAreaElement>>(({className,...props},ref)=><textarea ref={ref} className={cn("flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50",className)} {...props}/>);\nTextarea.displayName="Textarea";\n`,
-  "src/components/ui/badge.tsx":
-    `import * as React from "react";\nimport { cn } from "@/lib/utils";\nexport function Badge({ className, variant, ...props }: React.HTMLAttributes<HTMLDivElement> & { variant?: string }) { return <div className={cn("inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold", variant === "secondary" ? "bg-secondary text-secondary-foreground" : variant === "outline" ? "text-foreground" : "bg-primary text-primary-foreground", className)} {...props} />; }\n`,
 };
-
-/** Collect the project's own CSS so generated styles actually apply in the preview. */
-function collectProjectCss(files: ProjectFile[]): string {
-  return files
-    .filter((f) => /\.(css|scss)$/i.test(f.path))
-    .map((f) =>
-      f.content
-        // Tailwind is loaded from the CDN; its at-rules would be invalid here.
-        .replace(/^\s*@tailwind[^;]*;\s*$/gim, "")
-        .replace(/^\s*@import\s+["'][^"']+["'];\s*$/gim, ""),
-    )
-    .join("\n")
-    .trim();
-}
 
 export function buildReactRuntimeHtml(files: ProjectFile[], title = "Megsy Project"): string {
   const runnable = files.filter(isRunnable);
@@ -234,9 +203,6 @@ export function buildReactRuntimeHtml(files: ProjectFile[], title = "Megsy Proje
   const extraPkg = importMapFromPackageJson(files);
   const importMapImports: Record<string, string> = { ...IMPORT_MAP, ...extraPkg };
   const filesPayload = JSON.stringify(rewritten);
-  const projectCss = collectProjectCss(files);
-  const esc = (v: string) => v.replace(/[<>&"]/g, (c) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;" }[c]!));
-  const description = `${title} — built with Megsy Coder.`;
   const entryPath = entry?.path || "src/main.tsx";
 
   return `<!doctype html>
@@ -244,13 +210,7 @@ export function buildReactRuntimeHtml(files: ProjectFile[], title = "Megsy Proje
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>${esc(title)}</title>
-<meta name="description" content="${esc(description)}"/>
-<meta property="og:title" content="${esc(title)}"/>
-<meta property="og:description" content="${esc(description)}"/>
-<meta property="og:type" content="website"/>
-<meta name="twitter:card" content="summary_large_image"/>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9A%A1%3C/text%3E%3C/svg%3E"/>
+<title>${title.replace(/[<>&"]/g, (c) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;" }[c]!))}</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://unpkg.com/es-module-shims@1.10.0/dist/es-module-shims.js"></script>
 <script src="https://unpkg.com/@babel/standalone@7.25.6/babel.min.js"></script>
@@ -266,7 +226,6 @@ ${JSON.stringify({ imports: importMapImports }, null, 2)}
   #__megsy_err pre{margin:0;padding:20px;color:#fca5a5;font-family:ui-monospace,Menlo,monospace;font-size:12.5px;line-height:1.55;white-space:pre-wrap;overflow:auto;flex:1}
   #__megsy_boot{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;color:#a3a3a3;font-size:13px;z-index:9998}
 </style>
-${projectCss ? `<style data-megsy-project-css>\n${projectCss}\n</style>` : ""}
 </head>
 <body>
 <div id="root"></div>

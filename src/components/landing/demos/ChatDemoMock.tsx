@@ -58,7 +58,7 @@ const ChatDemoMock = () => {
   return (
     <div className="h-full w-full bg-[#0a0a0a] flex flex-col text-foreground font-sans relative overflow-hidden">
       {/* Top bar */}
-      <div className="flex items-center justify-between px-5 py-3 border-b border-border/5">
+      <div className="flex items-center justify-between px-5 py-3 border-b border-white/5">
         <div className="flex items-center gap-2">
           <span className="text-sm font-semibold">Megsy Chat</span>
         </div>
@@ -86,7 +86,7 @@ const ChatDemoMock = () => {
             <div className="h-7 w-7 shrink-0 flex items-center justify-center">
               <MegsyStar className="h-5 w-5 text-[#3b82f6]" />
             </div>
-            <div className="max-w-[80%] rounded-2xl rounded-tl-md bg-muted/40 px-4 py-3 text-[13px] leading-relaxed whitespace-pre-line border border-border/5">
+            <div className="max-w-[80%] rounded-2xl rounded-tl-md bg-white/[0.06] px-4 py-3 text-[13px] leading-relaxed whitespace-pre-line border border-white/5">
               {aiTyped}
               <span className="inline-block w-1.5 h-3.5 bg-[#22d36b] ml-0.5 align-middle animate-pulse" />
             </div>
@@ -96,7 +96,7 @@ const ChatDemoMock = () => {
 
       {/* Input */}
       <div className="px-5 pb-5">
-        <div className="flex items-center gap-2 rounded-2xl border border-border/10 bg-muted/40 px-3 py-2.5">
+        <div className="flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.04] px-3 py-2.5">
           <Paperclip className="h-4 w-4 text-foreground/40" />
           <div className="flex-1 text-sm text-foreground/90 min-h-[20px]">
             {stage === 0 ? typed : ""}
@@ -105,8 +105,8 @@ const ChatDemoMock = () => {
             )}
             {stage > 0 && <span className="text-foreground/30">Message Megsy…</span>}
           </div>
-          <button className="theme-fixed h-8 w-8 rounded-full bg-primary flex items-center justify-center">
-            <ArrowUp className="h-4 w-4 text-primary-foreground" />
+          <button className="theme-fixed h-8 w-8 rounded-full bg-white flex items-center justify-center">
+            <ArrowUp className="h-4 w-4 text-black" />
           </button>
         </div>
       </div>
