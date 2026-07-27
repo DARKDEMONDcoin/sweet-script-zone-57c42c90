@@ -137,9 +137,9 @@ export const integrations: Integration[] = [
     name: "Airtable",
     description: "Read and write bases and records.",
     category: "Productivity",
-    app: "airtable_oauth",
+    app: "airtable",
     type: "pipedream",
-    pipedreamSlug: "airtable_oauth",
+    pipedreamSlug: "airtable",
     domain: "airtable.com",
   },
   {
