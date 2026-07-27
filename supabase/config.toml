@@ -3,8 +3,5 @@ project_id = "ltgampdtawuefwwayncx"
 [functions.openrouter-media]
 verify_jwt = false
 
-[functions.pipedream-proxy]
-verify_jwt = true
-
-[functions.pipedream-webhook]
+[functions.pipedream]
 verify_jwt = false
