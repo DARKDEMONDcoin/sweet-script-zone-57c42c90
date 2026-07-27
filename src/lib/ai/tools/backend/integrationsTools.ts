@@ -107,8 +107,8 @@ registerTool({
   execute: async ({ app_slug, action_key, params }, ctx) => {
     try {
       const supabase = serverSupabase(ctx.supabaseAccessToken);
-      const { data, error } = await supabase.functions.invoke("pipedream-proxy", {
-        body: { app_slug, action_key, params: params ?? {} },
+      const { data, error } = await supabase.functions.invoke("pipedream", {
+        body: { action: "proxy", app_slug, action_key, params: params ?? {} },
       });
       if (error) return { ok: false, error: error.message };
       return data ?? { ok: false, error: "empty response" };
