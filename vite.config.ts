@@ -64,6 +64,9 @@ function integrationAppTokenDevPlugin(): Plugin {
 }
 
 export default defineConfig({
+  define: {
+    __BUILD_ID__: JSON.stringify(String(Date.now())),
+  },
   plugins: [
     react({
       babel: {

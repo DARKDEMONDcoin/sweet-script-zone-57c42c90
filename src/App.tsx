@@ -238,11 +238,10 @@ const AcceptWorkspaceInvitePage = lazy(() => import("./pages/auth/AcceptWorkspac
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      // Reduce loading flashes when navigating between pages — cached data
-      // is considered fresh for 5 minutes and kept in memory for 30 minutes,
-      // and we don't refetch on every window/tab focus.
+      // Cached data stays fresh for 5 minutes and lives 24h in cache so the
+      // persisted localStorage snapshot can rehydrate instantly on next visit.
       staleTime: 5 * 60 * 1000,
-      gcTime: 30 * 60 * 1000,
+      gcTime: 24 * 60 * 60 * 1000,
       refetchOnWindowFocus: false,
       refetchOnReconnect: false,
       retry: 1,
@@ -250,15 +249,33 @@ const queryClient = new QueryClient({
   },
 });
 
+
 import PageLoader from "@/components/common/PageLoader";
 import SplashFallback from "@/components/common/SplashFallback";
 import PageTransition from "@/components/common/PageTransition";
-// Suspense fallback used for BOTH the first-load splash and in-app route
-// transitions — the PageLoader skeleton matches the app chrome so there's
-// no jarring flash whether the app is starting cold or moving between pages.
-const LazyFallback = () => <PageLoader />;
-// Kept imported so the legacy pre-hydration splash chunk stays available.
+import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
+import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persister";
+// Instant open: no visual loader between routes. The previous page stays on
+// screen while the next chunk loads (usually <100ms once cached), so the app
+// feels native and never flashes a skeleton. PageLoader/SplashFallback are
+// kept imported so the legacy chunks remain available if referenced elsewhere.
+const LazyFallback = () => null;
+void PageLoader;
 void SplashFallback;
+
+// Persist react-query cache to localStorage so returning visitors see cached
+// data instantly on load. Buster is tied to the build id, so every new deploy
+// automatically invalidates the old cache — no stale content survives updates.
+// We only persist successful, non-sensitive queries; auth/session queries opt
+// out via queryKey convention (keys starting with "auth"/"session"/"secret").
+const queryPersister = typeof window !== "undefined"
+  ? createSyncStoragePersister({
+      storage: window.localStorage,
+      key: "megsy.qcache.v1",
+      throttleTime: 1000,
+    })
+  : undefined;
+
 
 // Renders routes directly (no useDeferredValue) so navigations show the
 // LazyFallback / PageLoader between pages instead of freezing the old page.
@@ -728,7 +745,37 @@ const App = () => {
 
   return (
     <TranslationWrapper>
-      <QueryClientProvider client={queryClient}>
+      <PersistQueryClientProvider
+        client={queryClient}
+        persistOptions={{
+          persister: queryPersister!,
+          // buster ties the persisted cache to the current build — every new
+          // deploy invalidates the old cached pages automatically so the site
+          // is always up to date without leaking stale content.
+          buster: __BUILD_ID__,
+          maxAge: 24 * 60 * 60 * 1000,
+          dehydrateOptions: {
+            // Never persist auth/session/user queries or failed ones — this
+            // keeps sensitive data out of localStorage while still caching
+            // safe, public content (pages, lists, marketing data, etc).
+            shouldDehydrateQuery: (q) => {
+              if (q.state.status !== "success") return false;
+              const key = String(q.queryKey?.[0] ?? "").toLowerCase();
+              if (
+                key.startsWith("auth") ||
+                key.startsWith("session") ||
+                key.startsWith("secret") ||
+                key.startsWith("user") ||
+                key.startsWith("profile") ||
+                key.startsWith("credits") ||
+                key.startsWith("billing")
+              )
+                return false;
+              return true;
+            },
+          },
+        }}
+      >
         <TooltipProvider>
           <ErrorBoundary>
             {/* Toast notifications globally disabled */}
@@ -1503,7 +1550,7 @@ const App = () => {
             <Suspense fallback={null}><SpeedInsights /></Suspense>
           </ErrorBoundary>
         </TooltipProvider>
-      </QueryClientProvider>
+      </PersistQueryClientProvider>
     </TranslationWrapper>
   );
 };
