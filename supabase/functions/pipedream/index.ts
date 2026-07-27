@@ -398,8 +398,9 @@ async function handleWebhook(req: Request, rawBody: string): Promise<Response> {
     user_id: validUserId,
     kind: `pipedream:${eventType}`,
     status: "pending",
-    payload,
+    input: payload,
   });
+
   if (error) {
     return new Response(JSON.stringify({ ok: false, error: error.message }), {
       status: 500,
