@@ -1,11 +1,12 @@
-import { useNavigate } from "react-router-dom";
-import { useUserPlan } from "@/hooks/useUserPlan";
-import { prefetchRoute } from "@/hooks/usePrefetchRoute";
+import { PrefetchLink } from "@/components/common/PrefetchLink";
 import { useUserLang } from "@/lib/authI18n";
+import { isPaidUser } from "@/lib/subscriptionGating";
 
 interface UpgradeCtaButtonProps {
   /** null when signed out — button hides itself */
   userId?: string | null;
+  /** Already-hydrated chat plan; avoids another profile request in the CTA. */
+  userPlan?: string | null;
   /** compact = mobile header size */
   size?: "sm" | "md";
   className?: string;
@@ -19,19 +20,23 @@ interface UpgradeCtaButtonProps {
  */
 export default function UpgradeCtaButton({
   userId,
+  userPlan,
   size = "md",
   className = "",
 }: UpgradeCtaButtonProps) {
-  const navigate = useNavigate();
   const lang = useUserLang();
-  const { loading } = useUserPlan();
 
-  if (!userId || loading) return null;
+  const normalizedPlan = userPlan?.toLowerCase() ?? null;
+  const isTopTier = normalizedPlan === "business" || normalizedPlan === "team" || normalizedPlan === "enterprise" || normalizedPlan === "ultimate" || normalizedPlan === "max";
 
-  const label = lang === "ar" ? "ترقية" : "Upgrade";
-  const prefetch = () => {
-    void prefetchRoute("/pricing");
-  };
+  // Signed-out users get the dedicated Sign in action in the header. Wait for
+  // the chat's existing plan hydration, and don't upsell users with no higher
+  // self-serve tier available.
+  if (!userId || !normalizedPlan || isTopTier) return null;
+
+  const label = isPaidUser(normalizedPlan)
+    ? lang === "ar" ? "الخطط" : "Plans"
+    : lang === "ar" ? "ترقية" : "Upgrade";
 
   const dims =
     size === "sm"
@@ -39,26 +44,16 @@ export default function UpgradeCtaButton({
       : "h-9 px-4 text-[13px] gap-2";
 
   return (
-    <button
-      type="button"
+    <PrefetchLink
+      to="/pricing"
       data-testid="chat-upgrade-cta"
       aria-label={label}
-      onPointerDown={prefetch}
-      onMouseEnter={prefetch}
-      onFocus={prefetch}
-      onClick={async (e) => {
-        e.preventDefault();
+      onClick={() => {
         try {
           navigator.vibrate?.(8);
         } catch {
           /* noop */
         }
-        try {
-          await prefetchRoute("/pricing");
-        } catch {
-          /* noop */
-        }
-        navigate("/pricing");
       }}
       className={`upgrade-cta group relative inline-flex items-center justify-center rounded-full font-medium shrink-0 whitespace-nowrap active:scale-[0.97] ${dims} ${className}`}
     >
@@ -79,7 +74,7 @@ export default function UpgradeCtaButton({
       <span className="upgrade-cta__shine-wrap" aria-hidden>
         <span className="upgrade-cta__shine" />
       </span>
-    </button>
+    </PrefetchLink>
   );
 }
 

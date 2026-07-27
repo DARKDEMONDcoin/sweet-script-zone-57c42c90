@@ -98,6 +98,7 @@ export interface MobileChatHeaderProps {
   rightSlot?: React.ReactNode;
   modelSlot?: React.ReactNode;
   chatUserId?: string | null;
+  userPlan?: string | null;
   scrollContainerRef?: RefObject<HTMLElement | null>;
 
   // Inline view props (optional — when present, Share/Invite/Rename open inside the same menu)
@@ -138,6 +139,7 @@ export default function MobileChatHeader({
   rightSlot,
   modelSlot,
   chatUserId,
+  userPlan,
   scrollContainerRef,
   inlineRename,
 
@@ -229,7 +231,9 @@ export default function MobileChatHeader({
 
         {!scrolled && <div className="flex-1" />}
 
-        {!scrolled && chatUserId && <UpgradeCtaButton userId={chatUserId} size="sm" />}
+        {!scrolled && chatUserId && (
+          <UpgradeCtaButton userId={chatUserId} userPlan={userPlan} size="sm" />
+        )}
 
         {!scrolled && !chatUserId && (
           <button
