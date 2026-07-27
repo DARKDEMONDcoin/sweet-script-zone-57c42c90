@@ -34,7 +34,7 @@ export default function UpgradeCtaButton({
     void prefetchRoute("/pricing");
   };
 
-  const dims = size === "sm" ? "h-9 px-3.5 text-[12.5px] gap-1.5" : "h-9 px-4 text-[13px] gap-2";
+  const dims = size === "sm" ? "h-9 px-3.5 text-[12.5px] gap-1.5" : "h-10 px-5 text-[13.5px] gap-2";
 
   return (
     <button
@@ -44,10 +44,17 @@ export default function UpgradeCtaButton({
       onPointerDown={prefetch}
       onMouseEnter={prefetch}
       onFocus={prefetch}
-      onClick={() => {
-        prefetch();
+      onClick={async (e) => {
+        e.preventDefault();
         try {
           navigator.vibrate?.(8);
+        } catch {
+          /* noop */
+        }
+        // Await the lazy-route chunk BEFORE navigating so React doesn't
+        // flash the Suspense fallback and re-render the page ("double load").
+        try {
+          await prefetchRoute("/pricing");
         } catch {
           /* noop */
         }
