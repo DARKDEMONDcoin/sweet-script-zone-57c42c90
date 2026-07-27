@@ -77,6 +77,7 @@ export function DesktopSettingsHome() {
         { icon: AppearanceIcon, label: tx("Appearance"), path: "/settings/customization" },
         { icon: (p) => <Brain {...p} />, label: tx("Memory"), path: "/settings/memory" },
         { icon: IntegrationsIcon, label: tx("Integrations"), path: "/settings/integrations" },
+        { icon: IntegrationsIcon, label: tx("AI Tools"), path: "/settings/pipedream-tools" },
         { icon: IntegrationsIcon, label: tx("MCP Servers"), path: "/settings/mcp" },
         {
           icon: (p) => <Globe {...p} />,
