@@ -88,6 +88,7 @@ const CoffeeProfileMobile = () => {
       title: "Connections",
       rows: [
         { icon: IntegrationsIcon, label: authT("rowIntegrations"), path: "/settings/integrations" },
+        { icon: IntegrationsIcon, label: "AI Tools", path: "/settings/pipedream-tools" },
       ],
     },
     {
