@@ -179,7 +179,6 @@ const PricingPage = () => {
     trial: boolean;
   } | null>(null);
   const [gatewayLoading, setGatewayLoading] = useState<Gateway | null>(null);
-  const [settled, setSettled] = useState(false);
 
   const BRAND = getZoneBrand();
   const promo = usePromoCountdown();
@@ -212,31 +211,6 @@ const PricingPage = () => {
       })),
     },
   };
-
-  useEffect(() => {
-    const id = window.setTimeout(() => setSettled(true), 250);
-    return () => window.clearTimeout(id);
-  }, []);
-
-  // Load Garamond + Geist webfonts once
-  useEffect(() => {
-    const links: HTMLLinkElement[] = [];
-    const add = (href: string, rel = "stylesheet") => {
-      const l = document.createElement("link");
-      l.rel = rel;
-      l.href = href;
-      l.crossOrigin = "anonymous";
-      document.head.appendChild(l);
-      links.push(l);
-    };
-    add("https://fonts.googleapis.com", "preconnect");
-    add("https://fonts.gstatic.com", "preconnect");
-    add("https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500&display=swap");
-    add("https://db.onlinewebfonts.com/c/2bf40ab72ea4897a3fd9b6e48b233a19?family=Garamond");
-    return () => {
-      links.forEach((l) => l.parentNode && l.parentNode.removeChild(l));
-    };
-  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -955,11 +929,9 @@ const PricingPage = () => {
       </section>
 
       {/* ============================ FOOTER ============================ */}
-      {settled && (
-        <Suspense fallback={null}>
-          <LandingFooter />
-        </Suspense>
-      )}
+      <Suspense fallback={null}>
+        <LandingFooter />
+      </Suspense>
 
       {gatewaySheet !== null && (
         <Suspense fallback={null}>
