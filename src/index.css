@@ -7116,11 +7116,13 @@ html[dir="rtl"] .keep-ltr {
   outline-offset: 2px;
 }
 .upgrade-cta__icon {
-  color: rgb(52, 211, 153); /* emerald-400 */
-  transition: color 300ms ease;
+  color: rgb(52, 211, 153) !important; /* emerald-400 */
+  stroke: rgb(52, 211, 153) !important;
+  transition: color 300ms ease, stroke 300ms ease;
 }
 .upgrade-cta:hover .upgrade-cta__icon {
-  color: rgb(110, 231, 183); /* emerald-300 */
+  color: rgb(110, 231, 183) !important; /* emerald-300 */
+  stroke: rgb(110, 231, 183) !important;
 }
 /* Soft emerald underglow — appears on hover only */
 .upgrade-cta__halo {
