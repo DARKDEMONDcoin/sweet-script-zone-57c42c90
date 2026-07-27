@@ -5,7 +5,9 @@
  */
 
 import "./backend/coreTools";
+import "./backend/integrationsTools";
 import "./frontend/uiActions";
 
 export * from "./registry";
 export * from "./frontendBus";
+

@@ -46,6 +46,7 @@ const NAV_GROUPS: NavGroup[] = [
     title: "Workspace",
     items: [
       { id: "integrations", label: "Integrations", path: "/settings/integrations", Icon: IntegrationsIcon },
+      { id: "pipedream-tools", label: "AI Tools", path: "/settings/pipedream-tools", Icon: IntegrationsIcon },
       { id: "mcp", label: "MCP Servers", path: "/settings/mcp", Icon: IntegrationsIcon },
     ],
   },
