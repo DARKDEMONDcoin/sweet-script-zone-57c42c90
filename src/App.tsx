@@ -108,6 +108,7 @@ const IntegrationsPage = lazy(() => import("./pages/integrations/IntegrationsPag
 const IntegrationDetailPage = lazy(() => import("./pages/integrations/IntegrationDetailPage"));
 const IntegrationAppTest = lazy(() => import("./pages/integrations/IntegrationAppTest"));
 const McpSettingsPage = lazy(() => import("./pages/settings/McpSettingsPage"));
+const PipedreamToolsPage = lazy(() => import("./pages/settings/PipedreamToolsPage"));
 
 const LibraryPage = lazy(() => import("./pages/library/LibraryPage"));
 const NotFound = lazy(() => import("./pages/misc/NotFound"));
@@ -1159,6 +1160,14 @@ const App = () => {
                             element={
                               <ProtectedRoute>
                                 <McpSettingsPage />
+                              </ProtectedRoute>
+                            }
+                          />
+                          <Route
+                            path="/settings/pipedream-tools"
+                            element={
+                              <ProtectedRoute>
+                                <PipedreamToolsPage />
                               </ProtectedRoute>
                             }
                           />
