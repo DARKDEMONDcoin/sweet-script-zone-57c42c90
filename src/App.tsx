@@ -912,6 +912,20 @@ const App = () => {
                           <Route path="/legal/subprocessors-full" element={<SubprocessorsPage />} />
                           <Route path="/legal/accessibility-full" element={<AccessibilityPage />} />
                           <Route path="/legal/compliance-full" element={<CompliancePage />} />
+                          <Route path="/legal/imprint" element={<ImprintPage />} />
+                          <Route path="/legal/do-not-sell" element={<DoNotSellPage />} />
+                          <Route path="/legal/transparency" element={<TransparencyReportPage />} />
+                          <Route path="/legal/law-enforcement" element={<LawEnforcementPage />} />
+                          <Route path="/legal/responsible-disclosure" element={<ResponsibleDisclosurePage />} />
+                          <Route path="/legal/children" element={<ChildrenPrivacyPage />} />
+                          <Route path="/legal/eula" element={<EULAPage />} />
+                          <Route path="/legal/sla" element={<SLAPage />} />
+                          <Route path="/legal/retention" element={<DataRetentionPage />} />
+                          <Route path="/legal/data-deletion" element={<DataDeletionPage />} />
+                          <Route path="/legal/community" element={<CommunityGuidelinesPage />} />
+                          <Route path="/legal/modern-slavery" element={<ModernSlaveryPage />} />
+                          <Route path="/legal/ai-training" element={<AITrainingPage />} />
+                          <Route path="/legal/beta" element={<BetaTermsPage />} />
                           <Route path="/support" element={<SupportPage />} />
                           <Route path="/security" element={<SecurityPage />} />
                           <Route path="/enterprise" element={<EnterprisePage />} />
