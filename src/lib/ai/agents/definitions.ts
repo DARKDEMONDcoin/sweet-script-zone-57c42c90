@@ -53,7 +53,7 @@ export const AGENTS: Record<AgentId, AgentDefinition> = {
     description: "Generates and edits images, video, audio.",
     model: "google/gemini-3.6-flash",
     systemPrompt: `You are Megsy Media. Focus on visual generation quality; ask for missing constraints only when critical. ${BASE_STYLE}`,
-    tools: ["get_current_time", "list_my_integrations", "run_integration_action"],
+    tools: ["get_current_time", "list_my_integrations", "list_integration_actions", "run_integration_action"],
     maxSteps: 30,
   },
   data: {
