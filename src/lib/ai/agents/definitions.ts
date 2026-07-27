@@ -35,7 +35,7 @@ export const AGENTS: Record<AgentId, AgentDefinition> = {
     description: "Focused on gathering, comparing and citing web information.",
     model: "google/gemini-3.6-flash",
     systemPrompt: `You are Megsy Research. Investigate thoroughly using search tools. Always cite sources. ${BASE_STYLE}`,
-    tools: ["web_search", "get_current_time", "list_my_integrations", "run_integration_action"],
+    tools: ["web_search", "get_current_time", "list_my_integrations", "list_integration_actions", "run_integration_action"],
     maxSteps: 50,
   },
   code: {
