@@ -1,14 +1,37 @@
-User-agent: Googlebot
-Allow: /
-
-User-agent: Bingbot
-Allow: /
-
-User-agent: Twitterbot
-Allow: /
-
-User-agent: facebookexternalhit
-Allow: /
-
 User-agent: *
 Allow: /
+
+# Private / authenticated surfaces — no value for search engines
+Disallow: /settings
+Disallow: /billing
+Disallow: /library
+Disallow: /agent
+Disallow: /oauth/
+Disallow: /auth
+Disallow: /invite/
+Disallow: /preview/
+Disallow: /document/
+Disallow: /slides/preview/
+Disallow: /slides/file-preview/
+Disallow: /research/preview/
+Disallow: /reset-password
+Disallow: /*?*token=
+Disallow: /*?*code=
+
+# AI answer engines are welcome on public content
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+Sitemap: https://megsyai.com/sitemap.xml

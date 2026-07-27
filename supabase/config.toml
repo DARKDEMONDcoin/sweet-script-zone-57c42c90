@@ -1,1 +1,4 @@
 project_id = "ltgampdtawuefwwayncx"
+
+[functions.openrouter-media]
+verify_jwt = false

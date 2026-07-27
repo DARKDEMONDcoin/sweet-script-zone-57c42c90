@@ -1,0 +1,157 @@
+/* ─── Global page + element animation polish ─────────────────────────
+   Adds a soft cross-fade + tiny lift for route changes, a press-feedback
+   on buttons/links/cards, and a fluid focus ring. All rules respect
+   prefers-reduced-motion. Scoped narrowly so we don't fight existing
+   surface-specific animations (chat, showcase videos, etc.). */
+
+/* Route transition — driven by <PageTransition/> wrapper.
+   Direction-aware and RTL-safe: uses a logical inline offset so "forward"
+   always enters from the reading-direction edge. */
+.ng-page-enter {
+  animation: ng-page-in 300ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  will-change: opacity, transform;
+}
+
+.ng-page-enter--back {
+  animation-name: ng-page-in-back;
+}
+
+@keyframes ng-page-in {
+  0% {
+    opacity: 0;
+    transform: translate3d(16px, 0, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes ng-page-in-back {
+  0% {
+    opacity: 0;
+    transform: translate3d(-16px, 0, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+[dir="rtl"] .ng-page-enter {
+  animation-name: ng-page-in-back;
+}
+[dir="rtl"] .ng-page-enter--back {
+  animation-name: ng-page-in;
+}
+
+
+/* Staggered fade-up for direct children of a page container. Opt-in via
+   `data-stagger` on the parent element so long lists don't get animated
+   involuntarily. */
+[data-stagger] > * {
+  animation: ng-stagger-in 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  opacity: 0;
+}
+[data-stagger] > *:nth-child(1)  { animation-delay:  20ms; }
+[data-stagger] > *:nth-child(2)  { animation-delay:  70ms; }
+[data-stagger] > *:nth-child(3)  { animation-delay: 120ms; }
+[data-stagger] > *:nth-child(4)  { animation-delay: 170ms; }
+[data-stagger] > *:nth-child(5)  { animation-delay: 220ms; }
+[data-stagger] > *:nth-child(6)  { animation-delay: 270ms; }
+[data-stagger] > *:nth-child(7)  { animation-delay: 320ms; }
+[data-stagger] > *:nth-child(8)  { animation-delay: 370ms; }
+[data-stagger] > *:nth-child(n+9){ animation-delay: 420ms; }
+
+@keyframes ng-stagger-in {
+  from { opacity: 0; transform: translate3d(0, 10px, 0); }
+  to   { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+/* Press feedback — buttons, links, and interactive cards.
+   Uses transform+opacity only (compositor-friendly). Scoped to
+   `:where` so specificity stays at 0 and never overrides component
+   styles. */
+:where(button, [role="button"], a, .ng-pressable) {
+  transition:
+    transform 180ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 180ms ease-out,
+    box-shadow 220ms ease-out,
+    background-color 220ms ease-out,
+    border-color 220ms ease-out,
+    color 220ms ease-out;
+}
+
+:where(button, [role="button"], a, .ng-pressable):active:not(:disabled) {
+  transform: scale(0.97);
+  opacity: 0.92;
+}
+
+/* Reduce-motion: kill all custom keyframes and transforms. */
+@media (prefers-reduced-motion: reduce) {
+  .ng-page-enter,
+  [data-stagger] > * {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
+  :where(button, [role="button"], a, .ng-pressable) {
+    transition: none !important;
+  }
+  :where(button, [role="button"], a, .ng-pressable):active:not(:disabled) {
+    transform: none;
+  }
+}
+
+/* ─── Mobile UX consistency pass ─────────────────────────────────────
+   Zero-specificity (:where) rules so components can still override. */
+@media (max-width: 767px) {
+  /* No accidental sideways scrolling anywhere in the app. */
+  html,
+  body {
+    overflow-x: hidden;
+  }
+
+  /* Comfortable tap targets (Apple/Material minimum). */
+  :where(button, [role="button"], a[href], input[type="checkbox"], input[type="radio"], select):not(
+      .ng-tap-exempt
+    ) {
+    min-height: 44px;
+  }
+  :where(button, [role="button"]):not(.ng-tap-exempt) {
+    min-width: 44px;
+  }
+  /* Inline text links inside prose must stay inline-sized. */
+  :where(p, li, span, label) :where(a[href]) {
+    min-height: 0;
+  }
+
+  /* Horizontal chip/tab rails: snap + hide scrollbar instead of clipping. */
+  :where(.ng-rail) {
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  :where(.ng-rail)::-webkit-scrollbar {
+    display: none;
+  }
+  :where(.ng-rail) > * {
+    scroll-snap-align: start;
+  }
+}
+
+/* Consistent, visible keyboard focus across the whole app. */
+:where(a, button, [role="button"], input, textarea, select, [tabindex]):focus-visible {
+  outline: 2px solid hsl(var(--ring, 265 90% 65%));
+  outline-offset: 2px;
+  border-radius: inherit;
+}
+
+/* Tap highlight cleanup on touch devices. */
+@media (hover: none) and (pointer: coarse) {
+  :where(a, button, [role="button"]) {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
