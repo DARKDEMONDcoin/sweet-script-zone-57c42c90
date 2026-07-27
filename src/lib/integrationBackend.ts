@@ -14,7 +14,7 @@ const accountSlug = (account: any) =>
 
 export async function requireSignedInUser() {
   const { data, error } = await supabase.auth.getUser();
-  if (error || !data.user) throw new Error("Please sign in first");
+  if (error || !data.user) throw new Error("سجّل الدخول أولاً");
   return data.user;
 }
 
