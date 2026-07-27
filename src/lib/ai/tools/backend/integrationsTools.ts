@@ -118,3 +118,32 @@ registerTool({
   },
 });
 
+/**
+ * Action Catalog — lets the LLM discover the exact `action_key` for an app
+ * BEFORE calling `run_integration_action`, instead of guessing slugs.
+ */
+registerTool({
+  name: "list_integration_actions",
+  description:
+    "List available Pipedream actions for a connected app (e.g. all Slack actions). Call this to discover the correct `action_key` to pass to `run_integration_action`. Optionally filter with `q`.",
+  category: "workspace",
+  icon: "list",
+  inputSchema: z.object({
+    app_slug: z.string().min(1).describe("Pipedream app slug, e.g. 'slack', 'github', 'gmail'."),
+    q: z.string().optional().describe("Free-text filter, e.g. 'send message'."),
+  }),
+  execute: async ({ app_slug, q }, ctx) => {
+    try {
+      const supabase = serverSupabase(ctx.supabaseAccessToken);
+      const { data, error } = await supabase.functions.invoke("pipedream", {
+        body: { action: "list_actions", app_slug, q },
+      });
+      if (error) return { ok: false, error: error.message, actions: [] };
+      return data ?? { ok: false, actions: [] };
+    } catch (e: any) {
+      return { ok: false, error: e?.message ?? String(e), actions: [] };
+    }
+  },
+});
+
+
