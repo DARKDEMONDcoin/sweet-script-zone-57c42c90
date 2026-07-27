@@ -44,7 +44,7 @@ export const AGENTS: Record<AgentId, AgentDefinition> = {
     description: "Reads and writes code, runs quick sandboxes.",
     model: "google/gemini-3.6-flash",
     systemPrompt: `You are Megsy Code. Reason step by step, prefer runnable code and small diffs. ${BASE_STYLE}`,
-    tools: ["get_current_time", "list_my_integrations", "run_integration_action"],
+    tools: ["get_current_time", "list_my_integrations", "list_integration_actions", "run_integration_action"],
     maxSteps: 50,
   },
   media: {
