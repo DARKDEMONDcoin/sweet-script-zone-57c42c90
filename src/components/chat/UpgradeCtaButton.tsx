@@ -1,5 +1,4 @@
 import { useNavigate } from "react-router-dom";
-import { Crown } from "lucide-react";
 import { useUserPlan } from "@/hooks/useUserPlan";
 import { prefetchRoute } from "@/hooks/usePrefetchRoute";
 import { useUserLang } from "@/lib/authI18n";
@@ -14,9 +13,9 @@ interface UpgradeCtaButtonProps {
 
 /**
  * Primary monetisation CTA inside the chat.
- * Icon + short verb label (best-practice: icon alone is ambiguous, text alone
- * is easy to skip). High-contrast gradient pill with a slow shine sweep so it
- * reads as the single most important action in the header without shouting.
+ * "Emerald glow glass" — hairline glass pill with emerald accent icon,
+ * quiet by default, subtle underglow + single shine sweep on hover.
+ * Icon + short verb (Upgrade / ترقية) — best-practice for header CTAs.
  */
 export default function UpgradeCtaButton({
   userId,
@@ -34,7 +33,10 @@ export default function UpgradeCtaButton({
     void prefetchRoute("/pricing");
   };
 
-  const dims = size === "sm" ? "h-9 px-3.5 text-[12.5px] gap-1.5" : "h-10 px-5 text-[13.5px] gap-2";
+  const dims =
+    size === "sm"
+      ? "h-9 px-3.5 text-[12.5px] gap-1.5"
+      : "h-9 px-4 text-[13px] gap-2";
 
   return (
     <button
@@ -51,8 +53,6 @@ export default function UpgradeCtaButton({
         } catch {
           /* noop */
         }
-        // Await the lazy-route chunk BEFORE navigating so React doesn't
-        // flash the Suspense fallback and re-render the page ("double load").
         try {
           await prefetchRoute("/pricing");
         } catch {
@@ -60,12 +60,26 @@ export default function UpgradeCtaButton({
         }
         navigate("/pricing");
       }}
-      className={`upgrade-cta group relative inline-flex items-center justify-center overflow-hidden rounded-full font-semibold shrink-0 whitespace-nowrap transition-transform duration-200 hover:-translate-y-[1px] active:translate-y-0 active:scale-[0.97] ${dims} ${className}`}
+      className={`upgrade-cta group relative inline-flex items-center justify-center rounded-full font-medium shrink-0 whitespace-nowrap active:scale-[0.97] ${dims} ${className}`}
     >
       <span className="upgrade-cta__halo" aria-hidden />
-      <span className="upgrade-cta__shine" aria-hidden />
-      <Crown className="w-[14px] h-[14px] shrink-0 relative z-10" strokeWidth={2.3} />
+      <svg
+        className="upgrade-cta__icon relative z-10 h-[14px] w-[14px] shrink-0"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={2.5}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden
+      >
+        <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
+      </svg>
       <span className="relative z-10 tracking-[0.01em]">{label}</span>
+      <span className="upgrade-cta__shine-wrap" aria-hidden>
+        <span className="upgrade-cta__shine" />
+      </span>
     </button>
   );
 }
+
