@@ -424,15 +424,54 @@ Deno.serve(async (req) => {
      path.endsWith("/proxy") ? "proxy" :
      path.endsWith("/list_accounts") ? "list_accounts" :
      path.endsWith("/create_token") ? "create_token" :
-     path.endsWith("/disconnect") ? "disconnect" : "");
+     path.endsWith("/disconnect") ? "disconnect" :
+     path.endsWith("/list_actions") ? "list_actions" : "");
 
   switch (action) {
     case "list_accounts": return handleListAccounts(req);
     case "create_token":  return handleCreateToken(req, body);
     case "disconnect":    return handleDisconnect(req, body);
+    case "list_actions":  return handleListActions(req, body);
     case "proxy":         return handleProxy(req, body);
     case "webhook":       return handleWebhook(req, rawBody);
-    case "":              return json({ ok: false, error: "action is required (list_accounts|create_token|disconnect|proxy|webhook)" }, 400);
+    case "":              return json({ ok: false, error: "action is required (list_accounts|list_actions|create_token|disconnect|proxy|webhook)" }, 400);
     default:              return json({ ok: false, error: `Unknown action: ${action}` }, 400);
   }
 });
+
+// ---------- list_actions (Action Catalog) ----------
+async function handleListActions(req: Request, body: any): Promise<Response> {
+  const { user } = await authedSupabase(req);
+  if (!user) return json({ ok: false, error: "Unauthorized" }, 401);
+  const appSlug = String(body?.app_slug || "").trim();
+  const q = String(body?.q || "").trim();
+  if (!appSlug) return json({ ok: false, error: "app_slug is required" }, 400);
+  const { projectId, environment, clientId, clientSecret } = envConfig();
+  if (!projectId || !clientId || !clientSecret) {
+    return json({ ok: true, configured: false, actions: [] });
+  }
+  try {
+    const token = await getPipedreamAccessToken();
+    const url = new URL(`https://api.pipedream.com/v1/connect/${projectId}/components/actions`);
+    url.searchParams.set("app", appSlug);
+    if (q) url.searchParams.set("q", q);
+    url.searchParams.set("limit", "25");
+    const res = await fetch(url.toString(), {
+      headers: { Authorization: `Bearer ${token}`, "X-PD-Environment": environment },
+    });
+    if (!res.ok) {
+      const t = await res.text();
+      return json({ ok: false, actions: [], error: `Pipedream actions lookup failed: ${res.status} ${t}` }, 502);
+    }
+    const data = await res.json();
+    const items = Array.isArray(data?.data) ? data.data : [];
+    const actions = items.map((a: any) => ({
+      key: a?.key ?? a?.name_slug ?? a?.id,
+      name: a?.name ?? a?.key,
+      description: a?.description ?? "",
+    }));
+    return json({ ok: true, app_slug: appSlug, actions });
+  } catch (e: any) {
+    return json({ ok: false, actions: [], error: e?.message ?? String(e) }, 500);
+  }
+}
