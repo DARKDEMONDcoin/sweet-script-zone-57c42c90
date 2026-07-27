@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { Sparkles } from "lucide-react";
+import { Crown } from "lucide-react";
 import { useUserPlan } from "@/hooks/useUserPlan";
 import { prefetchRoute } from "@/hooks/usePrefetchRoute";
 import { useUserLang } from "@/lib/authI18n";
@@ -53,11 +53,12 @@ export default function UpgradeCtaButton({
         }
         navigate("/pricing");
       }}
-      className={`upgrade-cta relative inline-flex items-center justify-center overflow-hidden rounded-full font-semibold shrink-0 whitespace-nowrap text-primary-foreground transition-transform duration-200 hover:-translate-y-[1px] active:translate-y-0 active:scale-[0.97] ${dims} ${className}`}
+      className={`upgrade-cta group relative inline-flex items-center justify-center overflow-hidden rounded-full font-semibold shrink-0 whitespace-nowrap transition-transform duration-200 hover:-translate-y-[1px] active:translate-y-0 active:scale-[0.97] ${dims} ${className}`}
     >
+      <span className="upgrade-cta__halo" aria-hidden />
       <span className="upgrade-cta__shine" aria-hidden />
-      <Sparkles className="w-[15px] h-[15px] shrink-0 relative" strokeWidth={2.2} />
-      <span className="relative">{label}</span>
+      <Crown className="w-[14px] h-[14px] shrink-0 relative z-10" strokeWidth={2.3} />
+      <span className="relative z-10 tracking-[0.01em]">{label}</span>
     </button>
   );
 }
