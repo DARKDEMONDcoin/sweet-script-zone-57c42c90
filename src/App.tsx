@@ -238,17 +238,17 @@ const AcceptWorkspaceInvitePage = lazy(() => import("./pages/auth/AcceptWorkspac
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      // Reduce loading flashes when navigating between pages — cached data
-      // is considered fresh for 5 minutes and kept in memory for 30 minutes,
-      // and we don't refetch on every window/tab focus.
+      // Cached data stays fresh for 5 minutes and lives 24h in cache so the
+      // persisted localStorage snapshot can rehydrate instantly on next visit.
       staleTime: 5 * 60 * 1000,
-      gcTime: 30 * 60 * 1000,
+      gcTime: 24 * 60 * 60 * 1000,
       refetchOnWindowFocus: false,
       refetchOnReconnect: false,
       retry: 1,
     },
   },
 });
+
 
 import PageLoader from "@/components/common/PageLoader";
 import SplashFallback from "@/components/common/SplashFallback";
