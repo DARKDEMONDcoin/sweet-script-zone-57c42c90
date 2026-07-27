@@ -40,7 +40,8 @@ export const integrations: Integration[] = [
     description: "Push code, create repos, and read repositories.",
     category: "Development",
     app: "github",
-    type: "oauth",
+    type: "pipedream",
+    pipedreamSlug: "github",
     domain: "github.com",
   },
   {
@@ -203,16 +204,6 @@ export const integrations: Integration[] = [
     domain: "evernote.com",
   },
   {
-    id: "obsidian",
-    name: "Obsidian",
-    description: "Sync notes with your Obsidian vault.",
-    category: "Productivity",
-    app: "obsidian",
-    type: "pipedream",
-    pipedreamSlug: "obsidian",
-    domain: "obsidian.md",
-  },
-  {
     id: "coda",
     name: "Coda",
     description: "Update docs, tables, and rows.",
@@ -261,7 +252,7 @@ export const integrations: Integration[] = [
     category: "Communication",
     app: "whatsapp_business",
     type: "pipedream",
-    pipedreamSlug: "whatsapp_business_account",
+    pipedreamSlug: "whatsapp_business",
     domain: "whatsapp.com",
   },
   {
@@ -535,9 +526,9 @@ export const integrations: Integration[] = [
     name: "Amazon S3",
     description: "Upload and manage objects in S3 buckets.",
     category: "Storage",
-    app: "aws",
+    app: "aws_s3",
     type: "pipedream",
-    pipedreamSlug: "aws",
+    pipedreamSlug: "aws_s3",
     domain: "aws.amazon.com",
   },
 

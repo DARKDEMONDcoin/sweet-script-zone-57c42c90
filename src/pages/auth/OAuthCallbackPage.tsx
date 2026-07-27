@@ -31,7 +31,7 @@ const OAuthCallbackPage = () => {
           }
 
           try {
-            await supabase.functions.invoke("pipedream-connect", { body: { action: "list_accounts" } });
+            await supabase.functions.invoke("pipedream", { body: { action: "list_accounts" } });
           } catch (syncErr) {
             console.warn("[oauth-callback] pipedream sync failed", syncErr);
           }

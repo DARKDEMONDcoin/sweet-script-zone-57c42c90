@@ -27,7 +27,7 @@ registerTool({
   execute: async (_input, ctx) => {
     try {
       const supabase = serverSupabase(ctx.supabaseAccessToken);
-      const { data, error } = await supabase.functions.invoke("pipedream-connect", {
+      const { data, error } = await supabase.functions.invoke("pipedream", {
         body: { action: "list_accounts" },
       });
       if (error) return { ok: false, error: error.message, connected: [] };

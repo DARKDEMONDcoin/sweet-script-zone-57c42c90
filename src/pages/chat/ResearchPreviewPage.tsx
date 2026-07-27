@@ -379,7 +379,7 @@ const ResearchPreviewPage = () => {
   const handleDriveUpload = async () => {
     const t = toast.loading("Uploading to Drive…");
     try {
-      const { data: res, error } = await supabase.functions.invoke("pipedream-connect", {
+      const { data: res, error } = await supabase.functions.invoke("pipedream", {
         body: {
           action: "google_drive_upload",
           filename: `${(data.query || "research").slice(0, 80)}.md`,

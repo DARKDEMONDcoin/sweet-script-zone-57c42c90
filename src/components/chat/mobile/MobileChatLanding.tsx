@@ -521,7 +521,7 @@ const MobileChatLanding = ({
   const fetchConnected = useCallback(async (): Promise<Set<string>> => {
     const next = new Set<string>();
     const [pd, gh] = await Promise.all([
-      supabase.functions.invoke("pipedream-connect", { body: { action: "list_accounts" } }),
+      supabase.functions.invoke("pipedream", { body: { action: "list_accounts" } }),
       supabase.functions.invoke("github-push", { body: { action: "status" } }),
     ]);
     const accounts = (pd.data?.accounts ?? []) as Array<{
@@ -576,7 +576,7 @@ const MobileChatLanding = ({
         // Pipedream Connect — real account linking
         const slug = PIPEDREAM_SLUGS[it.id];
         if (!slug) throw new Error(`${it.name} is not available yet`);
-        const { data, error } = await supabase.functions.invoke("pipedream-connect", {
+        const { data, error } = await supabase.functions.invoke("pipedream", {
           body: { action: "create_token", redirect_origin: window.location.origin },
         });
         if (data?.configured === false) {
