@@ -5,7 +5,7 @@ const sections: LegalSection[] = [
   {
     heading: "Agreement to Terms",
     paragraphs: [
-      'These Terms of Service form a legally binding agreement between you and Megsy for Digital Platforms & E-Commerce Development LLC, a limited liability company registered in the Arab Republic of Egypt (Commercial Registry No. 248691, Tax ID 774034785) ("Megsy", "we", "us").',
+      'These Terms of Service form a legally binding agreement between you and Megsy for Digital Platforms & E-Commerce Development LLC, a limited liability company registered in the Arab Republic of Egypt (Commercial Registry No. 284691, Tax ID 774034785) ("Megsy", "we", "us").',
       'By creating an account, accessing, or using any part of Megsy AI (the "Service") you agree to be bound by these Terms together with our Privacy Policy, Acceptable Use Policy, Refund Policy and Cookie Policy, which are incorporated by reference.',
       "If you do not agree to any part of these Terms, you must not access or use the Service.",
     ],
@@ -103,21 +103,40 @@ const sections: LegalSection[] = [
     ],
   },
   {
+
+    heading: "App Store, Play Store & Web Store Distribution",
+    paragraphs: [
+      "When you access Megsy through a mobile or desktop application distributed via the Apple App Store, Google Play Store, Microsoft Store, Chrome Web Store, or any other platform (each a \"Store\"), the Store's own end-user licence agreement (EULA) and developer distribution agreement apply in addition to these Terms. Where a Store's mandatory terms conflict with these Terms, the Store's mandatory terms prevail solely for that distribution channel.",
+      "Apple App Store users acknowledge that these Terms are concluded between you and Megsy only, and not with Apple. Apple is a third-party beneficiary entitled to enforce these Terms against you. Apple has no obligation to provide maintenance or support for the application, and any product-warranty claim will be refunded by Apple up to the purchase price of the application; all other claims are Megsy's responsibility to the extent allowed by these Terms.",
+      "Google Play users must additionally comply with the Google Play Terms of Service and the Google Play Developer Distribution Agreement, including restrictions on in-app purchases, subscription cancellation, and refunds via the Play Store.",
+      "You must not use the application in a manner that violates a Store's usage rules, export controls, or country restrictions. If a Store removes the application, your right to use it under these Terms ends immediately for that channel; your web access at megsyai.com continues subject to these Terms.",
+    ],
+  },
+  {
+    heading: "Export Controls & Sanctions",
+    paragraphs: [
+      "You represent that you are not located in, under the control of, or a national or resident of any country subject to a comprehensive US, EU, UK, or UN embargo, and that you are not on any restricted-party list (including the US Treasury OFAC SDN List, US Commerce BIS Entity List, or EU Consolidated Sanctions List). You will not use the Service to develop, design, manufacture, or produce nuclear, missile, chemical, or biological weapons.",
+    ],
+  },
+  {
     heading: "Governing Law & Disputes",
     paragraphs: [
-      "These Terms are governed by the laws of the Arab Republic of Egypt, without regard to its conflict-of-laws principles. The competent courts of Cairo, Egypt shall have exclusive jurisdiction over any dispute arising from or relating to these Terms, except where mandatory consumer-protection law in your country of residence provides otherwise.",
+      "These Terms are governed by the laws of the Arab Republic of Egypt, without regard to its conflict-of-laws principles. The competent courts of Cairo, Egypt shall have exclusive jurisdiction over any dispute arising from or relating to these Terms, except where mandatory consumer-protection law in your country of residence provides otherwise (including EU consumers who may bring proceedings in the courts of their domicile).",
     ],
   },
   {
     heading: "Changes to These Terms",
     paragraphs: [
-      'We may update these Terms from time to time. When we do, we will revise the "Last updated" date and, where the changes are material, notify you in-app or by email. Your continued use of the Service after the effective date constitutes your acceptance of the updated Terms.',
+      'We may update these Terms from time to time. When we do, we will revise the "Last updated" date and, where the changes are material, notify you in-app or by email at least 14 days before they take effect. Your continued use of the Service after the effective date constitutes your acceptance of the updated Terms.',
     ],
   },
   {
     heading: "Contact",
-    paragraphs: ["Questions about these Terms should be sent to support@megsyai.com."],
+    paragraphs: [
+      "Questions about these Terms should be sent to support@megsyai.com or by post to: Megsy for Digital Platforms & E-Commerce Development LLC, 58 El-Hegaz St., Amoun Tower, Unit 84, Floor 8, Sheraton Al-Matar, Al-Nozha District, Cairo Governorate, Arab Republic of Egypt (CR 284691 · Tax 774034785).",
+    ],
   },
+
 ];
 
 const TermsPage = () => (
@@ -125,7 +144,7 @@ const TermsPage = () => (
     eyebrow="Legal"
     title="Terms of Service"
     subtitle="The contract that governs your use of Megsy AI — written in plain language wherever we can, and in precise legal language where we must."
-    lastUpdated="19 May 2026"
+    lastUpdated="27 July 2026"
     sections={sections}
     seoTitle="Terms of Service"
     seoDescription="Read the Megsy AI Terms of Service governing your account, credits, content rights, and use of the platform."

@@ -26,23 +26,33 @@ const columns: { title: string; links: LinkItem[] }[] = [
       { label: "Docs", href: "/docs" },
       { label: "Features Guide", href: "/features-guide" },
       { label: "Blog", href: "/blog" },
-      { label: "Megsy vs ChatGPT", href: "/vs/chatgpt" },
-      { label: "Megsy vs Midjourney", href: "/vs/midjourney" },
-      { label: "Megsy vs Lovable", href: "/vs/lovable" },
-    ],
-  },
-  {
-    title: "Company",
-    links: [
       { label: "About", href: "/about" },
       { label: "Support", href: "/support" },
       { label: "Contact", href: "/contact" },
-      { label: "Security", href: "/security" },
-      { label: "Terms", href: "/terms" },
-      { label: "Privacy", href: "/privacy" },
+    ],
+  },
+  {
+    title: "Legal",
+    links: [
+      { label: "Terms of Service", href: "/terms" },
+      { label: "Privacy Policy", href: "/privacy" },
+      { label: "Cookie Policy", href: "/cookies" },
+      { label: "Refund Policy", href: "/refund" },
+      { label: "Acceptable Use", href: "/policies/content" },
+      { label: "AI Disclaimer", href: "/legal/ai-disclaimer" },
+      { label: "DMCA / Copyright", href: "/legal/dmca" },
+      { label: "DPA (GDPR)", href: "/legal/dpa" },
+      { label: "Sub-processors", href: "/legal/subprocessors-full" },
+      { label: "Age Policy (18+)", href: "/legal/age-full" },
+      { label: "Content Moderation", href: "/legal/moderation-full" },
+      { label: "Accessibility", href: "/legal/accessibility-full" },
+      { label: "Compliance", href: "/legal/compliance-full" },
+      { label: "Affiliate Terms", href: "/legal/affiliate" },
+      { label: "Trust Center", href: "/trust" },
     ],
   },
 ];
+
 
 const VIDEO_SRC =
   "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260429_114316_1c7889ad-2885-410e-b493-98119fee0ddb.mp4";

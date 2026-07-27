@@ -66,7 +66,7 @@ const ModerationPage = () => (
     eyebrow="Trust & Safety"
     title="Content Moderation"
     subtitle="What we allow, what we never allow, and how we review reports — built for global compliance under the EU Digital Services Act and equivalent laws."
-    lastUpdated="May 19, 2026"
+    lastUpdated="July 27, 2026"
     sections={sections}
     seoTitle="Content Moderation Policy — Megsy AI"
     seoDescription="Megsy AI's content moderation policy: prohibited content, restricted categories, identity tools, reporting, enforcement, and appeals."

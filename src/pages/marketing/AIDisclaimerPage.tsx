@@ -59,7 +59,7 @@ const AIDisclaimerPage = () => (
     eyebrow="Legal"
     title="AI Disclaimer"
     subtitle="What AI-generated content is — and isn't. Your responsibilities when using Megsy's models, and the limits of what we promise."
-    lastUpdated="May 19, 2026"
+    lastUpdated="July 27, 2026"
     sections={sections}
     seoTitle="AI Content Disclaimer — Megsy AI"
     seoDescription="Important disclaimers about AI-generated content on Megsy AI: accuracy, prohibited uses, ownership, provenance, and high-risk restrictions."

@@ -40,7 +40,7 @@ const AgePolicyPage = () => (
     eyebrow="Trust & Safety"
     title="Age Policy"
     subtitle="Who can use Megsy AI, why we require adulthood, and how parents can manage access."
-    lastUpdated="May 19, 2026"
+    lastUpdated="July 27, 2026"
     sections={sections}
     seoTitle="Age & Eligibility Policy — Megsy AI"
     seoDescription="Megsy AI age requirements, sensitive-tool restrictions, and parental control guidance."

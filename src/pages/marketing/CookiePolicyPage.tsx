@@ -5,7 +5,7 @@ const sections: LegalSection[] = [
   {
     heading: "Data Controller",
     paragraphs: [
-      "The data controller is Megsy for Digital Platforms & E-Commerce Development LLC, registered in the Arab Republic of Egypt (CR 248691 · Tax 774034785).",
+      "The data controller is Megsy for Digital Platforms & E-Commerce Development LLC, registered in the Arab Republic of Egypt (CR 284691 · Tax 774034785).",
       "For any cookie or data-protection question, write to privacy@megsyai.com.",
     ],
   },
@@ -81,7 +81,7 @@ const CookiePolicyPage = () => (
     eyebrow="Privacy"
     title="Cookie Policy"
     subtitle="A plain-language guide to the cookies Megsy AI uses, why we use them, and how you can control them."
-    lastUpdated="19 May 2026"
+    lastUpdated="27 July 2026"
     sections={sections}
     seoTitle="Cookie Policy"
     seoDescription="How Megsy AI uses cookies, what categories exist, and how to manage your preferences under GDPR, CCPA and Egyptian law."

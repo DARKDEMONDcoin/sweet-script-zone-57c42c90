@@ -121,7 +121,7 @@ const LegalPageLayout = ({
             <br />
             Al-Nozha District, Cairo Governorate, Arab Republic of Egypt
             <br />
-            CR 248691 · Tax 774034785
+            CR 284691 · Tax 774034785
           </motion.p>
         </div>
       </section>
@@ -207,7 +207,7 @@ const LegalPageLayout = ({
                   Sheraton Al-Matar, Al-Nozha, Cairo, Egypt
                 </p>
                 <p className="mt-1 font-mono text-xs text-foreground/45">
-                  CR 248691 · Tax 774034785
+                  CR 284691 · Tax 774034785
                 </p>
               </div>
             </div>

@@ -31,7 +31,7 @@ const sections: LegalSection[] = [
   {
     heading: "Tax Compliance",
     paragraphs: [
-      "Megsy collects and remits VAT, GST, or sales tax where required by the laws of the country of consumption, either directly or through a merchant-of-record sub-processor. Egyptian tax registration number 774034785 and commercial registry number 248691 apply to invoices issued from our headquarters.",
+      "Megsy collects and remits VAT, GST, or sales tax where required by the laws of the country of consumption, either directly or through a merchant-of-record sub-processor. Egyptian tax registration number 774034785 and commercial registry number 284691 apply to invoices issued from our headquarters.",
     ],
   },
   {
@@ -54,7 +54,7 @@ const CompliancePage = () => (
     eyebrow="Governance"
     title="Compliance"
     subtitle="Sanctions, AML, anti-bribery, modern slavery, tax, and law-enforcement — the global rules we follow and how to engage us on them."
-    lastUpdated="May 19, 2026"
+    lastUpdated="July 27, 2026"
     sections={sections}
     seoTitle="Compliance Statement — Megsy AI"
     seoDescription="Megsy AI compliance with sanctions, AML, anti-bribery, modern slavery, and law-enforcement process worldwide."

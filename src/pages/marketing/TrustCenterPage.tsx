@@ -6,7 +6,7 @@ const sections: LegalSection[] = [
     heading: "Our Trust Commitment",
     paragraphs: [
       "Megsy AI serves creators, businesses, and enterprises worldwide. This Trust Center consolidates everything you need to evaluate Megsy for personal, regulated, or enterprise use — our compliance posture, third-party sub-processors, accessibility commitments, law-enforcement procedures, and annual transparency.",
-      "Megsy for Digital Platforms & E-Commerce Development LLC is registered in the Arab Republic of Egypt — Commercial Registry 248691, Tax ID 774034785. We comply with the laws of Egypt and with the cross-border requirements of every jurisdiction where our users reside.",
+      "Megsy for Digital Platforms & E-Commerce Development LLC is registered in the Arab Republic of Egypt — Commercial Registry 284691, Tax ID 774034785. We comply with the laws of Egypt and with the cross-border requirements of every jurisdiction where our users reside.",
     ],
   },
   {
@@ -143,7 +143,7 @@ const TrustCenterPage = () => (
     eyebrow="Trust Center"
     title="Trust & Compliance"
     subtitle="Compliance posture, security program, sub-processors, accessibility, and law-enforcement procedures for Megsy AI worldwide."
-    lastUpdated="19 May 2026"
+    lastUpdated="27 July 2026"
     sections={sections}
     seoTitle="Trust & Compliance Center — Megsy AI"
     seoDescription="Megsy AI Trust Center. GDPR, CCPA, LGPD, EU AI Act, PCI-DSS, sub-processors, accessibility, sanctions, and transparency reporting."
