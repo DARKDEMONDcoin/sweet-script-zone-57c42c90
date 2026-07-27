@@ -80,11 +80,11 @@ export default function BillingTab() {
       </div>
 
       <section className="relative p-6 rounded-2xl border border-border/60 bg-card overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-emerald-500/0 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-primary/0 to-transparent pointer-events-none" />
         <div className="relative">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-background ring-1 ring-emerald-500/20 grid place-items-center">
-              <Wallet className="w-4 h-4 text-emerald-500" />
+            <div className="w-8 h-8 rounded-xl bg-background ring-1 ring-primary/20 grid place-items-center">
+              <Wallet className="w-4 h-4 text-primary" />
             </div>
             <p className="text-[12px] uppercase tracking-wider text-muted-foreground/80 font-medium">
               Workspace balance

@@ -88,7 +88,7 @@ export default function MegsyOsIntroBody({
         className="md:hidden fixed inset-0 z-[81] bg-background flex flex-col"
       >
         {/* Header */}
-        <div className="shrink-0 px-4 pt-[calc(env(safe-area-inset-top)+0.875rem)] pb-4 border-b border-border/60 bg-background/95 backdrop-blur-md flex items-center gap-3">
+        <div className="shrink-0 px-4 pt-[calc(env(safe-area-inset-top)+0.875rem)] pb-4 border-b border-border/60 bg-background/95 flex items-center gap-3">
           <button
             onClick={() => onClose()}
             aria-label="Back"
@@ -124,14 +124,14 @@ export default function MegsyOsIntroBody({
             {features.map(({ t, d, role, icon: Icon }) => (
               <div
                 key={role}
-                className="shrink-0 w-[260px] snap-center flex flex-col rounded-2xl overflow-hidden border border-border/60 bg-card/70 backdrop-blur-sm p-5 gap-3"
+                className="shrink-0 w-[260px] snap-center flex flex-col rounded-2xl overflow-hidden border border-border/60 bg-card/70 p-5 gap-3"
               >
                 <div className="flex items-center justify-between">
                   <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold tracking-[0.18em] uppercase border border-border/60 bg-background/60 text-muted-foreground">
                     {role}
                   </span>
                   <div className="w-10 h-10 rounded-xl flex items-center justify-center border border-border/60 bg-background/60 text-primary">
-                    <Icon className="w-5 h-5" strokeWidth={2.2} />
+                    <Icon className="w-5 h-5" strokeWidth={1.8} />
                   </div>
                 </div>
                 <h3 className="text-[22px] leading-[1.05] tracking-tight uppercase font-bold text-foreground mt-1">
@@ -144,7 +144,7 @@ export default function MegsyOsIntroBody({
         </div>
 
         {/* Footer */}
-        <div className="shrink-0 px-5 pt-4 pb-[calc(env(safe-area-inset-bottom)+1rem)] border-t border-border/60 bg-background/95 backdrop-blur-md grid grid-cols-2 gap-3">
+        <div className="shrink-0 px-5 pt-4 pb-[calc(env(safe-area-inset-bottom)+1rem)] border-t border-border/60 bg-background/95 grid grid-cols-2 gap-3">
           <button
             onClick={() => onClose()}
             className="py-3.5 rounded-full bg-card/60 text-foreground border border-border/60 font-semibold text-[14px] hover:bg-accent hover:text-accent-foreground active:scale-[0.98] transition-all"
@@ -169,7 +169,7 @@ export default function MegsyOsIntroBody({
         className="hidden md:flex fixed inset-0 z-[81] items-center justify-center p-6 pointer-events-none"
       >
         <div
-          className="pointer-events-auto relative w-full max-w-[1100px] max-h-[92vh] overflow-y-auto rounded-3xl border border-border/60 bg-background/95 backdrop-blur-xl shadow-2xl text-foreground"
+          className="pointer-events-auto relative w-full max-w-[1100px] max-h-[92vh] overflow-y-auto rounded-3xl border border-border/60 bg-background/95 shadow-2xl text-foreground"
           dir="ltr"
         >
           <button
@@ -177,7 +177,7 @@ export default function MegsyOsIntroBody({
             aria-label="Close"
             className="absolute top-5 right-5 z-10 w-9 h-9 rounded-full flex items-center justify-center border border-border/60 bg-card/60 text-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
           >
-            <X className="w-4 h-4" strokeWidth={2.2} />
+            <X className="w-4 h-4" strokeWidth={1.8} />
           </button>
 
           {/* Hero */}
@@ -227,14 +227,14 @@ export default function MegsyOsIntroBody({
                   duration: 0.45,
                   ease: [0.22, 1, 0.36, 1],
                 }}
-                className={`group relative rounded-2xl border border-border/60 bg-card/60 backdrop-blur-sm p-5 flex flex-col gap-3 overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:border-border ${i === 0 ? "col-span-2" : ""} ${i === 4 ? "col-span-2" : ""}`}
+                className={`group relative rounded-2xl border border-border/60 bg-card/60 p-5 flex flex-col gap-3 overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:border-border ${i === 0 ? "col-span-2" : ""} ${i === 4 ? "col-span-2" : ""}`}
               >
                 <div className="flex items-center justify-between">
                   <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold tracking-[0.18em] uppercase border border-border/60 bg-background/60 text-muted-foreground">
                     {role}
                   </span>
                   <div className="w-10 h-10 rounded-xl flex items-center justify-center border border-border/60 bg-background/60 text-primary">
-                    <Icon className="w-5 h-5" strokeWidth={2.2} />
+                    <Icon className="w-5 h-5" strokeWidth={1.8} />
                   </div>
                 </div>
                 <h3 className="uppercase mt-1 text-[24px] leading-[1.02] tracking-tight font-bold text-foreground">

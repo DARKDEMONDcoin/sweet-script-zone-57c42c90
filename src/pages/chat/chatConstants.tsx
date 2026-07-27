@@ -70,6 +70,8 @@ export interface Message {
   };
   imageSlides?: { title: string; url: string; slideCount?: number };
   slidesOutline?: SlidesOutline;
+  /** Staged slides workflow state (plan → research → review → generate). */
+  slidesPlan?: import("@/lib/slides/planTypes").SlidesPlanState;
   slidesPendingTopic?: string;
   slidesJobId?: string;
   docsArtifact?: { artifactId: string; title: string; docType: string; html?: string };
@@ -79,6 +81,8 @@ export interface Message {
     originalPrompt: string;
     ui?: import("@/lib/agent/docs/types").DocsClarifyUi;
   };
+  /** Staged docs workflow state (plan → research → review → write). */
+  docsPlan?: import("@/lib/docs/planTypes").DocsPlanState;
   docsJobId?: string;
   chatJobId?: string;
   operatorRunId?: string;

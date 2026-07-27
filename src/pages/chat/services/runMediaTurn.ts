@@ -121,6 +121,10 @@ async function streamLyricsFromChatEdge({
 
 export interface RunMediaTurnArgs {
   text: string;
+  /** آخر صورة مولّدة في نفس المحادثة — تُستخدم تلقائيًا عند طلب تعديل. */
+  lastImageUrl?: string | null;
+  /** برومبت آخر صورة مولّدة، لدعم التعديل مع الحفاظ على السياق. */
+  lastImagePrompt?: string | null;
   userMsg: Message;
   localTurnId: string;
   chatMode: ChatMode;
@@ -154,6 +158,8 @@ export interface RunMediaTurnArgs {
 export async function runMediaTurn(args: RunMediaTurnArgs): Promise<void> {
   const {
     text,
+    lastImageUrl,
+    lastImagePrompt,
     userMsg,
     localTurnId,
     chatMode,
@@ -254,9 +260,109 @@ export async function runMediaTurn(args: RunMediaTurnArgs): Promise<void> {
         ],
       };
     } else {
-      // Direct generation — no LLM planner. Use the user's text verbatim as
-      // the prompt for every scene, honoring the count from MediaSettings.
+      // وضع الصور: يمر كل طلب على "الروبوت الداخلي" الذي يحسّن البرومبت،
+      // ويستحضر هوية أي شخصية محفوظة، ويكتشف نية التعديل على آخر صورة
+      // مولّدة فيرفقها داخليًا بدون أن يعيد المستخدم إرفاق الصورة.
+      let scenePrompt = text;
+      let referenceImage: string | undefined;
+      let identityDescriptor: string | undefined;
+      if (modeLocal === "images" && text?.trim()) {
+        try {
+          const [{ enhanceImagePrompt, composeImagePrompt, detectImageEditIntent }, { findMentionedCharacter }] =
+            await Promise.all([
+              import("@/lib/media/imageBrain"),
+              import("@/lib/media/characterMemory"),
+            ]);
+          const character = findMentionedCharacter(text);
+          identityDescriptor = character?.descriptor;
+          const isEdit = detectImageEditIntent(text) && !!lastImageUrl;
+          if (isEdit) referenceImage = lastImageUrl || undefined;
+          if (!referenceImage && character?.refUrl) referenceImage = character.refUrl;
+          const enhanced = await enhanceImagePrompt({
+            text,
+            identity: identityDescriptor,
+            editOf: isEdit ? lastImagePrompt || undefined : undefined,
+          });
+          scenePrompt = composeImagePrompt({
+            enhanced,
+            identity: identityDescriptor,
+            editInstruction: isEdit ? text : undefined,
+          });
+        } catch {
+          scenePrompt = text;
+        }
+      }
       const count = settings.count ?? 1;
+      let planned = false;
+
+      // وضع الفيديو: خطة مسبقة تفهم الشخصية/المنتج والمشاهد والسيناريو الممتد،
+      // مع نمط UGC اختياري وأبعاد إضافية لنفس الفيديو.
+      if (modeLocal === "video" && text?.trim()) {
+        try {
+          const [{ planVideoStory }, { loadVideoTools, UGC_STYLE_PROMPT }] = await Promise.all([
+            import("@/lib/media/videoPlanner"),
+            import("@/lib/media/videoTools"),
+          ]);
+          const tools = loadVideoTools();
+          const perShot = settings.duration ?? videoDurationSec;
+          const story = await planVideoStory({
+            text,
+            sceneCount: count,
+            durationSec: perShot,
+            ugc: tools.ugc,
+          });
+          if (story) {
+            const aspects = [aspectRatio, ...tools.extraAspects.filter((a) => a !== aspectRatio)];
+            const storyScenes: any[] = [];
+            let idx = 0;
+            for (const aspect of aspects) {
+              for (const sc of story.scenes) {
+                idx += 1;
+                storyScenes.push({
+                  index: idx,
+                  title: aspects.length > 1 ? `${sc.title} · ${aspect}` : sc.title,
+                  prompt: [
+                    story.identity ? `Consistent subject (must look identical in every shot): ${story.identity}` : "",
+                    sc.prompt,
+                    tools.ugc ? UGC_STYLE_PROMPT : "",
+                  ]
+                    .filter(Boolean)
+                    .join(" "),
+                  duration_seconds: sc.duration_seconds || perShot,
+                  aspect_ratio: aspect,
+                  identity: story.identity,
+                });
+              }
+            }
+            setIsThinking(false);
+            plan = {
+              mode: "video",
+              modelSlug: modelLocal.slug,
+              modelName: modelLocal.name,
+              summary: story.storyline || text,
+              originalPrompt: text,
+              storyline: story.storyline,
+              identity: story.identity,
+              ugc: tools.ugc,
+              aspectRatio,
+              aspectRatios: aspects,
+              scenes: storyScenes,
+              estimatedTotalSeconds: storyScenes.reduce(
+                (acc, s) => acc + (s.duration_seconds || perShot),
+                0,
+              ),
+            };
+            planned = true;
+          }
+        } catch {
+          // فشل التخطيط: نكمل بالمسار المباشر.
+        }
+      }
+
+      if (planned) {
+        // الخطة المعتمدة جاهزة، لا نعيد بناءها.
+      } else {
+      // Direct generation — no LLM planner.
       const scenes = Array.from({ length: count }, (_, i) => ({
         index: i + 1,
         title:
@@ -265,7 +371,9 @@ export async function runMediaTurn(args: RunMediaTurnArgs): Promise<void> {
               ? `Clip ${i + 1}`
               : `Image ${i + 1}`
             : "Your prompt",
-        prompt: text,
+        prompt: scenePrompt,
+        ...(referenceImage ? { reference_image_url: referenceImage, image_url: referenceImage } : {}),
+        ...(identityDescriptor ? { identity: identityDescriptor } : {}),
         ...(modeLocal === "video"
           ? { duration_seconds: settings.duration ?? videoDurationSec }
           : {}),
@@ -275,6 +383,7 @@ export async function runMediaTurn(args: RunMediaTurnArgs): Promise<void> {
         modelSlug: modelLocal.slug,
         modelName: modelLocal.name,
         summary: text,
+        originalPrompt: text,
         aspectRatio,
         scenes,
         ...(modeLocal === "video"
@@ -284,6 +393,7 @@ export async function runMediaTurn(args: RunMediaTurnArgs): Promise<void> {
             }
           : {}),
       };
+      }
     }
 
 

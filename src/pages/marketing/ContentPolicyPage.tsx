@@ -162,7 +162,7 @@ const ContentPolicyPage = () => (
     eyebrow="Trust & Safety"
     title="Content Policy"
     subtitle="One unified policy covering acceptable use, content moderation, age requirements, and how we keep Megsy safe for the entire world."
-    lastUpdated="19 May 2026"
+    lastUpdated="27 July 2026"
     sections={sections}
     seoTitle="Content Policy — Megsy AI"
     seoDescription="Unified Acceptable Use, Moderation and Age Policy for Megsy AI. Zero tolerance for CSAM, non-consensual deepfakes, fraud, and abuse."

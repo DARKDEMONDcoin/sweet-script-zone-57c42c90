@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Download, FileText, ExternalLink, ImageIcon, Film, Files, Presentation, Search } from "lucide-react";
+import { Spinner } from "@/components/ui/spinner";
 import { supabase } from "@/integrations/supabase/client";
 import { getUserSafe } from "@/lib/authSafe";
 import MobilePushShell from "@/components/layout/MobilePushShell";
@@ -410,9 +411,9 @@ export default function LibraryPage() {
       onNewChat={() => navigate("/")}
       currentMode="chat"
     >
-      <div className="min-h-[100dvh] w-full bg-black font-body text-brand-parchment">
+      <div className="min-h-[100dvh] w-full bg-background font-body text-foreground">
         {/* Header */}
-        <header className="sticky top-0 z-nav border-b border-white/10 bg-black/95 backdrop-blur-3xl">
+        <header className="sticky top-0 z-nav border-b border-border/10 bg-background/95">
 
           <div className="mx-auto flex h-14 w-full max-w-5xl items-center gap-3 px-4 safe-top">
             <MobileSidebarButton onClick={() => setSidebarOpen(true)} />
@@ -424,15 +425,26 @@ export default function LibraryPage() {
         {/* Body */}
         <main className="mx-auto w-full max-w-5xl px-4 pb-24 pt-4 safe-bottom">
           {loading ? (
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
-              {Array.from({ length: 8 }).map((_, i) => (
-                <div
-                  key={i}
-                  className="aspect-square animate-pulse rounded-ios-lg bg-surface-2"
-                />
-              ))}
+            <div className="flex flex-col items-center justify-center gap-3 py-24 text-muted-foreground">
+              <Spinner className="h-5 w-5" />
+              <p className="text-[13px]">Loading your library…</p>
+            </div>
+          ) : images.length === 0 && videos.length === 0 && docs.length === 0 ? (
+            <div className="flex flex-col items-center justify-center gap-2 py-24 text-center">
+              <Files className="h-6 w-6 text-muted-foreground" strokeWidth={1.8} />
+              <p className="text-[15px] font-medium text-foreground">Your library is empty</p>
+              <p className="max-w-xs text-[13px] text-muted-foreground">
+                Images, videos and files you create in chat will show up here.
+              </p>
+              <button
+                onClick={() => navigate("/chat")}
+                className="mt-3 rounded-full border border-border/60 bg-card/60 px-4 py-1.5 text-[13px] font-medium text-foreground transition-colors hover:bg-muted/60"
+              >
+                Start a chat
+              </button>
             </div>
           ) : (
+
             <div className="flex flex-col gap-8">
               <Section title="Images" icon={ImageIcon} count={images.length}>
                 {images.length > 0 ? (
@@ -503,7 +515,7 @@ export default function LibraryPage() {
 
 function InlineEmpty({ label }: { label: string }) {
   return (
-    <div className="rounded-ios-lg border border-dashed border-surface-4 bg-surface-2/40 p-6 text-center text-[12px] text-brand-muted">
+    <div className="rounded-2xl border border-dashed border-border/50 bg-muted/30 p-6 text-center text-[12px] text-muted-foreground">
       {label}
     </div>
   );
@@ -522,7 +534,7 @@ function ShowMoreButton({
     <div className="mt-3 flex justify-center">
       <button
         onClick={onToggle}
-        className="rounded-full border border-surface-4 bg-surface-2 px-4 py-1.5 text-[12px] font-medium text-brand-parchment hover:bg-surface-3 hover:border-brand-action/40 transition"
+        className="rounded-full border border-border/50 bg-card/60 px-4 py-1.5 text-[12px] font-medium text-foreground hover:bg-muted/50 hover:border-border transition"
       >
         {expanded ? "Show less" : `Show ${remaining} more`}
       </button>
@@ -543,11 +555,11 @@ function Section({
 }) {
   return (
     <section>
-      <div className="mb-3 flex items-center gap-2 text-brand-muted">
+      <div className="mb-3 flex items-center gap-2 text-muted-foreground">
         <Icon className="h-4 w-4" />
         <h2 className="text-[13px] font-semibold uppercase tracking-wide">{title}</h2>
         {typeof count === "number" && (
-          <span className="ml-auto rounded-full bg-surface-2 px-2 py-0.5 text-[11px] font-medium text-brand-parchment">
+          <span className="ml-auto rounded-full bg-card/60 px-2 py-0.5 text-[11px] font-medium text-foreground">
             {count}
           </span>
         )}
@@ -571,9 +583,9 @@ function MediaGrid({
       {items.map((it) => (
         <div
           key={it.id}
-          className="group relative overflow-hidden rounded-ios-lg border border-surface-4 bg-surface-2 transition hover:-translate-y-0.5 hover:border-surface-4/80 hover:shadow-lg"
+          className="group relative overflow-hidden rounded-2xl border border-border/50 bg-card/60 transition hover:border-border"
         >
-          <div className="relative aspect-square w-full bg-surface-1">
+          <div className="relative aspect-square w-full bg-muted/30">
             {kind === "image" ? (
               <img
                 src={it.url}
@@ -595,7 +607,7 @@ function MediaGrid({
           <div className="flex items-center justify-between gap-2 p-2.5">
             <button
               onClick={() => onOpenChat(it.conversationId)}
-              className="min-w-0 flex-1 truncate text-left text-[12px] font-medium text-brand-parchment hover:text-brand-action transition"
+              className="min-w-0 flex-1 truncate text-left text-[12px] font-medium text-foreground hover:text-foreground transition"
               title={it.conversationTitle}
             >
               {it.conversationTitle}
@@ -605,7 +617,7 @@ function MediaGrid({
               target="_blank"
               rel="noreferrer"
               download
-              className="grid h-7 w-7 place-items-center rounded-full bg-surface-3 text-brand-parchment hover:bg-brand-action hover:text-white transition"
+              className="grid h-7 w-7 place-items-center rounded-full bg-muted/50 text-foreground hover:bg-muted/70 transition"
               aria-label="Download"
             >
               <Download className="h-3.5 w-3.5" />
@@ -644,27 +656,27 @@ function DocsList({
         return (
           <div
             key={d.id}
-            className="flex items-center gap-3 rounded-ios-lg border border-surface-4 bg-surface-2 p-3 transition hover:-translate-y-0.5 hover:border-surface-4/80 hover:shadow-lg"
+            className="flex items-center gap-3 rounded-2xl border border-border/50 bg-card/60 p-3 transition hover:border-border"
           >
-            <div className="grid h-12 w-12 shrink-0 place-items-center rounded-ios-md bg-surface-3 text-brand-parchment">
+            <div className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-muted/50 text-foreground">
               <Icon className="h-5 w-5" />
             </div>
             <div className="min-w-0 flex-1">
               <button
                 onClick={() => openItem(d)}
-                className="block w-full truncate text-left text-sm font-semibold text-brand-parchment hover:text-brand-action transition"
+                className="block w-full truncate text-left text-sm font-semibold text-foreground hover:text-foreground transition"
                 title={d.title}
               >
                 {d.title}
               </button>
-              <div className="flex min-w-0 items-center gap-1.5 text-xs text-brand-muted">
-                <span className="rounded-full bg-surface-3 px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide">
+              <div className="flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground">
+                <span className="rounded-full bg-muted/50 px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide">
                   {labelFor(d.kind)}
                 </span>
                 {d.conversationId ? (
                   <button
                     onClick={() => onOpenChat(d.conversationId)}
-                    className="min-w-0 flex-1 truncate hover:text-brand-action transition text-left"
+                    className="min-w-0 flex-1 truncate hover:text-foreground transition text-left"
                     title={d.conversationTitle}
                   >
                     {d.conversationTitle}
@@ -676,7 +688,7 @@ function DocsList({
             </div>
             <button
               onClick={() => openItem(d)}
-              className="grid h-9 w-9 place-items-center rounded-full bg-surface-3 text-brand-parchment hover:bg-brand-action hover:text-white transition"
+              className="grid h-9 w-9 place-items-center rounded-full bg-muted/50 text-foreground hover:bg-muted/70 transition"
               aria-label="Open"
             >
               <ExternalLink className="h-4 w-4" />

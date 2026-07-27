@@ -32,9 +32,9 @@ import ErrorBoundary, { RouteErrorBoundary } from "@/components/common/ErrorBoun
 // shared chunks. Loading them lazily keeps the `icons` (~595 KB) and
 // `motion` (~265 KB) chunks OUT of the initial landing-page preload
 // waterfall — they only download after the app becomes interactive.
-const OfflineBanner = lazy(() => import("@/components/common/OfflineBanner"));
-const CookieConsent = lazy(() => import("./components/common/CookieConsent"));
-import PwaSplash from "./components/common/PwaSplash";
+import PWAUpdater from "./components/pwa/PWAUpdater";
+import InstallPrompt from "./components/pwa/InstallPrompt";
+
 import TranslationWrapper from "./components/common/TranslationWrapper";
 import AmbientBackground from "./components/common/AmbientBackground";
 const UnlimitedPromoBanner = lazy(() => import("./components/promo/UnlimitedPromoBanner"));
@@ -63,6 +63,7 @@ const LandingPage = lazy(() => import("./pages/marketing/LandingPage"));
 
 // Lazy-loaded auth + chat (huge bundles, not needed on landing)
 const AuthPage = lazy(() => import("./pages/auth/AuthPage"));
+const WelcomeShowcasePage = lazy(() => import("./pages/onboarding/WelcomeShowcasePage"));
 const OAuthCallbackPage = lazy(() => import("./pages/auth/OAuthCallbackPage"));
 const ChatPage = lazy(() => import("./pages/chat/ChatPage"));
 const AgentPage = lazy(() => import("./pages/agent/AgentPage"));
@@ -106,6 +107,7 @@ const IntegrationsPage = lazy(() => import("./pages/integrations/IntegrationsPag
 const IntegrationDetailPage = lazy(() => import("./pages/integrations/IntegrationDetailPage"));
 const IntegrationAppTest = lazy(() => import("./pages/integrations/IntegrationAppTest"));
 const McpSettingsPage = lazy(() => import("./pages/settings/McpSettingsPage"));
+const PipedreamToolsPage = lazy(() => import("./pages/settings/PipedreamToolsPage"));
 
 const LibraryPage = lazy(() => import("./pages/library/LibraryPage"));
 const NotFound = lazy(() => import("./pages/misc/NotFound"));
@@ -137,6 +139,7 @@ const IndustryPage = lazy(() => import("./pages/seo/IndustryPage"));
 const ComparePage = lazy(() => import("./pages/seo/ComparePage"));
 const TemplatesCategoryPage = lazy(() => import("./pages/seo/TemplatesCategoryPage"));
 const ModelsHubPage = lazy(() => import("./pages/seo/ModelsHubPage"));
+const ModelVersusPage = lazy(() => import("./pages/seo/ModelVersusPage"));
 const ModelPage = lazy(() => import("./pages/seo/ModelPage"));
 const ModelForIndustryPage = lazy(() => import("./pages/seo/ModelForIndustryPage"));
 const ModelInCityPage = lazy(() => import("./pages/seo/ModelInCityPage"));
@@ -159,6 +162,20 @@ const AccessibilityPage = lazy(() => import("./pages/marketing/AccessibilityPage
 const CompliancePage = lazy(() => import("./pages/marketing/CompliancePage"));
 const ContentPolicyPage = lazy(() => import("./pages/marketing/ContentPolicyPage"));
 const TrustCenterPage = lazy(() => import("./pages/marketing/TrustCenterPage"));
+const ImprintPage = lazy(() => import("./pages/marketing/ImprintPage"));
+const DoNotSellPage = lazy(() => import("./pages/marketing/DoNotSellPage"));
+const TransparencyReportPage = lazy(() => import("./pages/marketing/TransparencyReportPage"));
+const LawEnforcementPage = lazy(() => import("./pages/marketing/LawEnforcementPage"));
+const ResponsibleDisclosurePage = lazy(() => import("./pages/marketing/ResponsibleDisclosurePage"));
+const ChildrenPrivacyPage = lazy(() => import("./pages/marketing/ChildrenPrivacyPage"));
+const EULAPage = lazy(() => import("./pages/marketing/EULAPage"));
+const SLAPage = lazy(() => import("./pages/marketing/SLAPage"));
+const DataRetentionPage = lazy(() => import("./pages/marketing/DataRetentionPage"));
+const DataDeletionPage = lazy(() => import("./pages/marketing/DataDeletionPage"));
+const CommunityGuidelinesPage = lazy(() => import("./pages/marketing/CommunityGuidelinesPage"));
+const ModernSlaveryPage = lazy(() => import("./pages/marketing/ModernSlaveryPage"));
+const AITrainingPage = lazy(() => import("./pages/marketing/AITrainingPage"));
+const BetaTermsPage = lazy(() => import("./pages/marketing/BetaTermsPage"));
 const SecurityPage = lazy(() => import("./pages/settings/SecurityPage"));
 const SupportPage = lazy(() => import("./pages/marketing/SupportPage"));
 const EnterprisePage = lazy(() => import("./pages/marketing/EnterprisePage"));
@@ -167,6 +184,7 @@ const MegsyModelPage = lazy(() => import("./pages/marketing/MegsyModelPage"));
 const BlogPage = lazy(() => import("./pages/marketing/BlogPage"));
 const BlogPostPage = lazy(() => import("./pages/marketing/BlogPostPage"));
 const ComparisonPage = lazy(() => import("./pages/marketing/ComparisonPage"));
+const VersusRouter = lazy(() => import("./pages/seo/VersusRouter"));
 const DocsPage = lazy(() => import("./pages/marketing/DocsPage"));
 const MarketingDashboard = lazy(() => import("./pages/marketing-automation/MarketingDashboard"));
 const SlidesPreviewPage = lazy(() => import("./pages/SlidesPreviewPage"));
@@ -219,11 +237,10 @@ const AcceptWorkspaceInvitePage = lazy(() => import("./pages/auth/AcceptWorkspac
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      // Reduce loading flashes when navigating between pages — cached data
-      // is considered fresh for 5 minutes and kept in memory for 30 minutes,
-      // and we don't refetch on every window/tab focus.
+      // Cached data stays fresh for 5 minutes and lives 24h in cache so the
+      // persisted localStorage snapshot can rehydrate instantly on next visit.
       staleTime: 5 * 60 * 1000,
-      gcTime: 30 * 60 * 1000,
+      gcTime: 24 * 60 * 60 * 1000,
       refetchOnWindowFocus: false,
       refetchOnReconnect: false,
       retry: 1,
@@ -231,15 +248,33 @@ const queryClient = new QueryClient({
   },
 });
 
+
 import PageLoader from "@/components/common/PageLoader";
 import SplashFallback from "@/components/common/SplashFallback";
 import PageTransition from "@/components/common/PageTransition";
-// Suspense fallback used for BOTH the first-load splash and in-app route
-// transitions — the PageLoader skeleton matches the app chrome so there's
-// no jarring flash whether the app is starting cold or moving between pages.
-const LazyFallback = () => <PageLoader />;
-// Kept imported so the legacy pre-hydration splash chunk stays available.
+import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
+import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persister";
+// Instant open: no visual loader between routes. The previous page stays on
+// screen while the next chunk loads (usually <100ms once cached), so the app
+// feels native and never flashes a skeleton. PageLoader/SplashFallback are
+// kept imported so the legacy chunks remain available if referenced elsewhere.
+const LazyFallback = () => null;
+void PageLoader;
 void SplashFallback;
+
+// Persist react-query cache to localStorage so returning visitors see cached
+// data instantly on load. Buster is tied to the build id, so every new deploy
+// automatically invalidates the old cache — no stale content survives updates.
+// We only persist successful, non-sensitive queries; auth/session queries opt
+// out via queryKey convention (keys starting with "auth"/"session"/"secret").
+const queryPersister = typeof window !== "undefined"
+  ? createSyncStoragePersister({
+      storage: window.localStorage,
+      key: "megsy.qcache.v1",
+      throttleTime: 1000,
+    })
+  : undefined;
+
 
 // Renders routes directly (no useDeferredValue) so navigations show the
 // LazyFallback / PageLoader between pages instead of freezing the old page.
@@ -532,15 +567,19 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation();
 
   if (!state.resolved) return <LazyFallback />;
-  if (!state.authenticated) return <Navigate to={pathForZone("/auth", location.pathname)} replace />;
+  if (!state.authenticated) {
+    // Preserve the intended destination so the user lands where they meant
+    // to go right after signing in, instead of being dumped on /chat.
+    const next = encodeURIComponent(location.pathname + location.search);
+    return <Navigate to={`${pathForZone("/auth", location.pathname)}?next=${next}`} replace />;
+  }
   return <>{children}</>;
 };
 
 // Root route:
 // - Signed-in users → ChatPage.
-// - Guests (desktop AND mobile) → LandingPage. This prevents the "empty black
-//   chat page" first-open experience for guests on phones/PWA installs.
-//   Chat is still reachable directly via /chat once signed in.
+// - Guests → /auth, which shows the welcome showcase on mobile before the
+//   sign in / sign up screens (instead of an empty black chat page).
 const RootRoute = ({ authedElement }: { authedElement: React.ReactNode }) => {
   bootstrapAuth();
   const [state, setState] = useState(cachedAuthState);
@@ -553,11 +592,46 @@ const RootRoute = ({ authedElement }: { authedElement: React.ReactNode }) => {
     };
   }, []);
 
-  // No landing page: send every visitor straight into the app.
   void authedElement;
   if (!state.resolved) return <LazyFallback />;
+  if (!state.authenticated) return <Navigate to="/auth" replace />;
   return <Navigate to="/chat" replace />;
 };
+
+/**
+ * Chat is usable only when signed in — guests are sent to /auth so they get
+ * the welcome showcase → sign up flow instead of a blank chat surface.
+ */
+const GuestToAuth = ({ children }: { children: React.ReactNode }) => {
+  bootstrapAuth();
+  const location = useLocation();
+  const [state, setState] = useState(cachedAuthState);
+  useEffect(() => {
+    setState(cachedAuthState);
+    const cb = (s: typeof cachedAuthState) => setState(s);
+    authListeners.add(cb);
+    return () => {
+      authListeners.delete(cb);
+    };
+  }, []);
+
+  if (!state.resolved) return <LazyFallback />;
+  if (!state.authenticated) {
+    // Keep the requested destination (e.g. /chat?conv=<id> opened from the
+    // sidebar) so the user lands back on that exact record after signing in.
+    const dest = `${location.pathname}${location.search}`;
+    const next = dest && dest !== "/" && !dest.startsWith("/auth") ? dest : "";
+    return (
+      <Navigate
+        to={next ? `/auth?next=${encodeURIComponent(next)}` : "/auth"}
+        replace
+        state={location.state}
+      />
+    );
+  }
+  return <>{children}</>;
+};
+
 
 
 
@@ -567,17 +641,21 @@ const App = () => {
 
   useEffect(() => {
     const applyTheme = (theme: string) => {
-      document.documentElement.setAttribute("data-theme", theme);
-      // Toggle Tailwind `dark` class so `dark:` variants and any `.dark` rules apply
-      const isDark = theme === "dark" || theme === "ocean";
-      document.documentElement.classList.toggle("dark", isDark);
-      document.documentElement.style.colorScheme = isDark ? "dark" : "light";
+      // Light theme is removed — the app is dark-only.
+      const safeTheme = theme === "light" ? "dark" : theme;
+      document.documentElement.setAttribute("data-theme", safeTheme);
+      document.documentElement.classList.add("dark");
+      document.documentElement.style.colorScheme = "dark";
     };
-    // Allow `?theme=dark|light|ocean|sunset` URL override (also persists)
-    const urlTheme = new URLSearchParams(window.location.search).get("theme");
-    const savedTheme = urlTheme || localStorage.getItem("theme") || "dark";
+    // Allow `?theme=dark|ocean|sunset` URL override (also persists)
+    const urlThemeRaw = new URLSearchParams(window.location.search).get("theme");
+    const urlTheme = urlThemeRaw === "light" ? null : urlThemeRaw;
+    const stored = localStorage.getItem("theme");
+    const savedTheme = urlTheme || (stored && stored !== "light" ? stored : "dark");
     if (urlTheme) localStorage.setItem("theme", urlTheme);
+    if (stored === "light") localStorage.setItem("theme", "dark");
     applyTheme(savedTheme);
+
     const savedAccent = localStorage.getItem("accent");
     if (savedAccent) document.documentElement.style.setProperty("--primary", savedAccent);
 
@@ -666,7 +744,37 @@ const App = () => {
 
   return (
     <TranslationWrapper>
-      <QueryClientProvider client={queryClient}>
+      <PersistQueryClientProvider
+        client={queryClient}
+        persistOptions={{
+          persister: queryPersister!,
+          // buster ties the persisted cache to the current build — every new
+          // deploy invalidates the old cached pages automatically so the site
+          // is always up to date without leaking stale content.
+          buster: __BUILD_ID__,
+          maxAge: 24 * 60 * 60 * 1000,
+          dehydrateOptions: {
+            // Never persist auth/session/user queries or failed ones — this
+            // keeps sensitive data out of localStorage while still caching
+            // safe, public content (pages, lists, marketing data, etc).
+            shouldDehydrateQuery: (q) => {
+              if (q.state.status !== "success") return false;
+              const key = String(q.queryKey?.[0] ?? "").toLowerCase();
+              if (
+                key.startsWith("auth") ||
+                key.startsWith("session") ||
+                key.startsWith("secret") ||
+                key.startsWith("user") ||
+                key.startsWith("profile") ||
+                key.startsWith("credits") ||
+                key.startsWith("billing")
+              )
+                return false;
+              return true;
+            },
+          },
+        }}
+      >
         <TooltipProvider>
           <ErrorBoundary>
             {/* Toast notifications globally disabled */}
@@ -674,14 +782,15 @@ const App = () => {
               <ZoneProvider>
               <PromoBannerProvider>
                 <ConfirmProvider>
-                  <PwaSplash />
+                  <PWAUpdater />
+                  <InstallPrompt />
+
                   <ScrollToTop />
                   <InternalLinkInterceptor />
                   <DodoReturnRedirect />
                   <AmbientBackground />
                   
-                  <OfflineBanner />
-                  <CookieConsent />
+                  
                   <MobileSettingsTheme />
                   <CommandPalette />
                   <ShortcutsHelp />
@@ -699,6 +808,7 @@ const App = () => {
                           <Route path="/signup" element={<AuthPage />} />
                           <Route path="/sign-up" element={<AuthPage />} />
                           <Route path="/register" element={<AuthPage />} />
+                          <Route path="/welcome" element={<WelcomeShowcasePage />} />
                           <Route path="/auth/callback/:provider" element={<OAuthCallbackPage />} />
                           <Route path="/oauth/authorize" element={<OAuthAuthorizePage />} />
                           <Route path="/reset-password" element={<ResetPasswordPage />} />
@@ -847,6 +957,20 @@ const App = () => {
                           <Route path="/legal/subprocessors-full" element={<SubprocessorsPage />} />
                           <Route path="/legal/accessibility-full" element={<AccessibilityPage />} />
                           <Route path="/legal/compliance-full" element={<CompliancePage />} />
+                          <Route path="/legal/imprint" element={<ImprintPage />} />
+                          <Route path="/legal/do-not-sell" element={<DoNotSellPage />} />
+                          <Route path="/legal/transparency" element={<TransparencyReportPage />} />
+                          <Route path="/legal/law-enforcement" element={<LawEnforcementPage />} />
+                          <Route path="/legal/responsible-disclosure" element={<ResponsibleDisclosurePage />} />
+                          <Route path="/legal/children" element={<ChildrenPrivacyPage />} />
+                          <Route path="/legal/eula" element={<EULAPage />} />
+                          <Route path="/legal/sla" element={<SLAPage />} />
+                          <Route path="/legal/retention" element={<DataRetentionPage />} />
+                          <Route path="/legal/data-deletion" element={<DataDeletionPage />} />
+                          <Route path="/legal/community" element={<CommunityGuidelinesPage />} />
+                          <Route path="/legal/modern-slavery" element={<ModernSlaveryPage />} />
+                          <Route path="/legal/ai-training" element={<AITrainingPage />} />
+                          <Route path="/legal/beta" element={<BetaTermsPage />} />
                           <Route path="/support" element={<SupportPage />} />
                           <Route path="/security" element={<SecurityPage />} />
                           <Route path="/enterprise" element={<EnterprisePage />} />
@@ -857,15 +981,15 @@ const App = () => {
                           A non-language path segment falls through to the catch-all NotFound below. */}
                           <Route path="/:lang/blog" element={<BlogPage />} />
                           <Route path="/:lang/blog/:slug" element={<BlogPostPage />} />
-                          <Route path="/vs/:slug" element={<ComparisonPage />} />
+                          <Route path="/vs/:slug" element={<VersusRouter />} />
 
                           {/* Sharing */}
                           <Route path="/share/:shareId" element={<SharedChatPage />} />
                           <Route path="/invite/:token" element={<AcceptInvitePage />} />
 
                           {/* Chat — public, anonymous can browse and send */}
-                          <Route path="/chat" element={<ChatPage key={currentUserId} />} />
-                          <Route path="/index" element={<ChatPage key={currentUserId} />} />
+                          <Route path="/chat" element={<GuestToAuth><ChatPage key={currentUserId} /></GuestToAuth>} />
+                          <Route path="/index" element={<GuestToAuth><ChatPage key={currentUserId} /></GuestToAuth>} />
                           <Route path="/agent" element={<AgentPage />} />
                           <Route path="/agent/devtools" element={<AgentDevToolsPage />} />
 
@@ -900,6 +1024,7 @@ const App = () => {
                             path="/templates/:category/for/:industry"
                             element={<TemplateForIndustryPage />}
                           />
+                          <Route path="/:lang/vs/:pair" element={<ModelVersusPage />} />
                           <Route path="/models" element={<ModelsHubPage />} />
                           <Route path="/models/:slug" element={<ModelPage />} />
                           <Route
@@ -1108,6 +1233,14 @@ const App = () => {
                             element={
                               <ProtectedRoute>
                                 <McpSettingsPage />
+                              </ProtectedRoute>
+                            }
+                          />
+                          <Route
+                            path="/settings/pipedream-tools"
+                            element={
+                              <ProtectedRoute>
+                                <PipedreamToolsPage />
                               </ProtectedRoute>
                             }
                           />
@@ -1415,7 +1548,7 @@ const App = () => {
             <Suspense fallback={null}><SpeedInsights /></Suspense>
           </ErrorBoundary>
         </TooltipProvider>
-      </QueryClientProvider>
+      </PersistQueryClientProvider>
     </TranslationWrapper>
   );
 };

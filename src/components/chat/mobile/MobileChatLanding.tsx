@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { m as motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, ArrowUp, Check, Plus, Loader2 } from "lucide-react";
+import { ChevronDown, ArrowUp, Check, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import Claude from "@lobehub/icons/es/Claude";
@@ -16,6 +16,7 @@ import {
 import { MEGSY_TYPING_PHRASES, pickMegsyPhrase } from "./megsyPhrases";
 import MobileOnboardingTour from "./MobileOnboardingTour";
 import MegsyStar from "@/components/files/MegsyStar";
+import { ChatEmptyState } from "@/components/chat/ChatEmptyState";
 
 export type LandingChipId = "image" | "video" | "website";
 
@@ -133,6 +134,7 @@ import MEGSY_ICON_URL from "@/assets/megsy-model-icon.png";
 import { useBrandLogo } from "@/hooks/useBrandLogo";
 import { t as uiT, useUserLang } from "@/lib/authI18n";
 import { MEGSY_CHAT_MODEL_LABEL } from "@/lib/megsyModelDisplay";
+import { Spinner } from "@/components/ui/spinner";
 const MegsyIcon = () => {
   const logo = useBrandLogo();
   // Prefer configured Megsy logo but fall back to default if unset.
@@ -389,9 +391,9 @@ const PIPEDREAM_SLUGS: Record<string, string> = {
   stripe: "stripe",
   x: "twitter",
   instagram: "instagram_business",
-  youtube: "youtube_data_api",
+  youtube: "youtube",
   telegram: "telegram_bot_api",
-  supabase: "supabase_management_api",
+  supabase: "supabase",
 };
 
 // Inline brand SVG paths (white, single-color) for icons where CDN fails or for reliability.
@@ -519,7 +521,7 @@ const MobileChatLanding = ({
   const fetchConnected = useCallback(async (): Promise<Set<string>> => {
     const next = new Set<string>();
     const [pd, gh] = await Promise.all([
-      supabase.functions.invoke("pipedream-connect", { body: { action: "list_accounts" } }),
+      supabase.functions.invoke("pipedream", { body: { action: "list_accounts" } }),
       supabase.functions.invoke("github-push", { body: { action: "status" } }),
     ]);
     const accounts = (pd.data?.accounts ?? []) as Array<{
@@ -574,7 +576,7 @@ const MobileChatLanding = ({
         // Pipedream Connect — real account linking
         const slug = PIPEDREAM_SLUGS[it.id];
         if (!slug) throw new Error(`${it.name} is not available yet`);
-        const { data, error } = await supabase.functions.invoke("pipedream-connect", {
+        const { data, error } = await supabase.functions.invoke("pipedream", {
           body: { action: "create_token", redirect_origin: window.location.origin },
         });
         if (data?.configured === false) {
@@ -727,52 +729,17 @@ const MobileChatLanding = ({
       >
         <div className="min-h-[calc(100dvh-220px)] flex flex-col items-center justify-center text-center">
           <div className="flex flex-col items-center justify-center gap-5 w-full max-w-sm">
-            {!isReactive && (
-              <div aria-hidden>
-                <MegsyStar size={64} static className="text-[var(--megsy-blue)]" />
-              </div>
-            )}
-
-            {!isReactive && (
-              <motion.h1
-                key={firstName || "friend"}
-                dir={isRtl ? "rtl" : "ltr"}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.3, ease: "easeOut", delay: 0.08 }}
-                className="text-[22px]"
-                style={{
-                  fontFamily:
-                    '"Source Serif 4", "Source Serif Pro", "Tiempos Headline", Georgia, serif',
-                  fontWeight: 500,
-                  color: "#F5F5F7",
-                  letterSpacing: "-0.4px",
-                  lineHeight: 1.2,
-                }}
-              >
-                {(() => {
-                  const h = new Date().getHours();
-                  const greeting = h < 12 ? uiT("goodMorning", lang) : h < 18 ? uiT("goodAfternoon", lang) : uiT("goodEvening", lang);
-                  if (isRtl) {
-                    return firstName ? `${greeting}، ${firstName}` : greeting;
-                  }
-                  return firstName ? `${greeting}, ${firstName}` : greeting;
-                })()}
-              </motion.h1>
-            )}
+            {!isReactive && <ChatEmptyState userName={userName} variant="mobile" />}
           </div>
         </div>
+
       </div>
-
-
-
 
       {/* Integrations bottom sheet — pure black, transparent brand icons */}
       <GlassSheet open={connectOpen} onOpenChange={setConnectOpen}>
         <GlassSheetContent
-          contentClassName="px-0 pt-2 bg-black"
-          className="bg-black"
+          contentClassName="px-0 pt-2 bg-background"
+          className="bg-background"
           style={{ background: "#000", backdropFilter: "none", WebkitBackdropFilter: "none" }}
         >
           <GlassSheetHeader className="px-5">
@@ -781,18 +748,18 @@ const MobileChatLanding = ({
               Tap Connect to link an app — it stays inside the chat.
             </GlassSheetDescription>
           </GlassSheetHeader>
-          <ul className="mt-2 divide-y divide-white/[0.06]">
+          <ul className="mt-2 divide-y divide-border/50">
             {CONNECT_ITEMS.map((it) => {
               const isConnected = connectedIds.has(it.id);
               const isLoadingThis = connectingId === it.id;
               return (
                 <li key={it.id} className="flex items-center gap-3 px-5 py-3.5">
-                  <span className="w-9 h-9 flex items-center justify-center shrink-0 text-white">
+                  <span className="w-9 h-9 flex items-center justify-center shrink-0 text-foreground">
                     <BrandLogo id={it.id} className="w-7 h-7" />
                   </span>
                   <div className="flex-1 min-w-0">
-                    <div className="text-[14px] font-semibold text-white truncate">{it.name}</div>
-                    <p className="text-[12px] text-white/55 line-clamp-2">{it.description}</p>
+                    <div className="text-[14px] font-semibold text-foreground truncate">{it.name}</div>
+                    <p className="text-[12px] text-muted-foreground line-clamp-2">{it.description}</p>
                   </div>
                   <button
                     type="button"
@@ -800,12 +767,12 @@ const MobileChatLanding = ({
                     disabled={isConnected || isLoadingThis}
                     className={`shrink-0 inline-flex items-center justify-center h-8 min-w-[88px] px-3.5 rounded-full text-[12.5px] font-semibold transition-colors ${
                       isConnected
-                        ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30"
-                        : "theme-fixed bg-white text-black hover:opacity-90"
+                        ? "bg-primary/15 text-primary border border-primary/30"
+                        : "theme-fixed bg-primary text-primary-foreground hover:opacity-90"
                     } disabled:opacity-70`}
                   >
                     {isLoadingThis ? (
-                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                      <Spinner className="w-3.5 h-3.5" />
                     ) : isConnected ? (
                       <span className="inline-flex items-center gap-1">
                         <Check className="w-3.5 h-3.5" /> Connected

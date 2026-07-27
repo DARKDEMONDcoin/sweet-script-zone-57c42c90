@@ -11,7 +11,7 @@ import SEOHead from "@/components/common/SEOHead";
 import { getComparison, COMPARISONS } from "@/data/comparisons";
 
 const winnerBadge = (winner: "megsy" | "competitor" | "tie") => {
-  if (winner === "megsy") return <Check className="w-4 h-4 text-emerald-400" aria-label="Megsy" />;
+  if (winner === "megsy") return <Check className="w-4 h-4 text-primary" aria-label="Megsy" />;
   if (winner === "competitor")
     return <X className="w-4 h-4 text-rose-400" aria-label="Competitor" />;
   return <Minus className="w-4 h-4 text-muted-foreground" aria-label="Tie" />;
@@ -63,7 +63,7 @@ const ComparisonPage = () => {
             <ul className="space-y-2.5">
               {data.bestFor.megsy.map((b) => (
                 <li key={b} className="flex gap-2.5 text-[14.5px] text-foreground/85">
-                  <Check className="w-4 h-4 text-emerald-400 mt-1 shrink-0" />
+                  <Check className="w-4 h-4 text-primary mt-1 shrink-0" />
                   {b}
                 </li>
               ))}
@@ -76,7 +76,7 @@ const ComparisonPage = () => {
             <ul className="space-y-2.5">
               {data.bestFor.competitor.map((b) => (
                 <li key={b} className="flex gap-2.5 text-[14.5px] text-foreground/85">
-                  <Check className="w-4 h-4 text-amber-400 mt-1 shrink-0" />
+                  <Check className="w-4 h-4 text-foreground mt-1 shrink-0" />
                   {b}
                 </li>
               ))}

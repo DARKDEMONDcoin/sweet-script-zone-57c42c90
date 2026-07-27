@@ -168,7 +168,7 @@ export default function ModelForIndustryPage() {
           </div>
           <div className="flex-1 min-w-0">
             <span className="text-xs uppercase tracking-wider text-muted-foreground">
-              {industry.emoji} {industry.name}
+              {industry.name}
             </span>
             <h1 className="text-4xl md:text-5xl font-bold tracking-tight mt-2">
               {model.name} for {industry.name}
@@ -244,7 +244,7 @@ export default function ModelForIndustryPage() {
               to={`/models/${model.slug}/for/${i.slug}`}
               className="text-sm px-3 py-1.5 rounded-full border border-border hover:bg-muted transition"
             >
-              {i.emoji} {i.name}
+              {i.name}
             </Link>
           ))}
         </div>

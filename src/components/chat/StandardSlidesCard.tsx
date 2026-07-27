@@ -3,10 +3,11 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Download, ArrowLeft, Loader2, Share2 } from "lucide-react";
+import { Download, ArrowLeft, Share2 } from "lucide-react";
 import { toast } from "sonner";
 import slidesCardCover from "@/assets/slides-card-cover.png";
 import { stashSlidesFileForPreview } from "@/lib/slidesFilePreviewStore";
+import { Spinner } from "@/components/ui/spinner";
 
 const MEGSY_INVITE = "This presentation was designed with Megsy — try it free: https://megsy.ai";
 
@@ -191,7 +192,7 @@ export const PptxPreviewScreen = ({ url, chatName, onBack }: PreviewProps) => {
   }, [url]);
 
   return (
-    <div className="min-h-dvh bg-black flex flex-col">
+    <div className="min-h-dvh bg-background flex flex-col">
       <header className="flex items-center gap-3 px-4 py-3 shrink-0">
         <button
           onClick={onBack}
@@ -206,7 +207,7 @@ export const PptxPreviewScreen = ({ url, chatName, onBack }: PreviewProps) => {
       <div className="flex-1 overflow-y-auto overflow-x-hidden py-3 px-2 sm:py-4 sm:px-3">
         {loading && (
           <div className="flex flex-col items-center gap-3 text-foreground/70 mt-20">
-            <Loader2 className="w-8 h-8 animate-spin" />
+            <Spinner className="w-8 h-8" />
             <div className="text-sm">Loading presentation…</div>
           </div>
         )}

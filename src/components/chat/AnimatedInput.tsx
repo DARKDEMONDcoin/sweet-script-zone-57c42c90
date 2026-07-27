@@ -1,13 +1,5 @@
 import { memo, useState, useEffect, useRef, useMemo, useCallback, useDeferredValue } from "react";
-import {
-  ArrowUp,
-  Square,
-  X,
-  Sparkles,
-  Loader2,
-  Pencil,
-  Plus,
-} from "lucide-react";
+import { ArrowUp, Square, X, Sparkles, Pencil, Plus } from "lucide-react";
 import { m as motion, AnimatePresence } from "framer-motion";
 import MentionDropdown from "./MentionDropdown";
 import ModelPickerDropdown from "@/components/model-picker/ModelPickerDropdown";
@@ -18,6 +10,7 @@ import { isSendKey } from "@/lib/composerKey";
 import { parseSlashCommand } from "@/lib/slashCommands";
 import { useNavigate } from "react-router-dom";
 import { t as uiT, useUserLang } from "@/lib/authI18n";
+import { Spinner } from "@/components/ui/spinner";
 
 interface SmartQuestion {
   title: string;
@@ -53,6 +46,8 @@ interface AnimatedInputProps {
   onCancelEdit?: () => void;
   /** When true, the composer sits in a chat context and uses a liquid-glass surface. */
   chatContext?: boolean;
+  /** Force plain Enter to submit, regardless of viewport/send-mode preference. */
+  forceEnterToSend?: boolean;
   /** Notified when the textarea gains or loses focus (used to auto-hide chips on mobile). */
   onFocusChange?: (focused: boolean) => void;
 }
@@ -80,6 +75,7 @@ const AnimatedInput = ({
   onCancelEdit,
   onPlusClick,
   chatContext,
+  forceEnterToSend,
   onFocusChange,
 }: AnimatedInputProps) => {
   const currentLang = useUserLang();
@@ -138,7 +134,6 @@ const AnimatedInput = ({
   const [focused, setFocused] = useState(false);
   const isActive = focused || !!value;
 
-
   useEffect(() => {
     valueRef.current = value;
   }, [value]);
@@ -172,7 +167,12 @@ const AnimatedInput = ({
       return;
     }
     // Desktop: Enter sends. Mobile: Enter inserts a newline (no preventDefault).
-    if (isSendKey(e)) {
+    const shouldForceSend =
+      forceEnterToSend &&
+      e.key === "Enter" &&
+      !e.shiftKey &&
+      !e.nativeEvent?.isComposing;
+    if (shouldForceSend || isSendKey(e)) {
       e.preventDefault();
       if (mentionOpen || modelPickerOpen) {
         setMentionOpen(false);
@@ -380,7 +380,7 @@ const AnimatedInput = ({
               {!value && displayedPlaceholder && (
                 <div
                   aria-hidden
-                  className="pointer-events-none absolute inset-0 flex items-start px-1 pt-2 text-[15.5px] md:text-sm text-white/90 leading-relaxed overflow-hidden"
+                  className="pointer-events-none absolute inset-0 flex items-start px-1 pt-2 text-[15.5px] md:text-sm text-foreground leading-relaxed overflow-hidden"
                 >
                   <AnimatePresence mode="wait">
                     <motion.span
@@ -415,7 +415,7 @@ const AnimatedInput = ({
                 data-bwignore="true"
                 data-form-type="other"
                 name="chat-message"
-                className="relative w-full bg-transparent border-none outline-none resize-none text-[15.5px] md:text-sm text-white !text-white py-1.5 px-1 leading-relaxed md:py-2 font-medium"
+                className="relative w-full bg-transparent border-none outline-none resize-none text-[15.5px] md:text-sm text-foreground !text-foreground py-1.5 px-1 leading-relaxed md:py-2 font-medium"
                 style={{ minHeight: "38px" }}
               />
             </div>
@@ -432,7 +432,7 @@ const AnimatedInput = ({
               onClick={onPlusClick}
               whileTap={{ scale: 0.9 }}
               transition={{ type: "spring", stiffness: 420, damping: 24 }}
-              className="theme-fixed shrink-0 inline-flex w-9 h-9 md:w-10 md:h-10 items-center justify-center rounded-full border-0 outline-none text-white hover:text-white transition-colors"
+              className="theme-fixed shrink-0 inline-flex w-9 h-9 md:w-10 md:h-10 items-center justify-center rounded-full border-0 outline-none text-foreground hover:text-foreground transition-colors"
               style={{ background: "transparent", boxShadow: "none" }}
               aria-label={uiT("openTools")}
               data-plus-trigger
@@ -440,9 +440,7 @@ const AnimatedInput = ({
               <Plus className="w-5 h-5" strokeWidth={2.4} color="#ffffff" />
             </motion.button>
 
-
             <div className="flex-1" />
-
 
             <AnimatePresence mode="popLayout" initial={false}>
               {isLoading ? (
@@ -454,7 +452,7 @@ const AnimatedInput = ({
                   transition={{ type: "spring", stiffness: 380, damping: 22 }}
                   whileTap={{ scale: 0.9 }}
                   onClick={onCancel}
-                  className="theme-fixed shrink-0 w-9 h-9 md:h-10 md:w-10 flex items-center justify-center rounded-full bg-destructive text-white shadow-[0_2px_10px_rgba(0,0,0,0.3)] hover:opacity-90 transition-opacity"
+                  className="theme-fixed shrink-0 w-9 h-9 md:h-10 md:w-10 flex items-center justify-center rounded-full bg-destructive text-foreground shadow-[0_2px_10px_rgba(0,0,0,0.3)] hover:opacity-90 transition-opacity"
                   aria-label={uiT("stopGeneration")}
                 >
                   <Square className="w-3 h-3" fill="currentColor" />
@@ -470,11 +468,11 @@ const AnimatedInput = ({
                   onClick={handleSendWithSlash}
                   disabled={disabled || !value.trim()}
                   data-testid="mobile-composer-send"
-                  className="theme-fixed shrink-0 w-9 h-9 md:h-10 md:w-10 flex items-center justify-center rounded-full bg-white text-black shadow-[0_2px_10px_rgba(0,0,0,0.3)] hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="theme-fixed shrink-0 w-9 h-9 md:h-10 md:w-10 flex items-center justify-center rounded-full bg-primary text-primary-foreground shadow-[0_2px_10px_rgba(0,0,0,0.3)] hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed"
                   style={{ backgroundColor: "#ffffff", color: "#000000" }}
                   aria-label={uiT("sendMessage")}
                 >
-                  <ArrowUp className="w-[18px] h-[18px] md:w-4 md:h-4" strokeWidth={2.2} color="#000000" />
+                  <ArrowUp className="w-[18px] h-[18px] md:w-4 md:h-4" strokeWidth={1.8} color="#000000" />
                 </motion.button>
               )}
             </AnimatePresence>

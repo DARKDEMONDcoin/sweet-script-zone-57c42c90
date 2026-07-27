@@ -109,7 +109,7 @@ const DocumentPreviewPage = () => {
   return (
     <main className="min-h-dvh flex flex-col bg-muted/40">
       {/* Top bar */}
-      <header className="sticky top-0 z-10 flex items-center gap-3 border-b border-border/60 bg-background/90 px-3 py-2 backdrop-blur">
+      <header className="sticky top-0 z-10 flex items-center gap-3 border-b border-border/60 bg-background/90 px-3 py-2">
         <button
           onClick={goBack}
           aria-label="Back"
@@ -126,13 +126,13 @@ const DocumentPreviewPage = () => {
       <div className="flex-1 overflow-auto px-2 py-2 sm:px-4 sm:py-3">
         {html ? (
           <div className="mx-auto w-full max-w-[820px]">
-            <div className="overflow-hidden rounded-md bg-white shadow-[0_6px_24px_hsl(var(--foreground)/0.10)] ring-1 ring-border/40">
+            <div className="overflow-hidden rounded-md bg-primary shadow-[0_6px_24px_hsl(var(--foreground)/0.10)] ring-1 ring-border/40">
               <iframe
                 ref={iframeRef}
                 title={title}
                 sandbox="allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-modals"
                 srcDoc={patched}
-                className="block w-full border-0 bg-white"
+                className="block w-full border-0 bg-primary"
                 style={{ height: "calc(100dvh - 132px)" }}
               />
             </div>
@@ -146,7 +146,7 @@ const DocumentPreviewPage = () => {
 
       {/* Bottom action bar */}
       <div
-        className="sticky bottom-0 z-10 flex items-center justify-center gap-2 border-t border-border/60 bg-background/95 px-3 pt-2 backdrop-blur"
+        className="sticky bottom-0 z-10 flex items-center justify-center gap-2 border-t border-border/60 bg-background/95 px-3 pt-2"
         style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 0.5rem)" }}
       >
         <button

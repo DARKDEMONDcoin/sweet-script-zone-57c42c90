@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { Check, Loader2 } from "lucide-react";
+import { Check } from "lucide-react";
 import type { Integration } from "@/lib/integrationsData";
 
 interface IntegrationDetailModalProps {
@@ -14,7 +14,7 @@ interface IntegrationDetailModalProps {
 }
 
 import { brandLogoSources } from "@/lib/brandLogoSources";
-
+import { Spinner } from "@/components/ui/spinner";
 
 function AppLogo({ integration, size = 56 }: { integration: Integration; size?: number }) {
   const [idx, setIdx] = useState(0);
@@ -69,7 +69,7 @@ export default function IntegrationDetailModal({
                 {integration.category}
               </p>
               {isConnected && (
-                <span className="mt-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[11px] font-semibold">
+                <span className="mt-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-[11px] font-semibold">
                   <Check className="w-3 h-3" strokeWidth={2.8} />
                   Connected
                 </span>
@@ -87,7 +87,7 @@ export default function IntegrationDetailModal({
                   disabled={isLoading}
                   className="w-full h-12 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-400 text-[15px] font-semibold active:scale-[0.99] transition disabled:opacity-60 flex items-center justify-center gap-2"
                 >
-                  {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
+                  {isLoading && <Spinner className="w-4 h-4" />}
                   Disconnect
                 </button>
               ) : (
@@ -96,7 +96,7 @@ export default function IntegrationDetailModal({
                   disabled={isLoading}
                   className="w-full h-12 rounded-2xl bg-foreground text-background text-[15px] font-semibold active:scale-[0.99] transition disabled:opacity-60 flex items-center justify-center gap-2"
                 >
-                  {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
+                  {isLoading && <Spinner className="w-4 h-4" />}
                   Connect
                 </button>
               )}

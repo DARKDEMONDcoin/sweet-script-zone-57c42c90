@@ -103,7 +103,7 @@ function SquashHamburger({ open, mobile }: { open: boolean; mobile?: boolean }) 
         return (
           <motion.span
             key={i}
-            className="absolute left-0 bg-white"
+            className="absolute left-0 bg-primary"
             style={{ height: bar, width: w, top: y, borderRadius: 1 }}
             animate={{
               rotate: open ? (isTop ? 45 : isMid ? 0 : -45) : 0,
@@ -231,7 +231,7 @@ export default function SeoLandingPage() {
 
   return (
     <div
-      className="min-h-screen bg-black text-white overflow-x-hidden"
+      className="min-h-screen bg-background text-foreground overflow-x-hidden"
       style={{ fontFamily: '"Space Mono", monospace' }}
     >
       <Helmet>
@@ -257,17 +257,17 @@ export default function SeoLandingPage() {
           {!menuOpen && (
             <Link
               to="/"
-              className="h-9 sm:h-12 px-3 sm:px-5 flex items-center gap-2 rounded-[10px] sm:rounded-[14px] backdrop-blur-md"
+              className="h-9 sm:h-12 px-3 sm:px-5 flex items-center gap-2 rounded-[10px] sm:rounded-[14px]"
               style={{ background: "var(--overlay-white-15)" }}
             >
               <SynapseXLogo size={16} />
-              <span className="text-[13px] sm:text-[16px] font-medium tracking-tight text-white">
+              <span className="text-[13px] sm:text-[16px] font-medium tracking-tight text-foreground">
                 Megsy AI
               </span>
             </Link>
           )}
           <motion.div
-            className="h-9 sm:h-12 rounded-[10px] sm:rounded-[14px] backdrop-blur-md flex items-center overflow-hidden"
+            className="h-9 sm:h-12 rounded-[10px] sm:rounded-[14px] flex items-center overflow-hidden"
             style={{ background: "var(--overlay-white-15)" }}
             animate={{ width: menuOpen ? 260 : 40 }}
             transition={{ type: "spring", stiffness: 350, damping: 28 }}
@@ -282,14 +282,14 @@ export default function SeoLandingPage() {
             </button>
             {menuOpen && (
               <motion.div
-                className="flex items-center gap-4 pl-2 pr-4 text-[13px] sm:text-[16px] text-white/85"
+                className="flex items-center gap-4 pl-2 pr-4 text-[13px] sm:text-[16px] text-muted-foreground"
                 initial={{ opacity: 0, x: 15 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.35 }}
               >
                 <Link
                   to="/"
-                  className="hover:text-white"
+                  className="hover:text-foreground"
                   onMouseEnter={() => setHoverKey("home")}
                   onMouseLeave={() => setHoverKey(null)}
                 >
@@ -297,7 +297,7 @@ export default function SeoLandingPage() {
                 </Link>
                 <Link
                   to="/pricing"
-                  className="hover:text-white"
+                  className="hover:text-foreground"
                   onMouseEnter={() => setHoverKey("pricing")}
                   onMouseLeave={() => setHoverKey(null)}
                 >
@@ -305,7 +305,7 @@ export default function SeoLandingPage() {
                 </Link>
                 <Link
                   to="/ai-chat"
-                  className="hover:text-white"
+                  className="hover:text-foreground"
                   onMouseEnter={() => setHoverKey("chat")}
                   onMouseLeave={() => setHoverKey(null)}
                 >
@@ -317,7 +317,7 @@ export default function SeoLandingPage() {
         </div>
         <Link
           to="/auth"
-          className="h-9 sm:h-12 px-3.5 sm:px-6 bg-white text-black rounded-full flex items-center gap-2 text-[13px] sm:text-[15px] font-medium"
+          className="h-9 sm:h-12 px-3.5 sm:px-6 bg-primary text-primary-foreground rounded-full flex items-center gap-2 text-[13px] sm:text-[15px] font-medium"
           onMouseEnter={() => setHoverKey("cta")}
           onMouseLeave={() => setHoverKey(null)}
         >
@@ -376,7 +376,7 @@ export default function SeoLandingPage() {
           <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
             <div className="flex flex-col gap-4">
               <h1
-                className="text-white font-light leading-[0.95] tracking-[-0.03em]"
+                className="text-foreground font-light leading-[0.95] tracking-[-0.03em]"
                 style={{ fontSize: "clamp(40px, 10vw, 100px)" }}
               >
                 <ScrambleIn text={page.heroLeft[0]} delay={200} triggered={entered} />
@@ -384,7 +384,7 @@ export default function SeoLandingPage() {
                 <ScrambleIn text={page.heroLeft[1]} delay={500} triggered={entered} />
               </h1>
               <motion.p
-                className="max-w-sm text-[13px] sm:text-[15px] text-white/60 leading-relaxed"
+                className="max-w-sm text-[13px] sm:text-[15px] text-muted-foreground leading-relaxed"
                 initial={{ y: 25, opacity: 0 }}
                 animate={{ y: entered ? 0 : 25, opacity: entered ? 1 : 0 }}
                 transition={{ duration: 0.9, ease: [0.215, 0.61, 0.355, 1], delay: 0.2 }}
@@ -393,7 +393,7 @@ export default function SeoLandingPage() {
               </motion.p>
             </div>
             <h2
-              className="text-white font-light leading-[0.95] tracking-[-0.03em] text-left md:text-right"
+              className="text-foreground font-light leading-[0.95] tracking-[-0.03em] text-left md:text-right"
               style={{ fontSize: "clamp(40px, 10vw, 100px)" }}
             >
               <ScrambleIn text={page.heroRight[0]} delay={700} triggered={entered} />
@@ -425,7 +425,7 @@ export default function SeoLandingPage() {
         <div className="relative z-20 h-full w-full flex items-center justify-center">
           <motion.p
             style={{ transform, opacity }}
-            className="max-w-5xl font-normal text-white leading-[1.35] tracking-[-0.02em] select-none px-6 sm:px-12 text-center"
+            className="max-w-5xl font-normal text-foreground leading-[1.35] tracking-[-0.02em] select-none px-6 sm:px-12 text-center"
           >
             <span
               className="block"
@@ -452,7 +452,7 @@ export default function SeoLandingPage() {
         />
         <div className="relative z-10 max-w-6xl mx-auto pt-32 pb-32 px-6 text-center">
           <motion.p
-            className="text-white/40 text-[13px] sm:text-[14px] tracking-[0.2em] uppercase mb-20"
+            className="text-muted-foreground text-[13px] sm:text-[14px] tracking-[0.2em] uppercase mb-20"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.3 }}
@@ -470,12 +470,12 @@ export default function SeoLandingPage() {
                 transition={{ duration: 0.8, delay: i * 0.15 }}
               >
                 <div
-                  className="text-white font-light tracking-[-0.04em] leading-none"
+                  className="text-foreground font-light tracking-[-0.04em] leading-none"
                   style={{ fontSize: "clamp(48px, 10vw, 96px)" }}
                 >
                   {m.value}
                 </div>
-                <div className="text-white/40 text-[13px] sm:text-[15px] mt-4 tracking-wide">
+                <div className="text-muted-foreground text-[13px] sm:text-[15px] mt-4 tracking-wide">
                   {m.label}
                 </div>
               </motion.div>
@@ -498,7 +498,7 @@ export default function SeoLandingPage() {
         <div className="relative z-10 h-full flex flex-col px-8 sm:px-12 md:px-16 py-12 sm:py-16">
           <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-6">
             <motion.h3
-              className="text-white font-light leading-[0.95] tracking-[-0.03em]"
+              className="text-foreground font-light leading-[0.95] tracking-[-0.03em]"
               style={{ fontSize: "clamp(36px, 8vw, 72px)" }}
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -510,7 +510,7 @@ export default function SeoLandingPage() {
               {page.adaptiveTitle[1]}
             </motion.h3>
             <motion.p
-              className="text-white/50 text-[13px] sm:text-[15px] leading-relaxed max-w-xs md:text-right md:pt-2"
+              className="text-muted-foreground text-[13px] sm:text-[15px] leading-relaxed max-w-xs md:text-right md:pt-2"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.3 }}
@@ -535,10 +535,10 @@ export default function SeoLandingPage() {
                 viewport={{ once: true, amount: 0.3 }}
                 transition={{ duration: 0.7, delay: i * 0.1 }}
               >
-                <div className="text-white text-[14px] sm:text-[16px] font-normal mb-2">
+                <div className="text-foreground text-[14px] sm:text-[16px] font-normal mb-2">
                   {f.title}
                 </div>
-                <div className="text-white/40 text-[12px] sm:text-[14px] leading-relaxed">
+                <div className="text-muted-foreground text-[12px] sm:text-[14px] leading-relaxed">
                   {f.desc}
                 </div>
               </motion.div>
@@ -548,7 +548,7 @@ export default function SeoLandingPage() {
       </section>
 
       {/* SECTION 5 — ARCHITECTURE (pure black) */}
-      <section className="min-h-screen bg-black w-full flex items-center justify-center">
+      <section className="min-h-screen bg-background w-full flex items-center justify-center">
         <div className="max-w-3xl px-6 py-32 text-center mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -556,16 +556,16 @@ export default function SeoLandingPage() {
             viewport={{ once: true, amount: 0.4 }}
             transition={{ duration: 1 }}
           >
-            <p className="text-white/40 text-[13px] sm:text-[14px] tracking-[0.2em] uppercase mb-8">
+            <p className="text-muted-foreground text-[13px] sm:text-[14px] tracking-[0.2em] uppercase mb-8">
               {page.archSubtitle}
             </p>
             <h4
-              className="text-white font-light leading-[1.15] tracking-[-0.02em] mb-10"
+              className="text-foreground font-light leading-[1.15] tracking-[-0.02em] mb-10"
               style={{ fontSize: "clamp(28px, 6vw, 56px)" }}
             >
               {page.archHeading}
             </h4>
-            <p className="text-white/45 text-[15px] sm:text-[17px] leading-relaxed max-w-xl mx-auto">
+            <p className="text-muted-foreground text-[15px] sm:text-[17px] leading-relaxed max-w-xl mx-auto">
               {page.archDescription}
             </p>
           </motion.div>
@@ -579,19 +579,19 @@ export default function SeoLandingPage() {
             {page.layers.map((l, i) => (
               <div
                 key={l}
-                className="w-full max-w-md h-[72px] border border-white/10 rounded-lg flex items-center justify-between px-6"
+                className="w-full max-w-md h-[72px] border border-border/10 rounded-lg flex items-center justify-between px-6"
               >
-                <span className="text-white/30 text-[12px] tracking-[0.15em] uppercase">
+                <span className="text-muted-foreground text-[12px] tracking-[0.15em] uppercase">
                   Layer {i + 1}
                 </span>
-                <span className="text-white text-[16px] sm:text-[18px] font-light">{l}</span>
+                <span className="text-foreground text-[16px] sm:text-[18px] font-light">{l}</span>
               </div>
             ))}
           </motion.div>
           <div className="mt-16">
             <Link
               to="/auth"
-              className="inline-block h-12 px-8 bg-white text-black rounded-full text-[15px] font-medium leading-[3rem]"
+              className="inline-block h-12 px-8 bg-primary text-primary-foreground rounded-full text-[15px] font-medium leading-[3rem]"
             >
               Try Megsy AI Free
             </Link>
@@ -600,7 +600,7 @@ export default function SeoLandingPage() {
       </section>
 
       {/* FOOTER */}
-      <footer className="bg-black overflow-hidden">
+      <footer className="bg-background overflow-hidden">
         <div className="flex flex-col md:flex-row min-h-[400px]">
           <div className="md:w-1/2 h-[300px] md:h-auto relative">
             <video
@@ -617,15 +617,15 @@ export default function SeoLandingPage() {
             <div>
               <div className="flex items-center gap-2 mb-8">
                 <SynapseXLogo size={18} color="var(--overlay-white-70)" />
-                <span className="text-[15px] font-medium text-white/70 tracking-tight">
+                <span className="text-[15px] font-medium text-muted-foreground tracking-tight">
                   Megsy AI
                 </span>
               </div>
-              <p className="text-white/40 text-[14px] sm:text-[15px] leading-relaxed max-w-sm">
+              <p className="text-muted-foreground text-[14px] sm:text-[15px] leading-relaxed max-w-sm">
                 {page.footerTagline}
               </p>
             </div>
-            <div className="text-white/25 text-[12px] mt-12">
+            <div className="text-muted-foreground text-[12px] mt-12">
               © {new Date().getFullYear()} Megsy AI. All rights reserved.
             </div>
           </div>

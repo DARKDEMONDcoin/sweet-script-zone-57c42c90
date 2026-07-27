@@ -66,7 +66,7 @@ export function StudyHUD() {
         reduced ? "" : "animate-fade-in"
       }`}
     >
-      <div className="relative overflow-hidden rounded-2xl border border-border/60 bg-card/70 backdrop-blur-xl px-3 py-2 shadow-[0_10px_30px_-20px_rgba(0,0,0,0.5)]">
+      <div className="relative overflow-hidden rounded-2xl border border-border/60 bg-card/70 px-3 py-2 shadow-[0_10px_30px_-20px_rgba(0,0,0,0.5)]">
         <div className="flex items-center gap-2.5 md:gap-4 text-[11px] md:text-xs font-medium text-foreground/80">
           {/* Topic — truncates on mobile */}
           {state.topic ? (
@@ -95,7 +95,7 @@ export function StudyHUD() {
 
           {/* Accuracy */}
           <HudStat
-            icon={<TrendingUp className="w-3.5 h-3.5 text-emerald-500" />}
+            icon={<TrendingUp className="w-3.5 h-3.5 text-primary" />}
             label="Accuracy"
             value={`${accuracy}%`}
             hint={`${state.cardsCorrect}/${state.cardsAnswered}`}
@@ -115,7 +115,7 @@ export function StudyHUD() {
               aria-hidden
             >
               <div
-                className={`absolute inset-y-0 start-0 bg-gradient-to-r from-emerald-400 via-blue-500 to-violet-500 ${
+                className={`absolute inset-y-0 start-0 bg-gradient-to-r from-primary via-blue-500 to-violet-500 ${
                   reduced ? "" : "transition-[width] duration-500 ease-out"
                 }`}
                 style={{ width: `${rungPct}%` }}

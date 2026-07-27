@@ -1,7 +1,7 @@
 /** @doc Plans, yearly toggle, MC top-up packs and the official pricing FAQ — cinematic redesign. */
 import { Suspense, lazy, useState, useEffect, useRef } from "react";
 import { m as motion, AnimatePresence, useInView, useMotionValue, useTransform, animate } from "framer-motion";
-import { Check, Loader2, ChevronDown, Menu, X, Plus, Minus } from "lucide-react";
+import { Check, ChevronDown, Menu, X, Plus, Minus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -26,6 +26,7 @@ import {
 } from "@/data/pricingData";
 import { brandText, getZoneBrand } from "@/lib/zoneBrand";
 import { translateExactText, useUserLang } from "@/lib/authI18n";
+import { Spinner } from "@/components/ui/spinner";
 
 const LandingFooter = lazy(() => import("@/components/landing/LandingFooter"));
 const PaymentGatewaySheet = lazy(() => import("@/components/billing/PaymentGatewaySheet"));
@@ -162,7 +163,6 @@ function CountUp({
   );
 }
 
-
 /* ============================== Pricing Page ============================== */
 const PricingPage = () => {
   const navigate = useNavigate();
@@ -179,7 +179,6 @@ const PricingPage = () => {
     trial: boolean;
   } | null>(null);
   const [gatewayLoading, setGatewayLoading] = useState<Gateway | null>(null);
-  const [settled, setSettled] = useState(false);
 
   const BRAND = getZoneBrand();
   const promo = usePromoCountdown();
@@ -212,31 +211,6 @@ const PricingPage = () => {
       })),
     },
   };
-
-  useEffect(() => {
-    const id = window.setTimeout(() => setSettled(true), 250);
-    return () => window.clearTimeout(id);
-  }, []);
-
-  // Load Garamond + Geist webfonts once
-  useEffect(() => {
-    const links: HTMLLinkElement[] = [];
-    const add = (href: string, rel = "stylesheet") => {
-      const l = document.createElement("link");
-      l.rel = rel;
-      l.href = href;
-      l.crossOrigin = "anonymous";
-      document.head.appendChild(l);
-      links.push(l);
-    };
-    add("https://fonts.googleapis.com", "preconnect");
-    add("https://fonts.gstatic.com", "preconnect");
-    add("https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500&display=swap");
-    add("https://db.onlinewebfonts.com/c/2bf40ab72ea4897a3fd9b6e48b233a19?family=Garamond");
-    return () => {
-      links.forEach((l) => l.parentNode && l.parentNode.removeChild(l));
-    };
-  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -368,7 +342,6 @@ const PricingPage = () => {
     }
   };
 
-
   const scrollTo = (id: string) => {
     if (id.startsWith("#")) {
       document.querySelector(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -434,14 +407,14 @@ const PricingPage = () => {
       <div
         className="flex min-h-[100dvh] w-full overflow-x-hidden rtl:flex-row-reverse"
         style={{
-          background: "#000000",
+          background: "hsl(var(--background))",
         }}
       >
         {/* Desktop app sidebar — persistent on the left */}
         <aside
           data-chat-sidebar="true"
           style={{ width: !sidebarCollapsed ? 280 : 60 }}
-          className="theme-fixed hidden md:flex shrink-0 overflow-hidden border-e border-white/10 transition-[width] duration-200 ease-out"
+          className="theme-fixed hidden md:flex shrink-0 overflow-hidden border-e border-border/10 transition-[width] duration-200 ease-out"
         >
           <AppSidebar
             inline
@@ -460,9 +433,9 @@ const PricingPage = () => {
             style={{ scrollBehavior: "smooth" }}
           >
             <div
-              className="min-h-dvh w-full text-white"
+              className="min-h-dvh w-full text-foreground"
               style={{
-                background: "#000000",
+                background: "hsl(var(--background))",
                 fontFamily: "'Geist', -apple-system, BlinkMacSystemFont, sans-serif",
               }}
             >
@@ -510,37 +483,23 @@ const PricingPage = () => {
         }
 
         .pricing-card-glass {
-          background: linear-gradient(160deg, rgba(220,60,70,0.34) 0%, rgba(140,24,32,0.44) 45%, rgba(50,8,12,0.6) 100%);
-          backdrop-filter: blur(24px) saturate(160%);
-          -webkit-backdrop-filter: blur(24px) saturate(160%);
-          border: 1px solid rgba(255,170,170,0.24);
-          box-shadow: 0 20px 40px -20px rgba(0,0,0,0.5);
-          transition:
-            transform 0.55s cubic-bezier(0.34, 1.35, 0.64, 1),
-            border-color 0.4s ease,
-            background 0.4s ease,
-            box-shadow 0.55s cubic-bezier(0.22, 1, 0.36, 1);
-          color: #ffffff;
-          will-change: transform;
+          background: hsl(var(--card) / 0.6);
+          border: 1px solid hsl(var(--border) / 0.6);
+          border-radius: 20px;
+          transition: transform .35s cubic-bezier(0.22,1,0.36,1), border-color .25s ease, background .25s ease;
+          color: hsl(var(--foreground));
         }
-        .pricing-card-glass, .pricing-card-glass * { color: #ffffff !important; }
         .pricing-card-glass:hover {
-          transform: translateY(-6px) scale(1.008);
-          border-color: rgba(255,200,200,0.55);
-          box-shadow: 0 40px 80px -24px rgba(220,60,70,0.35), 0 0 0 1px rgba(255,200,200,0.15);
+          transform: translateY(-4px);
+          border-color: hsl(var(--border));
+          background: hsl(var(--muted) / 0.4);
         }
-        .pricing-card-glass:active {
-          transform: translateY(-3px) scale(0.998);
-          transition-duration: 0.15s;
-        }
+        .pricing-card-glass:active { transform: translateY(-2px); }
         .pricing-card-elite {
-          border: 1px solid rgba(255,200,200,0.42);
-          background: linear-gradient(160deg, rgba(240,90,100,0.42) 0%, rgba(170,30,40,0.52) 45%, rgba(60,10,14,0.65) 100%);
-          box-shadow: 0 30px 60px -20px rgba(220,60,70,0.4);
+          border: 1px solid hsl(var(--foreground) / 0.28);
+          background: hsl(var(--muted) / 0.45);
         }
-        .pricing-card-elite:hover {
-          transform: translateY(-8px) scale(1.045) !important;
-        }
+        .pricing-card-elite:hover { transform: translateY(-6px) !important; }
 
         .faq-glass {
           background: rgba(16, 16, 18, 0.6);
@@ -549,55 +508,24 @@ const PricingPage = () => {
           border: 1px solid var(--overlay-white-06);
         }
 
-        .hero-vignette {
-          background:
-            radial-gradient(ellipse at 50% 35%, rgba(0,0,0,0) 0%, rgba(0,0,0,0.4) 55%, rgba(1,1,1,0.9) 100%),
-            linear-gradient(180deg, rgba(1,1,1,0.55) 0%, rgba(1,1,1,0.05) 30%, rgba(1,1,1,0.1) 60%, #010101 100%);
-        }
+        .hero-vignette { background: transparent; }
         .section-bg {
-          background: #000000;
+          background: hsl(var(--background));
           border: none !important;
           box-shadow: none !important;
         }
       `}</style>
 
       {/* ============================ HERO ============================ */}
-      <section className="relative w-full overflow-hidden min-h-[68vh] md:min-h-[78vh] flex flex-col">
-        {/* Warm gradient poster shown while the hero video streams in */}
-        <div
-          aria-hidden
-          className="absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(ellipse at 50% 30%, rgba(180,40,50,0.55) 0%, rgba(60,10,14,0.7) 45%, #010101 100%)",
-          }}
-        />
-        {/* Background video */}
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="none"
-          onLoadedData={(e) => {
-            (e.currentTarget as HTMLVideoElement).style.opacity = "1";
-          }}
-          style={{ opacity: 0, transition: "opacity 900ms cubic-bezier(0.22,1,0.36,1)" }}
-          className="absolute inset-0 w-full h-full object-cover object-center"
-          src={HERO_VIDEO}
-        />
-        <div className="absolute inset-0 hero-vignette pointer-events-none" />
-
-
+      <section className="relative w-full overflow-hidden flex flex-col">
         {/* Nav */}
         <nav className="relative z-20 flex items-center justify-between md:justify-center md:gap-12 px-5 sm:px-8 pt-10 sm:pt-8">
         </nav>
 
-
         {/* Hero content */}
         <div className="relative z-10 flex flex-1 flex-col items-center justify-center text-center px-5 sm:px-8 pt-4 sm:pt-6 pb-6 sm:pb-8">
           <h1
-            className="font-garamond font-normal text-white tracking-tight mb-4 sm:mb-6 text-4xl sm:text-6xl md:text-8xl lg:text-9xl"
+            className="font-garamond font-normal text-foreground tracking-tight mb-4 sm:mb-6 text-4xl sm:text-5xl md:text-6xl"
             style={{ lineHeight: 1.08 }}
           >
             <StaggeredFade text="CHOOSE YOUR" className="block" />
@@ -608,7 +536,7 @@ const PricingPage = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1.6 }}
-            className="text-white/70 font-light leading-relaxed max-w-xs sm:max-w-md text-sm sm:text-base md:text-lg"
+            className="text-muted-foreground font-light leading-relaxed max-w-xs sm:max-w-md text-sm sm:text-base md:text-lg"
             dir={isAr ? "rtl" : "ltr"}
             data-no-translate="true"
           >
@@ -616,11 +544,6 @@ const PricingPage = () => {
               ? `خطط بسيطة لكل منظومة ${BRAND}، متصممة للمبدعين والفرق والشركات.`
               : `Simple plans for the entire ${BRAND} ecosystem, built for creators, teams and enterprises.`}
           </motion.p>
-
-
-
-
-
 
           {/* Promo */}
           {promo.active && (
@@ -634,12 +557,12 @@ const PricingPage = () => {
             >
               <div className="flex flex-col items-center md:items-start text-center md:text-start gap-1.5">
                 <span
-                  className="inline-flex items-center rounded-full px-2.5 py-1 text-[10px] uppercase font-medium text-white bg-white/10 border border-white/10"
+                  className="inline-flex items-center rounded-full px-2.5 py-1 text-[10px] uppercase font-medium text-foreground bg-muted/10 border border-border/10"
                   style={{ letterSpacing: isAr ? "normal" : "0.18em" }}
                 >
                   {isAr ? "عرض إطلاق محدود" : "Limited Launch Offer"}
                 </span>
-                <p className="text-[13px] text-white/90 leading-relaxed max-w-[16rem] sm:max-w-[18rem]">
+                <p className="text-[13px] text-foreground leading-relaxed max-w-[16rem] sm:max-w-[18rem]">
                   {isAr
                     ? "Pro أول شهر بـ $7 — خصم يصل إلى 77٪ على باقي الأشهر"
                     : "Pro first month $7 — up to 77% OFF the rest"}
@@ -661,9 +584,9 @@ const PricingPage = () => {
                   { v: pad2(promo.seconds), l: isAr ? "ثانية" : "Sec" },
                 ].map((t) => (
                   <div key={t.l} className="flex flex-col items-center min-w-[2.5rem]">
-                    <span className="text-[26px] sm:text-2xl text-white leading-none">{t.v}</span>
+                    <span className="text-[26px] sm:text-2xl text-foreground leading-none">{t.v}</span>
                     <span
-                      className="text-[10px] uppercase mt-1.5 text-white/80 whitespace-nowrap"
+                      className="text-[10px] uppercase mt-1.5 text-muted-foreground whitespace-nowrap"
                       style={{ letterSpacing: isAr ? "normal" : "0.22em" }}
                       data-no-translate="true"
                     >
@@ -690,13 +613,13 @@ const PricingPage = () => {
           className="text-center mb-10"
         >
           <h2
-            className="font-garamond text-white"
+            className="font-garamond text-foreground"
             style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)", lineHeight: 1.1 }}
           >
             The Plans
           </h2>
           <p
-            className="mt-3 text-white/85 text-xs sm:text-sm uppercase font-light"
+            className="mt-3 text-muted-foreground text-xs sm:text-sm uppercase font-light"
             style={{ letterSpacing: "0.3em" }}
           >
             Unlock your creative power — start today
@@ -705,7 +628,7 @@ const PricingPage = () => {
           {/* Billing toggle */}
           <div className="mt-6 inline-flex items-center gap-4">
             <span
-              className={`text-xs uppercase transition-colors ${isYearly ? "text-white/80" : "text-white"}`}
+              className={`text-xs uppercase transition-colors ${isYearly ? "text-muted-foreground" : "text-foreground"}`}
               style={{ letterSpacing: "0.2em" }}
             >
               Monthly
@@ -716,7 +639,7 @@ const PricingPage = () => {
               aria-checked={isYearly}
               aria-label={isYearly ? "Switch to monthly billing" : "Switch to yearly billing"}
               onClick={() => setIsYearly((v) => !v)}
-              className="relative w-14 h-7 rounded-full border border-white/40 backdrop-blur-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+              className="relative w-14 h-7 rounded-full border border-border/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
               style={{
                 background: "var(--overlay-white-18)",
                 boxShadow: "inset 0 1px 0 rgba(255,255,255,0.35), 0 4px 16px var(--overlay-white-08)",
@@ -732,12 +655,12 @@ const PricingPage = () => {
               />
             </button>
             <span
-              className={`text-xs uppercase flex items-center gap-2 transition-colors ${isYearly ? "text-white" : "text-white/80"}`}
+              className={`text-xs uppercase flex items-center gap-2 transition-colors ${isYearly ? "text-foreground" : "text-muted-foreground"}`}
               style={{ letterSpacing: "0.2em" }}
             >
               Yearly
               <span
-                className="text-[9px] px-2 py-0.5 rounded-full border border-white/25 text-white/85 font-normal"
+                className="text-[9px] px-2 py-0.5 rounded-full border border-border/25 text-muted-foreground font-normal"
                 style={{ letterSpacing: "0.15em" }}
               >
                 −20%
@@ -745,7 +668,6 @@ const PricingPage = () => {
             </span>
           </div>
         </motion.div>
-
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
           {PLANS.map((p, i) => {
@@ -786,29 +708,29 @@ const PricingPage = () => {
 
                 <div className="relative z-10 p-7 sm:p-8 flex flex-col flex-1">
                   <h3
-                    className="font-garamond text-3xl text-white mb-4"
+                    className="font-garamond text-3xl text-foreground mb-4"
                     style={{ letterSpacing: "0.02em" }}
                   >
                     {p.name}
                   </h3>
 
                   <div className="flex items-baseline gap-1.5">
-                    <span className="font-garamond text-2xl text-white">$</span>
+                    <span className="font-garamond text-2xl text-foreground">$</span>
                     <CountUp
                       value={price}
-                      className="font-garamond text-6xl leading-none text-white tabular-nums"
+                      className="font-garamond text-6xl leading-none text-foreground tabular-nums"
                     />
-                    <span className="text-white text-xs ml-1 uppercase" style={{ letterSpacing: "0.2em" }}>
+                    <span className="text-foreground text-xs ml-1 uppercase" style={{ letterSpacing: "0.2em" }}>
                       /{isProFirstMonth ? "1st mo" : isYearly ? "year" : "month"}
                     </span>
                   </div>
 
                   <div className="flex items-center gap-2 mt-3">
-                    <span className="text-xs text-white/85 line-through tabular-nums">
+                    <span className="text-xs text-muted-foreground line-through tabular-nums">
                       $<CountUp value={strikePrice} />
                     </span>
                     <span
-                      className="text-[10px] uppercase px-2 py-0.5 rounded-full border border-white/40 text-white font-light"
+                      className="text-[10px] uppercase px-2 py-0.5 rounded-full border border-border/40 text-foreground font-light"
                       style={{ letterSpacing: "0.18em" }}
                     >
                       {discountLabel}
@@ -816,16 +738,14 @@ const PricingPage = () => {
                   </div>
 
                   {isProFirstMonth && (
-                    <p className="text-[10px] uppercase text-white/70 mt-2 font-light" style={{ letterSpacing: "0.18em" }}>
+                    <p className="text-[10px] uppercase text-muted-foreground mt-2 font-light" style={{ letterSpacing: "0.18em" }}>
                       Then ${rawPrice}/month
                     </p>
                   )}
 
-
-
                   {credits && (
                     <p
-                      className="text-white text-[11px] mt-5 uppercase font-light"
+                      className="text-foreground text-[11px] mt-5 uppercase font-light"
                       style={{ letterSpacing: "0.22em" }}
                     >
                       {credits}
@@ -845,11 +765,11 @@ const PricingPage = () => {
                       type="button"
                       onClick={() => handleSubscribe(p.tier)}
                       disabled={loadingTier !== null || isCurrent}
-                      className={`liquid-glass w-full py-3.5 rounded-full text-xs uppercase font-normal text-white disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2 ${isElite ? "bg-white/[0.04]" : ""}`}
+                      className={`liquid-glass w-full py-3.5 rounded-full text-xs uppercase font-normal text-foreground disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2 ${isElite ? "bg-muted/40" : ""}`}
                       style={{ letterSpacing: "0.2em" }}
                     >
                       {loadingTier === p.tier ? (
-                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <Spinner className="w-4 h-4" />
                       ) : (
                         ctaLabel
                       )}
@@ -907,7 +827,7 @@ const PricingPage = () => {
                                 {isUnlimited ? (
                                   <MegsyStar className="w-3.5 h-3.5" />
                                 ) : (
-                                  <Check className="w-3.5 h-3.5 text-white" strokeWidth={2} />
+                                  <Check className="w-3.5 h-3.5 text-foreground" strokeWidth={2} />
                                 )}
                               </motion.span>
                               <span className="flex-1">{f}</span>
@@ -928,7 +848,7 @@ const PricingPage = () => {
       </section>
 
       {/* ============================ FAQ ============================ */}
-      <section id="pricing-faq" className="relative overflow-hidden bg-black py-16 md:py-28 scroll-mt-8">
+      <section id="pricing-faq" className="relative overflow-hidden bg-background py-16 md:py-28 scroll-mt-8">
         {/* Massive FAQS headline */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
@@ -944,20 +864,20 @@ const PricingPage = () => {
 
         {/* Question list */}
         <div className="mx-auto mt-16 max-w-6xl px-6">
-          <ul className="border-t border-white/10">
+          <ul className="border-t border-border/10">
             {FAQS.map((item, i) => {
               const isOpen = openFaq === i;
               return (
-                <li key={item.q} className="border-b border-white/10">
+                <li key={item.q} className="border-b border-border/10">
                   <button
                     type="button"
                     onClick={() => setOpenFaq(isOpen ? null : i)}
                     aria-expanded={isOpen}
                     aria-controls={`pricing-faq-panel-${i}`}
                     id={`pricing-faq-trigger-${i}`}
-                    className="flex w-full items-center justify-between gap-6 py-7 text-left transition-colors hover:text-white/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:ring-offset-2 focus-visible:ring-offset-black rounded"
+                    className="flex w-full items-center justify-between gap-6 py-7 text-left transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:ring-offset-2 focus-visible:ring-offset-black rounded"
                   >
-                    <span className="font-display text-lg font-bold text-white md:text-2xl">
+                    <span className="font-display text-lg font-bold text-foreground md:text-2xl">
                       {item.q}
                     </span>
                     <span className="shrink-0 text-violet-400" aria-hidden="true">
@@ -978,7 +898,7 @@ const PricingPage = () => {
                         transition={{ duration: 0.3, ease: "easeInOut" }}
                         className="overflow-hidden"
                       >
-                        <p className="pb-7 pr-12 text-base leading-relaxed text-white/60 md:text-lg">
+                        <p className="pb-7 pr-12 text-base leading-relaxed text-muted-foreground md:text-lg">
                           {item.a}
                         </p>
                       </motion.div>
@@ -989,18 +909,18 @@ const PricingPage = () => {
             })}
           </ul>
 
-          <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 text-xs uppercase font-light text-white/70" style={{ letterSpacing: "0.18em" }}>
-            <a href="mailto:support@megsyai.com" className="hover:text-white transition-colors">
+          <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 text-xs uppercase font-light text-muted-foreground" style={{ letterSpacing: "0.18em" }}>
+            <a href="mailto:support@megsyai.com" className="hover:text-foreground transition-colors">
               support@megsyai.com
             </a>
-            <span className="hidden sm:inline text-white/20">·</span>
-            <a href="tel:+201098821812" className="hover:text-white transition-colors">
+            <span className="hidden sm:inline text-muted-foreground">·</span>
+            <a href="tel:+201098821812" className="hover:text-foreground transition-colors">
               +20 109 882 1812
             </a>
-            <span className="hidden sm:inline text-white/20">·</span>
+            <span className="hidden sm:inline text-muted-foreground">·</span>
             <button
               onClick={() => navigate("/refund")}
-              className="hover:text-white transition-colors"
+              className="hover:text-foreground transition-colors"
             >
               Refund Policy
             </button>
@@ -1008,13 +928,10 @@ const PricingPage = () => {
         </div>
       </section>
 
-
       {/* ============================ FOOTER ============================ */}
-      {settled && (
-        <Suspense fallback={null}>
-          <LandingFooter />
-        </Suspense>
-      )}
+      <Suspense fallback={null}>
+        <LandingFooter />
+      </Suspense>
 
       {gatewaySheet !== null && (
         <Suspense fallback={null}>

@@ -3,9 +3,10 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { m as motion } from "framer-motion";
-import { Loader2, Bot, Trash2, Sparkles } from "lucide-react";
+import { Bot, Trash2, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { GlassPage, GlassCard, glassStagger } from "@/components/settings/glass/GlassShell";
+import { Spinner } from "@/components/ui/spinner";
 
 interface DynAgent {
   id: string;
@@ -73,7 +74,7 @@ const OperatorAgentsPage = () => {
 
         {loading ? (
           <div className="flex justify-center py-12">
-            <Loader2 className="w-6 h-6 animate-spin text-[color:var(--amb-gold-2)]" />
+            <Spinner className="w-6 h-6 text-[color:var(--amb-gold-2)]" />
           </div>
         ) : agents.length === 0 ? (
           <div className="amb-plate p-8 text-center">

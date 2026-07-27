@@ -73,7 +73,7 @@ export default function PresenceBar({ workspaceId }: { workspaceId: string }) {
                 {(p.display_name || "?")[0]?.toUpperCase()}
               </div>
             )}
-            <span className="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-emerald-500 border border-background" />
+            <span className="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-primary border border-background" />
           </div>
         ))}
       </div>

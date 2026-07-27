@@ -113,7 +113,7 @@ const NotFound = () => {
 
   return (
     <div
-      className="relative min-h-dvh flex flex-col bg-black overflow-hidden"
+      className="relative min-h-dvh flex flex-col bg-background overflow-hidden"
       style={{ fontFamily: FONT_STACK }}
     >
       <style>{`
@@ -165,7 +165,7 @@ const NotFound = () => {
         <nav className="flex items-center justify-between px-6 md:px-12 lg:px-16 py-5">
           <a href="/" className="flex items-center gap-2.5">
             <MegsyMark />
-            <span className="text-white text-xl font-bold tracking-wider">MEGSY</span>
+            <span className="text-foreground text-xl font-bold tracking-wider">MEGSY</span>
           </a>
 
           <div className="hidden lg:flex items-center gap-8">
@@ -173,7 +173,7 @@ const NotFound = () => {
               <a
                 key={l.label}
                 href={l.href}
-                className="text-white/80 hover:text-white text-sm tracking-wide transition-colors duration-200"
+                className="text-muted-foreground hover:text-foreground text-sm tracking-wide transition-colors duration-200"
               >
                 {l.label}
               </a>
@@ -182,7 +182,7 @@ const NotFound = () => {
 
           <a
             href="/auth"
-            className="hidden lg:inline-flex items-center gap-2 bg-gradient-to-r from-emerald-400 to-cyan-500 text-white text-sm font-semibold px-6 py-2.5 rounded-full"
+            className="hidden lg:inline-flex items-center gap-2 bg-gradient-to-r from-primary to-cyan-500 text-foreground text-sm font-semibold px-6 py-2.5 rounded-full"
           >
             LOG IN
             <ArrowRight className="w-4 h-4" />
@@ -191,7 +191,7 @@ const NotFound = () => {
           <button
             onClick={toggleMenu}
             aria-label="Toggle menu"
-            className="lg:hidden relative z-[60] w-11 h-11 flex items-center justify-center text-white"
+            className="lg:hidden relative z-[60] w-11 h-11 flex items-center justify-center text-foreground"
           >
             <Menu
               className={`absolute w-6 h-6 transition-all duration-300 ${
@@ -211,20 +211,20 @@ const NotFound = () => {
           <>
             <div
               onClick={closeMenu}
-              className={`fixed inset-0 z-40 bg-black/40 backdrop-blur-md transition-opacity duration-400 ${
+              className={`fixed inset-0 z-40 bg-background/40 transition-opacity duration-400 ${
                 menuVisible ? "opacity-100" : "opacity-0"
               }`}
               style={{ transitionDuration: "400ms" }}
             />
             <div className="absolute left-0 right-0 top-[68px] z-50">
-              <div className="absolute inset-0 backdrop-blur-xl rounded-b-2xl" />
+              <div className="absolute inset-0 rounded-b-2xl" />
               <div className="relative z-10 flex flex-col items-center gap-6 py-10 px-6">
                 {NAV_LINKS.map((l, i) => (
                   <a
                     key={l.label}
                     href={l.href}
                     onClick={closeMenu}
-                    className="text-white/80 hover:text-white text-lg sm:text-xl font-light tracking-[0.08em]"
+                    className="text-muted-foreground hover:text-foreground text-lg sm:text-xl font-light tracking-[0.08em]"
                     style={{
                       opacity: menuVisible ? 1 : 0,
                       transform: menuVisible ? "translateY(0)" : "translateY(12px)",
@@ -238,7 +238,7 @@ const NotFound = () => {
                 <a
                   href="/auth"
                   onClick={closeMenu}
-                  className="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-400 to-cyan-500 text-white text-sm font-semibold px-6 py-2.5 rounded-full"
+                  className="inline-flex items-center gap-2 bg-gradient-to-r from-primary to-cyan-500 text-foreground text-sm font-semibold px-6 py-2.5 rounded-full"
                   style={{
                     opacity: menuVisible ? 1 : 0,
                     transform: menuVisible ? "translateY(0)" : "translateY(12px)",
@@ -256,22 +256,22 @@ const NotFound = () => {
 
         {/* HERO */}
         <main className="flex-1 flex flex-col items-center justify-center text-center px-4 sm:px-6 py-12 sm:py-16 md:py-0">
-          <h1 className="text-white/80 text-lg sm:text-3xl md:text-5xl font-light leading-snug tracking-tight mb-1 sm:mb-2">
+          <h1 className="text-muted-foreground text-lg sm:text-3xl md:text-5xl font-light leading-snug tracking-tight mb-1 sm:mb-2">
             This page seems to have
           </h1>
-          <h1 className="text-white/80 text-lg sm:text-3xl md:text-5xl font-light leading-snug tracking-tight mb-8 sm:mb-12">
+          <h1 className="text-muted-foreground text-lg sm:text-3xl md:text-5xl font-light leading-snug tracking-tight mb-8 sm:mb-12">
             slipped beyond our reach :/
           </h1>
 
           <div className="relative mb-8 sm:mb-12 w-full flex justify-center overflow-visible">
-            <span className="four-oh-four text-[80px] sm:text-[140px] md:text-[200px] lg:text-[260px] font-black text-white leading-none tracking-tighter select-none">
+            <span className="four-oh-four text-[80px] sm:text-[140px] md:text-[200px] lg:text-[260px] font-black text-foreground leading-none tracking-tighter select-none">
               404
             </span>
           </div>
 
           <a
             href="/"
-            className="liquid-glass text-white text-[10px] sm:text-sm tracking-[0.15em] sm:tracking-[0.2em] font-medium px-6 sm:px-8 py-3 sm:py-3.5 rounded-full uppercase"
+            className="liquid-glass text-foreground text-[10px] sm:text-sm tracking-[0.15em] sm:tracking-[0.2em] font-medium px-6 sm:px-8 py-3 sm:py-3.5 rounded-full uppercase"
           >
             Return to Main Page
           </a>
@@ -282,7 +282,7 @@ const NotFound = () => {
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6 sm:gap-8 lg:gap-6">
             {FOOTER_COLUMNS.map((col) => (
               <div key={col.title}>
-                <h3 className="text-white text-[10px] sm:text-xs font-bold tracking-[0.15em] mb-3 sm:mb-4">
+                <h3 className="text-foreground text-[10px] sm:text-xs font-bold tracking-[0.15em] mb-3 sm:mb-4">
                   {col.title}
                 </h3>
                 <ul className="space-y-2 sm:space-y-2.5">
@@ -290,7 +290,7 @@ const NotFound = () => {
                     <li key={l.label}>
                       <a
                         href={l.href}
-                        className="text-white/50 hover:text-white/80 text-[10px] sm:text-xs transition-colors duration-200"
+                        className="text-muted-foreground hover:text-muted-foreground text-[10px] sm:text-xs transition-colors duration-200"
                       >
                         {l.label}
                       </a>
@@ -301,7 +301,7 @@ const NotFound = () => {
             ))}
 
             <div className="col-span-2 lg:col-span-2">
-              <h3 className="text-white text-[10px] sm:text-xs font-bold tracking-[0.15em] mb-3 sm:mb-4">
+              <h3 className="text-foreground text-[10px] sm:text-xs font-bold tracking-[0.15em] mb-3 sm:mb-4">
                 JOIN THE MEGSY NEWSLETTER
               </h3>
               <form
@@ -311,17 +311,17 @@ const NotFound = () => {
                 <input
                   type="email"
                   placeholder="Type your email to sign up"
-                  className="flex-1 min-w-0 bg-white text-black text-xs px-3 py-2 rounded-l-md outline-none placeholder:text-black/40"
+                  className="flex-1 min-w-0 bg-primary text-primary-foreground text-xs px-3 py-2 rounded-l-md outline-none placeholder:text-black/40"
                 />
                 <button
                   type="submit"
-                  className="bg-gradient-to-r from-emerald-400 to-cyan-500 text-white text-[10px] sm:text-xs font-bold tracking-wider px-4 py-2 rounded-r-md"
+                  className="bg-gradient-to-r from-primary to-cyan-500 text-foreground text-[10px] sm:text-xs font-bold tracking-wider px-4 py-2 rounded-r-md"
                 >
                   SEND IT
                 </button>
               </form>
 
-              <h3 className="text-white text-[10px] sm:text-xs font-bold tracking-[0.15em] mt-5 sm:mt-6 mb-3">
+              <h3 className="text-foreground text-[10px] sm:text-xs font-bold tracking-[0.15em] mt-5 sm:mt-6 mb-3">
                 CONNECT
               </h3>
               <div className="flex gap-3">
@@ -332,7 +332,7 @@ const NotFound = () => {
                     aria-label={label}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-white/50 hover:text-white transition-colors duration-200"
+                    className="text-muted-foreground hover:text-foreground transition-colors duration-200"
                   >
                     <Icon className="w-4 h-4" />
                   </a>

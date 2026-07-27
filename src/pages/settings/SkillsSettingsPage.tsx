@@ -1,7 +1,7 @@
 /** @doc Browse and manage installed skills. */
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { ArrowLeft, ArrowUp, Pencil, Trash2, X, Plus, Paperclip, Loader2, Sparkles } from "lucide-react";
+import { ArrowLeft, ArrowUp, Pencil, Trash2, X, Plus, Paperclip, Sparkles } from "lucide-react";
 import { m as motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -18,6 +18,7 @@ import { SubShell, SubSection, SubCard, SubStatStrip } from "@/components/settin
 import { cn } from "@/lib/utils";
 
 import { sanitizeErrorMessage } from "@/lib/sanitizeError";
+import { Spinner } from "@/components/ui/spinner";
 type DraftSkill = Partial<Skill> & {
   name: string;
   description: string;
@@ -283,7 +284,7 @@ export default function SkillsSettingsPage() {
         <button
           onClick={() => navigate("/settings/skills/new")}
           aria-label="Create skill"
-          className="hidden sm:inline-flex items-center gap-1.5 h-9 px-3.5 rounded-full text-[12.5px] font-semibold text-white hover:opacity-90 transition"
+          className="hidden sm:inline-flex items-center gap-1.5 h-9 px-3.5 rounded-full text-[12.5px] font-semibold text-foreground hover:opacity-90 transition"
           style={{ backgroundColor: INDIGO, ...HEADING }}
         >
           <Plus className="w-3.5 h-3.5" strokeWidth={2.4} />
@@ -325,7 +326,7 @@ export default function SkillsSettingsPage() {
             <div className="mt-3 flex items-end gap-6">
               <div>
                 <p
-                  className="text-[44px] leading-none font-semibold text-white tracking-tight"
+                  className="text-[44px] leading-none font-semibold text-foreground tracking-tight"
                   style={HEADING}
                 >
                   {enabledCount}
@@ -339,7 +340,7 @@ export default function SkillsSettingsPage() {
               </div>
               <div className="ml-auto text-right">
                 <p
-                  className="text-[24px] font-semibold text-white leading-none"
+                  className="text-[24px] font-semibold text-foreground leading-none"
                   style={HEADING}
                 >
                   {librarySkills.length}
@@ -353,7 +354,7 @@ export default function SkillsSettingsPage() {
             <div className="mt-5 flex flex-wrap gap-2">
               <button
                 onClick={() => navigate("/settings/skills/new")}
-                className="inline-flex items-center gap-1.5 h-9 px-4 rounded-full text-[12.5px] font-semibold text-white transition hover:brightness-110"
+                className="inline-flex items-center gap-1.5 h-9 px-4 rounded-full text-[12.5px] font-semibold text-foreground transition hover:brightness-110"
                 style={{ backgroundColor: INDIGO, ...HEADING }}
               >
                 <Plus className="w-3.5 h-3.5" strokeWidth={2.4} /> Create skill
@@ -361,7 +362,7 @@ export default function SkillsSettingsPage() {
               <button
                 onClick={() => fileInputRef.current?.click()}
                 disabled={importing}
-                className="inline-flex items-center gap-1.5 h-9 px-4 rounded-full text-[12.5px] font-medium text-white/85 transition hover:bg-white/[0.06] disabled:opacity-50"
+                className="inline-flex items-center gap-1.5 h-9 px-4 rounded-full text-[12.5px] font-medium text-muted-foreground transition hover:bg-muted/40 disabled:opacity-50"
                 style={{ border: `1px solid ${CARD_BORDER}`, backgroundColor: "var(--overlay-white-03)" }}
               >
                 <Paperclip className="w-3.5 h-3.5" strokeWidth={2} /> Import .zip
@@ -413,14 +414,14 @@ export default function SkillsSettingsPage() {
               className="flex items-center justify-center py-16 rounded-3xl"
               style={{ backgroundColor: CARD_BG, border: `1px solid ${CARD_BORDER}` }}
             >
-              <Loader2 className="w-5 h-5 animate-spin" style={{ color: INK_SOFT }} />
+              <Spinner className="w-5 h-5" style={{ color: INK_SOFT }} />
             </div>
           ) : mySkills.length === 0 ? (
             <div
               className="text-center py-14 px-6 rounded-3xl"
               style={{ backgroundColor: CARD_BG, border: `1px solid ${CARD_BORDER}` }}
             >
-              <p className="text-[15px] font-semibold text-white" style={HEADING}>
+              <p className="text-[15px] font-semibold text-foreground" style={HEADING}>
                 No skills yet
               </p>
               <p className="text-[12.5px] mt-2 max-w-sm mx-auto leading-relaxed" style={{ color: INK_SOFT }}>
@@ -429,14 +430,14 @@ export default function SkillsSettingsPage() {
               <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
                 <button
                   onClick={() => navigate("/settings/skills/new")}
-                  className="inline-flex items-center gap-1.5 h-9 px-4 rounded-full text-[12.5px] font-semibold text-white hover:brightness-110 transition"
+                  className="inline-flex items-center gap-1.5 h-9 px-4 rounded-full text-[12.5px] font-semibold text-foreground hover:brightness-110 transition"
                   style={{ backgroundColor: INDIGO, ...HEADING }}
                 >
                   <Plus className="w-3.5 h-3.5" /> Create skill
                 </button>
                 <button
                   onClick={() => setTab("library")}
-                  className="inline-flex items-center gap-1.5 h-9 px-4 rounded-full text-[12.5px] font-medium text-white/85 hover:bg-white/[0.06] transition"
+                  className="inline-flex items-center gap-1.5 h-9 px-4 rounded-full text-[12.5px] font-medium text-muted-foreground hover:bg-muted/40 transition"
                   style={{ border: `1px solid ${CARD_BORDER}` }}
                 >
                   Browse library
@@ -468,7 +469,7 @@ export default function SkillsSettingsPage() {
             className="text-center py-14 rounded-3xl"
             style={{ backgroundColor: CARD_BG, border: `1px solid ${CARD_BORDER}` }}
           >
-            <p className="text-[15px] font-semibold text-white" style={HEADING}>
+            <p className="text-[15px] font-semibold text-foreground" style={HEADING}>
               The library is empty
             </p>
             <p className="text-[12.5px] mt-2" style={{ color: INK_SOFT }}>
@@ -485,7 +486,7 @@ export default function SkillsSettingsPage() {
                   className="mb-3 break-inside-avoid rounded-2xl p-4"
                   style={{ backgroundColor: CARD_BG, border: `1px solid ${CARD_BORDER}` }}
                 >
-                  <p className="text-[14px] font-semibold text-white" style={HEADING}>
+                  <p className="text-[14px] font-semibold text-foreground" style={HEADING}>
                     {s.name}
                   </p>
                   {s.description && (
@@ -529,7 +530,7 @@ export default function SkillsSettingsPage() {
               <button
                 key={s}
                 onClick={() => navigate("/settings/skills/new", { state: { seed: s } })}
-                className="inline-flex items-center gap-1.5 px-3 h-8 rounded-full text-[12.5px] transition-colors hover:text-white"
+                className="inline-flex items-center gap-1.5 px-3 h-8 rounded-full text-[12.5px] transition-colors hover:text-foreground"
                 style={{
                   color: INK_SOFT,
                   border: `1px solid ${CARD_BORDER}`,
@@ -588,7 +589,7 @@ function SkillCardIndigo({
               className="h-1.5 w-1.5 rounded-full"
               style={{ backgroundColor: enabled ? indigo : "var(--overlay-white-20)" }}
             />
-            <p className="text-[14px] font-semibold text-white truncate" style={heading}>
+            <p className="text-[14px] font-semibold text-foreground truncate" style={heading}>
               {skill.name}
             </p>
           </div>
@@ -630,7 +631,7 @@ function SkillCardIndigo({
       <div className="mt-3 flex items-center justify-end gap-1">
         <button
           onClick={onEdit}
-          className="grid h-8 w-8 place-items-center rounded-lg transition-all hover:bg-white/[0.06]"
+          className="grid h-8 w-8 place-items-center rounded-lg transition-all hover:bg-muted/40"
           style={{ color: inkSoft }}
           aria-label="Edit"
         >
@@ -648,10 +649,6 @@ function SkillCardIndigo({
     </div>
   );
 }
-
-
-
-
 
 // ===========================================================================
 // Conversational Skill Designer
@@ -843,7 +840,7 @@ function SkillDesigner({
 
   return (
     <div className="min-h-dvh bg-background flex flex-col">
-      <header className="sticky top-0 z-20 bg-background/85 backdrop-blur-xl border-b border-border/30">
+      <header className="sticky top-0 z-20 bg-background/85 border-b border-border/30">
         <div className="max-w-5xl mx-auto px-4 h-14 flex items-center gap-3">
           <button
             onClick={onClose}

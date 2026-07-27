@@ -67,7 +67,7 @@ export default function AppsPage() {
       currentMode="chat"
     >
       <div className="min-h-[100dvh] bg-background text-foreground">
-        <header className="sticky top-0 z-30 bg-background/90 backdrop-blur-xl border-b border-foreground/10">
+        <header className="sticky top-0 z-30 bg-background/90 border-b border-foreground/10">
           <div className="mx-auto flex h-14 w-full max-w-5xl items-center gap-2 px-3 sm:px-6 safe-top">
             <MobileSidebarButton onClick={() => setSidebarOpen(true)} />
             <h1 className="text-[17px] font-bold tracking-tight" dir="auto">

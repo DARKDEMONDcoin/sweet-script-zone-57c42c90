@@ -1,28 +1,6 @@
 import { memo } from "react";
 import { m as motion, AnimatePresence } from "framer-motion";
-import {
-  Camera,
-  Image,
-  FileUp,
-  Globe,
-  Lightbulb,
-  Wrench,
-  Music2,
-  Timer,
-  ChevronLeft,
-  Check,
-  Plus,
-  Loader2,
-  Play,
-  Trash2,
-  Image as ImageIcon,
-  Video as VideoIcon,
-  Microscope,
-  Presentation,
-  FileText,
-  Plug,
-  Code2,
-} from "lucide-react";
+import { Camera, Image, FileUp, Globe, Lightbulb, Wrench, Music2, Timer, ChevronLeft, Check, Plus, Play, Trash2, Image as ImageIcon, Video as VideoIcon, Microscope, Presentation, FileText, Plug, Code2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -35,6 +13,7 @@ import {
 import type { Integration } from "@/lib/integrationsData";
 import { IOS_SPRING as iosSpring } from "../constants/motion";
 import { glassModelMenu } from "@/components/model-picker/glassModelMenuStyles";
+import { Spinner } from "@/components/ui/spinner";
 
 type PlusView = "main" | "models" | "skills" | "music" | "timer" | "tools";
 
@@ -185,8 +164,6 @@ const PlusMain = (p: PlusContentProps) => {
     },
   ];
 
-
-
   const renderRow = (row: MobileRow) => {
     const active = row.toggle ? !!row.active : p.chatMode === row.id;
     return (
@@ -200,7 +177,7 @@ const PlusMain = (p: PlusContentProps) => {
         className="gemini-service-row w-full flex items-center gap-3.5 border-0 bg-transparent text-left transition-colors px-1 py-3"
       >
         <span className="shrink-0 w-9 h-9 flex items-center justify-center text-foreground/85">
-          <row.Icon className="w-[22px] h-[22px]" strokeWidth={1.7} />
+          <row.Icon className="w-[22px] h-[22px]" strokeWidth={1.8} />
         </span>
         <span className="flex-1 min-w-0 flex flex-col gap-0.5">
           <span className="flex items-center gap-2 text-[16px] font-medium text-foreground leading-[1.15] truncate">
@@ -266,7 +243,7 @@ const PlusMain = (p: PlusContentProps) => {
             className="gemini-glass-tile relative flex flex-col items-center justify-center gap-1 border-0 text-foreground"
             style={{ minHeight: 64, borderRadius: 18 }}
           >
-            <Icon className="w-[22px] h-[22px] text-foreground/92" strokeWidth={1.7} />
+            <Icon className="w-[22px] h-[22px] text-foreground/92" strokeWidth={1.8} />
             <span className="text-[13.5px] font-medium text-foreground leading-none">
               {label}
             </span>
@@ -279,12 +256,6 @@ const PlusMain = (p: PlusContentProps) => {
         {mobileRows.map(renderRow)}
       </div>
     </div>
-
-
-
-
-
-
 
     {/* DESKTOP */}
     <div className="hidden md:flex flex-col gap-1">
@@ -321,7 +292,7 @@ const PlusMain = (p: PlusContentProps) => {
             onClick={onClick}
             className="w-full flex items-center gap-3 px-2.5 py-2 rounded-xl text-left hover:bg-foreground/[0.06] transition-colors"
           >
-            <Icon className="w-[18px] h-[18px] text-brand-action shrink-0" strokeWidth={2.2} />
+            <Icon className="w-[18px] h-[18px] text-brand-action shrink-0" strokeWidth={1.8} />
             <span className="flex-1 text-[13.5px] font-bold text-brand-parchment truncate">
               {label}
             </span>
@@ -346,7 +317,7 @@ const PlusMain = (p: PlusContentProps) => {
             onClick={p.handleSearchToggle}
             className="w-full flex items-center gap-3 px-2.5 py-2 rounded-xl text-left hover:bg-foreground/[0.06] transition-colors"
           >
-            <Globe className="w-[18px] h-[18px] shrink-0" strokeWidth={2.2} style={{ color: "#7DD3FC" }} />
+            <Globe className="w-[18px] h-[18px] shrink-0" strokeWidth={1.8} style={{ color: "#7DD3FC" }} />
             <span className="flex-1 text-[13.5px] font-bold text-brand-parchment">Web search</span>
             <span
               className="relative shrink-0 rounded-full transition-colors"
@@ -354,12 +325,12 @@ const PlusMain = (p: PlusContentProps) => {
                 width: 32,
                 height: 18,
                 backgroundColor: p.searchEnabled
-                  ? "hsl(var(--brand-action))"
-                  : "var(--overlay-white-18)",
+                  ? "hsl(var(--primary))"
+                  : "hsl(var(--muted))",
               }}
             >
               <span
-                className="absolute top-1/2 rounded-full bg-white"
+                className="absolute top-1/2 rounded-full bg-background"
                 style={{
                   width: 14,
                   height: 14,
@@ -461,7 +432,7 @@ const PlusModels = (p: PlusContentProps) => (
               </div>
             </div>
 
-            {active && <Check className="w-4 h-4 text-primary shrink-0" strokeWidth={2.5} />}
+            {active && <Check className="w-4 h-4 text-primary shrink-0" strokeWidth={1.8} />}
           </motion.button>
         );
       })}
@@ -543,12 +514,12 @@ const PlusSkills = (p: PlusContentProps) => (
                 style={{
                   width: 36,
                   height: 22,
-                  backgroundColor: enabled ? "hsl(var(--brand-action))" : "var(--overlay-white-18)",
+                  backgroundColor: enabled ? "hsl(var(--primary))" : "hsl(var(--muted))",
                 }}
                 aria-hidden="true"
               >
                 <span
-                  className="absolute top-1/2 rounded-full bg-white transition-all"
+                  className="absolute top-1/2 rounded-full bg-background transition-all"
                   style={{
                     width: 18,
                     height: 18,
@@ -647,14 +618,14 @@ const PlusMusic = (p: PlusContentProps) => (
           >
             <Music2
               className={`w-[18px] h-[18px] ${active ? "text-brand-mint" : "text-brand-mint"}`}
-              strokeWidth={2.2}
+              strokeWidth={1.8}
             />
             <span className="flex-1 text-[13.5px] font-semibold text-foreground">
               {opt.id}
             </span>
 
             {active && (
-              <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400" strokeWidth={2.5} />
+              <Check className="w-4 h-4 text-foreground" strokeWidth={1.8} />
             )}
           </motion.button>
         );
@@ -667,11 +638,11 @@ const PlusMusic = (p: PlusContentProps) => (
         className="w-full flex items-center gap-3 px-3 py-2.5 rounded-[18px] border border-dashed border-brand-mint/50 bg-foreground/[0.05] transition-colors text-left disabled:opacity-60"
       >
         {p.uploadingMusic ? (
-          <Loader2 className="w-[18px] h-[18px] text-emerald-600 dark:text-emerald-400 animate-spin" />
+          <Spinner className="w-[18px] h-[18px] text-foreground" />
         ) : (
           <Plus
-            className="w-[18px] h-[18px] text-emerald-600 dark:text-emerald-400"
-            strokeWidth={2}
+            className="w-[18px] h-[18px] text-foreground"
+            strokeWidth={1.8}
           />
         )}
         <span className="flex-1 text-[13.5px] text-foreground/90">
@@ -689,7 +660,7 @@ const PlusMusic = (p: PlusContentProps) => (
             return (
               <div
                 key={track.id}
-                className={`group w-full flex items-center gap-3 px-3 py-2.5 rounded-2xl transition-colors ${active ? "bg-emerald-500/10 border border-emerald-500/30" : "liquid-glass-hover border border-transparent"}`}
+                className={`group w-full flex items-center gap-3 px-3 py-2.5 rounded-2xl transition-colors ${active ? "bg-muted/50 border border-border/60" : "liquid-glass-hover border border-transparent"}`}
               >
                 <button
                   onClick={() => {
@@ -699,16 +670,16 @@ const PlusMusic = (p: PlusContentProps) => (
                   className="flex-1 flex items-center gap-3 text-left min-w-0"
                 >
                   <Music2
-                    className="w-[18px] h-[18px] text-emerald-600 dark:text-emerald-400 shrink-0"
-                    strokeWidth={1.75}
+                    className="w-[18px] h-[18px] text-foreground shrink-0"
+                    strokeWidth={1.8}
                   />
                   <span className="flex-1 text-[13.5px] text-foreground/90 truncate">
                     {track.name}
                   </span>
                   {active && (
                     <Check
-                      className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0"
-                      strokeWidth={2.5}
+                      className="w-4 h-4 text-foreground shrink-0"
+                      strokeWidth={1.8}
                     />
                   )}
                 </button>
@@ -754,7 +725,7 @@ const PlusTimer = (p: PlusContentProps) => (
           <button
             key={m}
             onClick={() => p.setTimerInputMin(m)}
-            className={`py-2 rounded-xl text-[12.5px] font-semibold transition-colors ${p.timerInputMin === m ? "bg-emerald-600 text-white" : "liquid-glass-hover text-foreground/85"}`}
+            className={`py-2 rounded-xl text-[12.5px] font-semibold transition-colors ${p.timerInputMin === m ? "bg-primary text-primary-foreground" : "bg-muted/40 text-foreground hover:bg-muted/60"}`}
           >
             {m}m
           </button>
@@ -769,7 +740,7 @@ const PlusTimer = (p: PlusContentProps) => (
           onChange={(e) =>
             p.setTimerInputMin(Math.max(1, Math.min(180, parseInt(e.target.value || "0") || 1)))
           }
-          className="flex-1 bg-transparent border border-border/40 rounded-xl px-3 py-2 text-[13px] text-foreground outline-none focus:border-emerald-500/60"
+          className="flex-1 bg-transparent border border-border/40 rounded-xl px-3 py-2 text-[13px] text-foreground outline-none focus:border-foreground/40"
         />
         <span className="text-[12px] text-muted-foreground">minutes</span>
       </div>
@@ -789,7 +760,7 @@ const PlusTimer = (p: PlusContentProps) => (
           p.setPlusMenuOpen(false);
           setTimeout(() => p.scrollToBottom(), 100);
         }}
-        className="w-full inline-flex items-center justify-center gap-2 py-2.5 rounded-xl bg-emerald-600 text-white text-[13px] font-semibold hover:bg-emerald-500 transition-colors"
+        className="w-full inline-flex items-center justify-center gap-2 py-2.5 rounded-xl bg-primary text-primary-foreground text-[13px] font-medium hover:bg-primary/90 transition-colors"
       >
         <Play className="w-4 h-4" fill="currentColor" /> Start session
       </button>
@@ -852,13 +823,13 @@ const PlusSkillsBody = (p: PlusContentProps) => (
                   width: 36,
                   height: 22,
                   backgroundColor: enabled
-                    ? "hsl(var(--brand-action))"
-                    : "var(--overlay-white-18)",
+                    ? "hsl(var(--primary))"
+                    : "hsl(var(--muted))",
                 }}
                 aria-hidden="true"
               >
                 <span
-                  className="absolute top-1/2 rounded-full bg-white"
+                  className="absolute top-1/2 rounded-full bg-background"
                   style={{
                     width: 18,
                     height: 18,
@@ -958,10 +929,10 @@ const PlusIntegrationsBody = (p: PlusContentProps) => (
             </div>
             {connected ? (
               <span className="text-[11px] font-semibold text-brand-mint inline-flex items-center gap-1 whitespace-nowrap">
-                <Check className="w-3.5 h-3.5" strokeWidth={2.5} /> Connected
+                <Check className="w-3.5 h-3.5" strokeWidth={1.8} /> Connected
               </span>
             ) : isLoading ? (
-              <Loader2 className="w-4 h-4 text-foreground/60 animate-spin" />
+              <Spinner className="w-4 h-4 text-foreground/60" />
             ) : (
               <span className="inline-flex items-center justify-center h-7 px-3 rounded-full bg-foreground/10 text-foreground border border-foreground/20 text-[11.5px] font-semibold whitespace-nowrap">
                 Connect
@@ -998,7 +969,6 @@ const PlusTools = (p: PlusContentProps) => {
     </motion.div>
   );
 };
-
 
 const PlusContent = (props: PlusContentProps) => {
   const isBig = props.plusView === "skills" || props.plusView === "tools";

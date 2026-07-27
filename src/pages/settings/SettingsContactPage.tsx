@@ -1,11 +1,12 @@
 /** @doc Contact — Obsidian glass minimalism, matching Help & Support. */
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Loader2, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { translateExactText, useUserLang } from "@/lib/authI18n";
 import { goBackOr } from "@/lib/navigation";
+import { Spinner } from "@/components/ui/spinner";
 
 export default function SettingsContactPage() {
   const navigate = useNavigate();
@@ -62,7 +63,7 @@ export default function SettingsContactPage() {
 
   return (
     <div
-      className="min-h-screen w-full bg-black text-[#f5f5f5]"
+      className="min-h-screen w-full bg-background text-[#f5f5f5]"
       style={{ fontFamily: '"DM Sans", "Inter", system-ui, sans-serif' }}
     >
       <div className="mx-auto w-full max-w-md px-6 py-8">
@@ -179,11 +180,11 @@ export default function SettingsContactPage() {
             <button
               onClick={submit}
               disabled={!canSend}
-              className="flex w-full items-center justify-center gap-2 rounded-[24px] border border-[#f5f5f5] bg-[#f5f5f5] px-6 py-4 text-[15px] font-semibold text-black transition-all hover:bg-white active:scale-[0.98] disabled:cursor-not-allowed disabled:border-[#1a1a1a] disabled:bg-[#1a1a1a]/40 disabled:text-[#6b6b6b]"
+              className="flex w-full items-center justify-center gap-2 rounded-[24px] border border-[#f5f5f5] bg-[#f5f5f5] px-6 py-4 text-[15px] font-semibold text-primary-foreground transition-all hover:bg-primary active:scale-[0.98] disabled:cursor-not-allowed disabled:border-[#1a1a1a] disabled:bg-[#1a1a1a]/40 disabled:text-[#6b6b6b]"
             >
               {sending ? (
                 <>
-                  <Loader2 className="h-4 w-4 animate-spin" /> {tx("Sending")}
+                  <Spinner className="h-4 w-4" /> {tx("Sending")}
                 </>
               ) : (
                 tx("Send message")

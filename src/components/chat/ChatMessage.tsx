@@ -545,7 +545,7 @@ const MarkdownRenderer = ({
             src={src}
             alt={alt || ""}
             loading="lazy"
-            className="my-3 max-w-full h-auto rounded-xl border border-white/10 shadow-lg"
+            className="my-3 max-w-full h-auto rounded-xl border border-border/10 shadow-lg"
           />
         ) : null,
       video: ({ src, ...props }: any) => (
@@ -553,12 +553,12 @@ const MarkdownRenderer = ({
           src={src}
           controls
           playsInline
-          className="my-3 w-full max-w-full rounded-xl border border-white/10 shadow-lg bg-black"
+          className="my-3 w-full max-w-full rounded-xl border border-border/50 bg-muted"
           {...props}
         />
       ),
       iframe: ({ src, title, ...props }: any) => (
-        <div className="my-3 relative w-full aspect-video overflow-hidden rounded-xl border border-white/10 shadow-lg bg-black">
+        <div className="my-3 relative w-full aspect-video overflow-hidden rounded-xl border border-border/50 bg-muted">
           <iframe
             src={src}
             title={title || "embedded content"}
@@ -665,7 +665,7 @@ const renderTextWithMentions = (text: string) => {
   const parts = text.split(/(@[A-Za-z0-9_]+)/g);
   return parts.map((p, i) =>
     p.startsWith("@") ? (
-      <span key={i} className="px-1 rounded bg-white/25 font-semibold">
+      <span key={i} className="px-1 rounded bg-primary/20 font-semibold">
         {p}
       </span>
     ) : (
@@ -717,13 +717,13 @@ const UserMarkdown = ({
         const isBlock = className?.startsWith("language-");
         if (isBlock) {
           return (
-            <pre className="my-2 p-2 rounded-lg bg-black/25 overflow-x-auto text-[12px] leading-relaxed">
+            <pre className="my-2 p-2 rounded-lg bg-muted/60 overflow-x-auto text-[12px] leading-relaxed">
               <code {...props}>{children}</code>
             </pre>
           );
         }
         return (
-          <code className="px-1 py-0.5 rounded bg-black/20 text-[12px] font-mono" {...props}>
+          <code className="px-1 py-0.5 rounded bg-muted/60 text-[12px] font-mono" {...props}>
             {children}
           </code>
         );
@@ -732,7 +732,7 @@ const UserMarkdown = ({
       ul: ({ children }) => <ul className="list-disc ps-5 my-1 space-y-0.5">{children}</ul>,
       ol: ({ children }) => <ol className="list-decimal ps-5 my-1 space-y-0.5">{children}</ol>,
       blockquote: ({ children }) => (
-        <blockquote className="border-s-2 border-white/40 ps-2 my-1 opacity-90">
+        <blockquote className="border-s-2 border-border/40 ps-2 my-1 opacity-90">
           {children}
         </blockquote>
       ),
@@ -856,11 +856,37 @@ const ChatMessage = ({
     : undefined;
 
   const handleCopy = async () => {
-    await navigator.clipboard.writeText(content);
+    const text = content ?? "";
+    let ok = false;
+    try {
+      await navigator.clipboard.writeText(text);
+      ok = true;
+    } catch {
+      try {
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        ta.style.position = "fixed";
+        ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.select();
+        ok = document.execCommand("copy");
+        document.body.removeChild(ta);
+      } catch {
+        ok = false;
+      }
+    }
+    if (!ok) {
+      toast.error("تعذر النسخ");
+      return;
+    }
     setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-    toast.success("Copied");
+    setTimeout(() => setCopied(false), 1600);
+    try {
+      (navigator as any).vibrate?.(6);
+    } catch {}
+    toast.success("تم النسخ");
   };
+
 
   const closeMenu = useCallback(() => setMenuOpen(false), []);
 
@@ -943,8 +969,18 @@ const ChatMessage = ({
     setPreviewCode({ code, lang });
   }, []);
 
+  const [localLiked, setLocalLiked] = useState<boolean | null>(liked ?? null);
+  useEffect(() => {
+    setLocalLiked(liked ?? null);
+  }, [liked]);
+  const effectiveLiked = localLiked;
+
   const handleLikeAction = useCallback(
     (nextLiked: boolean | null) => {
+      setLocalLiked(nextLiked);
+      try {
+        (navigator as any).vibrate?.(6);
+      } catch {}
       if (typeof messageIndex === "number" && onLikeMessage) {
         onLikeMessage(messageIndex, nextLiked);
         return;
@@ -953,6 +989,7 @@ const ChatMessage = ({
     },
     [messageIndex, onLike, onLikeMessage],
   );
+
 
   const handleEditAction = useCallback(() => {
     if (typeof messageIndex === "number" && onEditUserMessageAt) {
@@ -1182,8 +1219,8 @@ const ChatMessage = ({
                   onTouchCancel={clearLongPress}
                   onClick={handleBubbleClick}
                   style={{
-                    background: "var(--user-bubble, #2563eb)",
-                    color: "var(--user-bubble-text, #ffffff)",
+                    background: "var(--user-bubble, hsl(var(--primary)))",
+                    color: "var(--user-bubble-text, hsl(var(--primary-foreground)))",
                     WebkitTouchCallout: "none",
                     WebkitUserSelect: "none",
                     userSelect: "none",
@@ -1214,7 +1251,7 @@ const ChatMessage = ({
                       align="end"
                       side="bottom"
                       sideOffset={6}
-                      className="z-50 w-[200px] rounded-ios-lg overflow-hidden bg-popover/95 text-popover-foreground border border-border/60 shadow-[0_24px_56px_-18px_rgba(0,0,0,0.7)] backdrop-blur-2xl p-1.5"
+                      className="z-50 w-[200px] rounded-ios-lg overflow-hidden bg-popover/95 text-popover-foreground border border-border/60 shadow-[0_24px_56px_-18px_rgba(0,0,0,0.7)] p-1.5"
                     >
                       <button
                         onClick={async (e) => {
@@ -1327,6 +1364,8 @@ const ChatMessage = ({
 
   return (
     <Message
+      aria-live={role === "assistant" && isStreaming ? "polite" : undefined}
+      aria-busy={role === "assistant" && isStreaming ? true : undefined}
       className="mb-6 relative animate-message-rise"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
@@ -1334,7 +1373,7 @@ const ChatMessage = ({
     >
       {swipeHint && (
         <div
-          className={`pointer-events-none absolute top-2 z-10 px-2 py-1 rounded-md text-[11px] font-medium bg-primary/15 text-primary backdrop-blur-md ${
+          className={`pointer-events-none absolute top-2 z-10 px-2 py-1 rounded-md text-[11px] font-medium bg-primary/15 text-primary ${
             swipeHint === "regen" ? "right-2" : "left-2"
           }`}
         >
@@ -1448,7 +1487,7 @@ const ChatMessage = ({
                       controls
                       playsInline
                       preload="metadata"
-                      className="w-full max-w-[28rem] rounded-xl bg-black border border-border/40"
+                      className="w-full max-w-[28rem] rounded-xl bg-muted border border-border/40"
                     />
                   ))}
               </div>
@@ -1512,14 +1551,14 @@ const ChatMessage = ({
                   onClick={openProjectPreview}
                   className="group inline-flex items-center gap-3 flex-1 rounded-2xl border border-border/60 bg-gradient-to-br from-surface-1 to-surface-3 px-4 py-3 text-left shadow-sm hover:shadow-md hover:border-[var(--megsy-blue)]/60 transition-all"
                 >
-                  <span className="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-[var(--megsy-blue)]/20 text-[var(--megsy-blue)] group-hover:bg-[var(--megsy-blue)] group-hover:text-white transition-colors">
+                  <span className="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-muted text-foreground group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
                     <Play className="w-4 h-4" fill="currentColor" />
                   </span>
                   <span className="flex-1 min-w-0">
-                    <span className="block text-[13px] font-bold text-white">
+                    <span className="block text-[13px] font-semibold text-foreground">
                       Project preview
                     </span>
-                    <span className="block text-[11px] text-white/60 truncate">
+                    <span className="block text-[11px] text-muted-foreground truncate">
                       {projectFiles.length} files · Click to run and browse
                     </span>
                   </span>
@@ -1527,14 +1566,14 @@ const ChatMessage = ({
                 <button
                   type="button"
                   onClick={() => setStudioOpen(true)}
-                  className="group inline-flex items-center gap-3 flex-1 rounded-2xl border border-border/60 bg-gradient-to-br from-surface-1 to-surface-3 px-4 py-3 text-left shadow-sm hover:shadow-md hover:border-emerald-400/60 transition-all"
+                  className="group inline-flex items-center gap-3 flex-1 rounded-2xl border border-border/60 bg-gradient-to-br from-surface-1 to-surface-3 px-4 py-3 text-left shadow-sm hover:shadow-md hover:border-primary/60 transition-all"
                 >
-                  <span className="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-emerald-500/20 text-emerald-400 group-hover:bg-emerald-500 group-hover:text-black transition-colors">
+                  <span className="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-muted text-foreground group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
                     <FolderTree className="w-4 h-4" />
                   </span>
                   <span className="flex-1 min-w-0">
-                    <span className="block text-[13px] font-bold text-white">Files</span>
-                    <span className="block text-[11px] text-white/60 truncate">
+                    <span className="block text-[13px] font-semibold text-foreground">Files</span>
+                    <span className="block text-[11px] text-muted-foreground truncate">
                       {projectFiles.length} files · Browse and edit
                     </span>
                   </span>
@@ -1689,7 +1728,7 @@ const ChatMessage = ({
                   const isAr = al === "ar";
                   return (
                     <div
-                      className="rounded-2xl border border-border/50 bg-card/60 backdrop-blur-xl overflow-hidden"
+                      className="rounded-2xl border border-border/50 bg-card/60 overflow-hidden"
                       dir={langDir(al)}
                     >
                       <button
@@ -1776,73 +1815,103 @@ const ChatMessage = ({
             {/* Action buttons */}
             {!isStreaming && content && !showSlidesInfoBox && !hideActions && (
               <ActionBarPrimitive.Root asChild>
-              <div className="flex items-center gap-1 mt-2">
+              <div className="flex items-center gap-0.5 mt-2 -ml-1.5">
                 <button
+                  type="button"
                   onClick={handleCopy}
-                  className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground liquid-glass-hover transition-all"
-                  title="Copy"
+                  className="h-9 w-9 inline-flex items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-muted/70 active:scale-95 transition-[color,background-color,transform] duration-150"
+                  title="نسخ"
+                  aria-label="نسخ الرسالة"
                 >
-                  {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                  {copied ? (
+                    <Check className="w-4 h-4 text-primary" strokeWidth={2} />
+                  ) : (
+                    <Copy className="w-4 h-4" strokeWidth={1.8} />
+                  )}
                 </button>
-                <motion.button
-                  onClick={() => handleLikeAction(liked === true ? null : true)}
-                  className={`p-1.5 rounded-lg transition-all ${liked === true ? "text-primary" : "text-muted-foreground hover:text-foreground liquid-glass-hover"}`}
-                  title="Like"
-                  whileTap={{ scale: 1.3 }}
-                  transition={{ type: "spring", stiffness: 500, damping: 15 }}
+                <button
+                  type="button"
+                  onClick={() => handleLikeAction(effectiveLiked === true ? null : true)}
+                  aria-pressed={effectiveLiked === true}
+                  className={`h-9 w-9 inline-flex items-center justify-center rounded-full active:scale-95 transition-[color,background-color,transform] duration-150 ${
+                    effectiveLiked === true
+                      ? "text-primary bg-primary/10"
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted/70"
+                  }`}
+                  title="إعجاب"
+                  aria-label="إعجاب"
                 >
-                  <ThumbsUp className="w-3.5 h-3.5" />
-                </motion.button>
-                <motion.button
-                  onClick={() => handleLikeAction(liked === false ? null : false)}
-                  className={`p-1.5 rounded-lg transition-all ${liked === false ? "text-destructive" : "text-muted-foreground hover:text-foreground liquid-glass-hover"}`}
-                  title="Dislike"
-                  whileTap={{ scale: 1.3 }}
-                  transition={{ type: "spring", stiffness: 500, damping: 15 }}
+                  <ThumbsUp
+                    className="w-4 h-4"
+                    strokeWidth={1.8}
+                    fill={effectiveLiked === true ? "currentColor" : "none"}
+                  />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleLikeAction(effectiveLiked === false ? null : false)}
+                  aria-pressed={effectiveLiked === false}
+                  className={`h-9 w-9 inline-flex items-center justify-center rounded-full active:scale-95 transition-[color,background-color,transform] duration-150 ${
+                    effectiveLiked === false
+                      ? "text-destructive bg-destructive/10"
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted/70"
+                  }`}
+                  title="عدم إعجاب"
+                  aria-label="عدم إعجاب"
                 >
-                  <ThumbsDown className="w-3.5 h-3.5" />
-                </motion.button>
+                  <ThumbsDown
+                    className="w-4 h-4"
+                    strokeWidth={1.8}
+                    fill={effectiveLiked === false ? "currentColor" : "none"}
+                  />
+                </button>
                 {onRegenerate && (
                   <button
+                    type="button"
                     onClick={onRegenerate}
-                    className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground liquid-glass-hover transition-all"
-                    title="Regenerate"
-                    aria-label="Regenerate response"
+                    className="h-9 w-9 inline-flex items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-muted/70 active:scale-95 transition-[color,background-color,transform] duration-150"
+                    title="إعادة التوليد"
+                    aria-label="إعادة التوليد"
                   >
-                    <RefreshCw className="w-3.5 h-3.5" />
+                    <RefreshCw className="w-4 h-4" strokeWidth={1.8} />
                   </button>
                 )}
                 {branchInfo && branchInfo.total > 1 && <BranchSwitcher info={branchInfo} />}
                 {onBranch && (
                   <button
+                    type="button"
                     onClick={onBranch}
-                    className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground liquid-glass-hover transition-all"
-                    title="Branch from here"
-                    aria-label="Branch conversation from this message"
+                    className="h-9 w-9 inline-flex items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-muted/70 active:scale-95 transition-[color,background-color,transform] duration-150"
+                    title="تفريع المحادثة"
+                    aria-label="تفريع المحادثة من هنا"
                   >
-                    <GitBranch className="w-3.5 h-3.5" />
+                    <GitBranch className="w-4 h-4" strokeWidth={1.8} />
                   </button>
                 )}
                 {hasCanvasArtifact && (
                   <button
+                    type="button"
                     onClick={() => setCanvasOpen(true)}
-                    className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground liquid-glass-hover transition-all"
-                    title="Open Canvas"
-                    aria-label="Open Canvas"
+                    className="h-9 w-9 inline-flex items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-muted/70 active:scale-95 transition-[color,background-color,transform] duration-150"
+                    title="فتح الكانفس"
+                    aria-label="فتح الكانفس"
                   >
-                    <FolderTree className="w-3.5 h-3.5" />
+                    <FolderTree className="w-4 h-4" strokeWidth={1.8} />
                   </button>
                 )}
                 {onShare && (
                   <button
+                    type="button"
                     onClick={onShare}
-                    className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground liquid-glass-hover transition-all"
-                    title="More"
+                    className="h-9 w-9 inline-flex items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-muted/70 active:scale-95 transition-[color,background-color,transform] duration-150"
+                    title="المزيد"
+                    aria-label="المزيد"
                   >
-                    <Ellipsis className="w-3.5 h-3.5" />
+                    <Ellipsis className="w-4 h-4" strokeWidth={1.8} />
                   </button>
                 )}
               </div>
+
               </ActionBarPrimitive.Root>
             )}
             {!isStreaming && content && (

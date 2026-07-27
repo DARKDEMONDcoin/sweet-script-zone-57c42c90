@@ -95,7 +95,7 @@ export function ContextDisplay({
         align={dir === "rtl" ? "end" : "start"}
         side="top"
         sideOffset={6}
-        className="w-72 p-0 rounded-xl border border-border/60 bg-popover/95 backdrop-blur-xl shadow-[0_24px_56px_-18px_rgba(0,0,0,0.7)]"
+        className="w-72 p-0 rounded-xl border border-border/60 bg-popover/95 shadow-[0_24px_56px_-18px_rgba(0,0,0,0.7)]"
         dir={dir}
       >
         <div className="flex items-center justify-between px-3 py-2 border-b border-border/40">

@@ -3,7 +3,7 @@
  *  will consume enabled servers as extra tool sources.
  */
 import { useEffect, useState } from "react";
-import { Loader2, Plus, RefreshCw, Trash2, Zap, ZapOff, Play } from "lucide-react";
+import { Plus, RefreshCw, Trash2, Zap, ZapOff, Play } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,7 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { SubShell, SubSection, SubCard } from "@/components/settings/SubShell";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Spinner } from "@/components/ui/spinner";
 
 interface McpRow {
   id: string;
@@ -237,7 +238,7 @@ export default function McpSettingsPage() {
         {loading ? (
           <SubCard>
             <div className="flex items-center gap-2 p-4 text-sm text-muted-foreground">
-              <Loader2 className="h-4 w-4 animate-spin" /> Loading…
+              <Spinner className="h-4 w-4" /> Loading…
             </div>
           </SubCard>
         ) : rows.length === 0 ? (
@@ -258,7 +259,7 @@ export default function McpSettingsPage() {
                         <span
                           className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${
                             row.state === "ready"
-                              ? "bg-emerald-500/15 text-emerald-500"
+                              ? "bg-primary/15 text-primary"
                               : row.state === "failed"
                                 ? "bg-red-500/15 text-red-500"
                                 : "bg-yellow-500/15 text-yellow-600"
@@ -297,7 +298,7 @@ export default function McpSettingsPage() {
                         disabled={refreshingId === row.id}
                       >
                         {refreshingId === row.id ? (
-                          <Loader2 className="h-4 w-4 animate-spin" />
+                          <Spinner className="h-4 w-4" />
                         ) : (
                           <RefreshCw className="h-4 w-4" />
                         )}
@@ -378,11 +379,11 @@ export default function McpSettingsPage() {
             <Button onClick={handleAdd} disabled={saving}>
               {probing ? (
                 <>
-                  <Loader2 className="h-4 w-4 animate-spin mr-1" /> Probing…
+                  <Spinner className="h-4 w-4 mr-1" /> Probing…
                 </>
               ) : saving ? (
                 <>
-                  <Loader2 className="h-4 w-4 animate-spin mr-1" /> Saving…
+                  <Spinner className="h-4 w-4 mr-1" /> Saving…
                 </>
               ) : (
                 "Connect"
@@ -438,7 +439,7 @@ export default function McpSettingsPage() {
             <Button onClick={runTest} disabled={testRunning}>
               {testRunning ? (
                 <>
-                  <Loader2 className="h-4 w-4 animate-spin mr-1" /> Running…
+                  <Spinner className="h-4 w-4 mr-1" /> Running…
                 </>
               ) : (
                 "Run"

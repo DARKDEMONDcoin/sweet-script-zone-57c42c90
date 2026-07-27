@@ -1,21 +1,11 @@
 /** @doc Internal SE diagnostic / health page. */
 import { useEffect, useMemo, useState } from "react";
-import {
-  Plus,
-  Trash2,
-  Loader2,
-  FileCode,
-  Component,
-  Image as ImageIcon,
-  Palette,
-  Sparkles,
-  Layout,
-  Wallpaper,
-} from "lucide-react";
+import { Plus, Trash2, FileCode, Component, Image as ImageIcon, Palette, Sparkles, Layout, Wallpaper } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
 import { sanitizeErrorMessage } from "@/lib/sanitizeError";
+import { Spinner } from "@/components/ui/spinner";
 type Category =
   | "templates"
   | "components"
@@ -201,7 +191,7 @@ export default function SePage() {
             disabled={saving}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 disabled:opacity-50"
           >
-            {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
+            {saving ? <Spinner className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
             Add
           </button>
         </section>

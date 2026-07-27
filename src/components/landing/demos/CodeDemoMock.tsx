@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { m as motion, AnimatePresence } from "framer-motion";
 import { Code2, Sparkles, Globe } from "lucide-react";
+import { Spinner } from "@/components/ui/spinner";
 
 const codeLines = [
   { c: "text-pink-400", t: "export default" },
@@ -78,8 +79,8 @@ const CodeDemoMock = () => {
   return (
     <div className="h-full w-full bg-[#0a0a0a] flex text-foreground font-sans overflow-hidden">
       {/* Code panel */}
-      <div className="w-[48%] border-r border-white/5 flex flex-col">
-        <div className="flex items-center gap-2 px-4 py-2.5 border-b border-white/5 bg-white/[0.02]">
+      <div className="w-[48%] border-r border-border/5 flex flex-col">
+        <div className="flex items-center gap-2 px-4 py-2.5 border-b border-border/5 bg-muted/40">
           <div className="ml-3 flex items-center gap-1.5 text-[11px] text-foreground/50">
             <Code2 className="h-3 w-3" />
             Hero.tsx
@@ -89,14 +90,14 @@ const CodeDemoMock = () => {
           {rendered}
           <span className="inline-block w-1.5 h-3 bg-[#e879c1] ml-0.5 align-middle animate-pulse" />
         </div>
-        <div className="px-4 py-2 border-t border-white/5 flex items-center gap-2 text-[10px] text-foreground/40">
+        <div className="px-4 py-2 border-t border-border/5 flex items-center gap-2 text-[10px] text-foreground/40">
           Megsy is building your page…
         </div>
       </div>
 
       {/* Preview panel */}
       <div className="flex-1 flex flex-col bg-[#050505]">
-        <div className="flex items-center gap-2 px-4 py-2.5 border-b border-white/5 bg-white/[0.02]">
+        <div className="flex items-center gap-2 px-4 py-2.5 border-b border-border/5 bg-muted/40">
           <Globe className="h-3 w-3 text-foreground/40" />
           <div className="flex-1" />
         </div>
@@ -130,7 +131,7 @@ const CodeDemoMock = () => {
           </AnimatePresence>
           {stage === 0 && (
             <div className="text-foreground/20 text-[11px] flex items-center gap-2">
-              <div className="h-3 w-3 rounded-full border-2 border-[#e879c1] border-t-transparent animate-spin" />
+              <Spinner className="size-3 text-[#e879c1]" />
               Preview updating…
             </div>
           )}

@@ -1,8 +1,9 @@
 /** @doc Kashier top-up card — lets MENA users pay in EGP with card or Vodafone Cash and get MC credits. */
 import { useState } from "react";
-import { CreditCard, Smartphone, Loader2, Shield } from "lucide-react";
+import { CreditCard, Smartphone, Shield } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
+import { Spinner } from "@/components/ui/spinner";
 
 type Method = "card" | "vodafone_cash";
 
@@ -68,7 +69,7 @@ export default function KashierTopUp() {
             Visa · Mastercard · Meeza · Vodafone Cash · E-wallets
           </p>
         </div>
-        <span className="inline-flex items-center gap-1 text-[11px] px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
+        <span className="inline-flex items-center gap-1 text-[11px] px-2 py-1 rounded-full bg-primary/10 text-primary border border-primary/20">
           <Shield className="w-3 h-3" /> Secure
         </span>
       </div>
@@ -91,7 +92,7 @@ export default function KashierTopUp() {
           onClick={() => setMethod("vodafone_cash")}
           className={`flex items-center justify-center gap-2 h-11 rounded-xl border text-[13px] font-medium transition ${
             method === "vodafone_cash"
-              ? "border-red-500 bg-red-500 text-white"
+              ? "border-red-500 bg-red-500 text-foreground"
               : "border-border/70 text-foreground hover:bg-red-500/5"
           }`}
         >
@@ -115,7 +116,7 @@ export default function KashierTopUp() {
               }`}
             >
               {p.badge && (
-                <span className="absolute -top-2 right-2 text-[9.5px] px-1.5 py-0.5 rounded-full bg-amber-500 text-black font-bold">
+                <span className="absolute -top-2 right-2 text-[9.5px] px-1.5 py-0.5 rounded-full bg-amber-500 text-primary-foreground font-bold">
                   {p.badge}
                 </span>
               )}
@@ -123,7 +124,7 @@ export default function KashierTopUp() {
               <p className="text-[16px] font-bold text-foreground mt-0.5 tabular-nums">
                 {p.amount} <span className="text-[11px] font-normal text-muted-foreground">EGP</span>
               </p>
-              <p className="text-[11px] text-emerald-500 mt-1 tabular-nums">+{p.credits} MC</p>
+              <p className="text-[11px] text-primary mt-1 tabular-nums">+{p.credits} MC</p>
             </button>
           );
         })}
@@ -137,7 +138,7 @@ export default function KashierTopUp() {
       >
         {loading ? (
           <>
-            <Loader2 className="w-4 h-4 animate-spin" /> Preparing payment...
+            <Spinner className="w-4 h-4" /> Preparing payment...
           </>
         ) : (
           <>

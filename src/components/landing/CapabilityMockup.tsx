@@ -296,7 +296,7 @@ const TeamsMock = () => (
           { c: "#10b981", i: "S" },
           { c: "#ec4899", i: "L" },
         ].map((a) => (
-          <div key={a.i} className="w-7 h-7 rounded-full border-2 flex items-center justify-center text-[10px] font-semibold text-white" style={{ background: a.c, borderColor: "#fff" }}>{a.i}</div>
+          <div key={a.i} className="w-7 h-7 rounded-full border-2 flex items-center justify-center text-[10px] font-semibold text-foreground" style={{ background: a.c, borderColor: "#fff" }}>{a.i}</div>
         ))}
         <div className="w-7 h-7 rounded-full border-2 flex items-center justify-center text-[10px] font-medium" style={{ background: C.soft, borderColor: "#fff", color: C.ink }}>+8</div>
       </div>

@@ -25,7 +25,19 @@ export interface RunDocsTurnArgs {
     meta?: any,
   ) => Promise<string | undefined>;
   ownInsertedIdsRef: React.MutableRefObject<Set<string>>;
+  /** Step 1 only: produce an editable plan card instead of the final file. */
+  planOnly?: boolean;
+  /** Fully-built brief from an approved plan (skips the clarify wizard). */
+  brief?: string;
+  /** Text extracted from files the user attached to this turn. */
+  attachedFilesText?: string;
+  attachedFileMeta?: { name: string; chars: number }[];
+  /** Previous version of the document when the user asks for a revision. */
+  previousHtml?: string;
+  /** Skip saving the user message (already saved by the caller). */
+  skipUserSave?: boolean;
 }
+
 
 /**
  * Returns `true` if the docs flow handled the request and the caller should
@@ -49,6 +61,12 @@ export async function runDocsTurn(args: RunDocsTurnArgs): Promise<boolean> {
     createOrUpdateConversation,
     saveMessage,
     ownInsertedIdsRef,
+    planOnly,
+    brief,
+    attachedFilesText,
+    attachedFileMeta,
+    previousHtml,
+    skipUserSave,
   } = args;
 
   if (!chatUserId) {
@@ -61,16 +79,94 @@ export async function runDocsTurn(args: RunDocsTurnArgs): Promise<boolean> {
 
   const conversationPromise = createOrUpdateConversation(userInput || "Document").catch(() => null);
 
-  void conversationPromise.then(async (cid) => {
-    if (!cid) return;
-    const insertedId = await saveMessage(cid, "user", userInput);
-    if (insertedId) {
-      ownInsertedIdsRef.current.add(insertedId);
-      window.dispatchEvent(new CustomEvent("megsy:conversations-changed"));
+  if (!skipUserSave) {
+    void conversationPromise.then(async (cid) => {
+      if (!cid) return;
+      const insertedId = await saveMessage(cid, "user", userInput);
+      if (insertedId) {
+        ownInsertedIdsRef.current.add(insertedId);
+        window.dispatchEvent(new CustomEvent("megsy:conversations-changed"));
+      }
+    });
+  }
+
+  // ── Step 1: planning — build an editable outline instead of the file ────
+  if (planOnly) {
+    try {
+      const { generateDocsOutline, detectDocLanguage } = await import("@/lib/docs/generatePlan");
+      const language = detectDocLanguage(userInput);
+      setSearchStatus(language === "ar" ? "جاري تخطيط المستند…" : "Planning the document…");
+      const planned = await generateDocsOutline({
+        topic: userInput,
+        language,
+        userId: chatUserId,
+        sourceText: attachedFilesText,
+      });
+      const cid = await conversationPromise;
+      if (!planned) {
+        const failMsg =
+          language === "ar"
+            ? "تعذّر تخطيط المستند. جرّب إعادة الصياغة."
+            : "Could not plan the document. Try rephrasing.";
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.clientId === `assistant-${localTurnId}` ? { ...m, content: failMsg } : m,
+          ),
+        );
+        return true;
+      }
+      const docsPlan: import("@/lib/docs/planTypes").DocsPlanState = {
+        topic: userInput,
+        docType: planned.docType,
+        language,
+        sections: planned.sections,
+        stage: "planning",
+        sourceText: attachedFilesText || undefined,
+        sourceFiles: attachedFileMeta,
+      };
+      const intro =
+        language === "ar"
+          ? "جهّزت مخطط المستند — راجعه أو عدّله، ويمكنك تشغيل البحث العميق قبل الكتابة."
+          : "Here's the document plan — review or edit it, and optionally run deep research before writing.";
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.clientId === `assistant-${localTurnId}` ? { ...m, content: intro, docsPlan } : m,
+        ),
+      );
+      if (cid) {
+        const savedId = await saveMessage(cid, "assistant", intro, undefined, {
+          kind: "docsPlan",
+          docsPlan,
+        }).catch(() => undefined);
+        if (savedId) {
+          ownInsertedIdsRef.current.add(savedId);
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.clientId === `assistant-${localTurnId}` ? { ...m, id: savedId } : m,
+            ),
+          );
+        }
+      }
+      return true;
+    } catch (e) {
+      const safe = friendlyUserMessage(e, "We couldn't plan the document. Please try again.");
+      void reportError(e, { source: "docs-plan", context: { localTurnId } });
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.clientId === `assistant-${localTurnId}` ? { ...m, content: safe } : m,
+        ),
+      );
+      return true;
+    } finally {
+      setSearchStatus("");
+      setIsLoading(false);
+      setIsThinking(false);
+      resetToolUi();
     }
-  });
+  }
 
   try {
+
     startDocsStatusFallback();
     const [{ streamDoc }, { saveDocHtml, newArtifactId }] = await Promise.all([
       import("@/lib/agent/docs/docsGenerator"),
@@ -172,9 +268,32 @@ export async function runDocsTurn(args: RunDocsTurnArgs): Promise<boolean> {
       `always fill values from the answers. If an optional field was ` +
       `skipped, omit that section gracefully.`;
 
+    // When the user approved a plan (step 4 = clean, consistent writing), the
+    // brief already carries the outline, research references, imported data
+    // and the previous version — so we skip the clarify wizard entirely.
+    const finalPrompt = brief
+      ? `${brief}\n\n[DOCS DIRECTIVE]\n` +
+        `Do NOT ask any clarifying questions. Write the final print-ready HTML ` +
+        `document now, following the approved plan exactly, in one consistent ` +
+        `conservative voice. Never emit placeholder brackets. If a References ` +
+        `section is required, list only the real sources given above.` +
+        (previousHtml
+          ? `\nApply the requested revision on top of the previous version and keep everything else identical.`
+          : "")
+      : `${enhancedPrompt}${
+          attachedFilesText
+            ? `\n\n[USER DATA FROM ATTACHED FILES — analyze and use real values]\n${attachedFilesText.slice(0, 12000)}`
+            : ""
+        }${
+          previousHtml
+            ? `\n\n[PREVIOUS VERSION — revise this document in place, keep design and untouched sections]\n${previousHtml.slice(0, 24000)}`
+            : ""
+        }`;
+
     await streamDoc(
       {
-        prompt: enhancedPrompt,
+        prompt: finalPrompt,
+
         history: recentHistory,
         conversationId: cid ?? null,
         messageId: placeholderMessageId,

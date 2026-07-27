@@ -95,7 +95,7 @@ export const ContinueLastChatCard = () => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, delay: 0.15 }}
       onClick={open}
-      className="group mt-5 w-full max-w-xl mx-auto text-right flex items-center gap-3 rounded-2xl border border-border/50 bg-background/60 backdrop-blur-sm px-4 py-3 hover:border-primary/40 hover:bg-background/80 transition-all shadow-sm hover:shadow-md"
+      className="group mt-5 w-full max-w-xl mx-auto text-right flex items-center gap-3 rounded-2xl border border-border/50 bg-background/60 px-4 py-3 hover:border-primary/40 hover:bg-background/80 transition-all shadow-sm hover:shadow-md"
     >
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 text-[11px] text-muted-foreground mb-1">

@@ -1,5 +1,4 @@
 import { memo, useEffect, useMemo, useState } from "react";
-import { Brain } from "lucide-react";
 import MegsyStar from "@/components/files/MegsyStar";
 import { t as uiT, useUserLang } from "@/lib/authI18n";
 
@@ -87,56 +86,32 @@ const ThinkingLoader = ({ searchStatus }: ThinkingLoaderProps) => {
     return () => window.clearInterval(rot);
   }, [elapsed, searchStatus, steps.length]);
 
-  const starColor = "var(--megsy-blue)";
   const starClass = "text-[var(--megsy-blue)]";
   const thinkingLabel = uiT("thinking", lang);
   const deepLabel = uiT("thinkingDeep", lang);
   const rtl = lang === "ar" || lang === "ar-eg" || lang === "fa" || lang === "he";
 
-  if (searchStatus?.trim()) {
-    return (
-      <div className="flex items-center gap-2 py-1" aria-live="polite" dir={rtl ? "rtl" : undefined}>
-        <MegsyStar size={22} className={starClass} />
-        <span className="ai-shimmer text-[13px] font-medium motion-reduce:animate-none">
-          {searchStatus}
-        </span>
-      </div>
-    );
-  }
+  const label = searchStatus?.trim()
+    ? searchStatus
+    : elapsed < 5000
+      ? thinkingLabel
+      : elapsed < 15000
+        ? deepLabel
+        : (steps[stepIdx] ?? steps[0]);
 
-  if (elapsed < 5000) {
-    return (
-      <div className="flex items-center gap-2 py-1" aria-live="polite" dir={rtl ? "rtl" : undefined}>
-        <MegsyStar size={16} className={starClass} />
-        <span className="ai-shimmer text-[13px] font-medium motion-reduce:animate-none">
-          {thinkingLabel}
-        </span>
-      </div>
-    );
-  }
-
-  if (elapsed < 15000) {
-    return (
-      <div className="flex items-center gap-2 py-1" aria-live="polite" dir={rtl ? "rtl" : undefined}>
-        <MegsyStar size={16} className={starClass} />
-        <Brain className="w-4 h-4 animate-pulse" style={{ color: starColor }} />
-        <span className="ai-shimmer text-[13px] font-medium motion-reduce:animate-none">
-          {deepLabel}
-        </span>
-      </div>
-    );
-  }
-
-  const stepLabel = steps[stepIdx] ?? steps[0];
+  // One single loading row for every state — same icon, size, rhythm and text style.
   return (
-    <div className="flex items-center gap-2 py-1" aria-live="polite" dir={rtl ? "rtl" : undefined}>
-      <MegsyStar size={16} className={starClass} />
-      <Brain className="w-4 h-4 animate-pulse" style={{ color: starColor }} />
+    <div
+      className="flex items-center gap-2 py-1 min-h-6"
+      aria-live="polite"
+      dir={rtl ? "rtl" : undefined}
+    >
+      <MegsyStar size={16} className={`${starClass} animate-pulse motion-reduce:animate-none`} />
       <span
-        key={stepIdx}
-        className="ai-shimmer text-[13px] font-medium motion-reduce:animate-none transition-opacity duration-500"
+        key={label}
+        className="ai-shimmer text-[13px] font-medium leading-none motion-reduce:animate-none"
       >
-        {stepLabel}
+        {label}
       </span>
     </div>
   );

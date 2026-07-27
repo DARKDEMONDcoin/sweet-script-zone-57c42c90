@@ -53,9 +53,6 @@ export default function TemplateForIndustryPage() {
       </Helmet>
 
       <section className="px-6 pt-20 pb-10 max-w-5xl mx-auto text-center">
-        <div className="text-6xl mb-4">
-          {cat.emoji} <span aria-hidden>×</span> {ind.emoji}
-        </div>
         <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-4">
           {cat.name} for {ind.name}
         </h1>
@@ -142,7 +139,7 @@ export default function TemplateForIndustryPage() {
                 to={`/templates/${cat.slug}/for/${i.slug}`}
                 className="text-sm px-3 py-1.5 rounded-full border hover:bg-accent"
               >
-                {i.emoji} {i.name}
+                {i.name}
               </Link>
             ))}
           </div>
@@ -158,7 +155,7 @@ export default function TemplateForIndustryPage() {
                 to={`/templates/${c.slug}/for/${ind.slug}`}
                 className="text-sm px-3 py-1.5 rounded-full border hover:bg-accent"
               >
-                {c.emoji} {c.name}
+                {c.name}
               </Link>
             ))}
           </div>

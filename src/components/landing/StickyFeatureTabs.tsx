@@ -72,7 +72,7 @@ const StickyFeatureTabs = () => {
   const tx = (text: string) => translateExactText(text, lang);
 
   return (
-    <section id="features" className="bg-black py-16 md:py-28 text-foreground overflow-hidden">
+    <section id="features" className="bg-background py-16 md:py-28 text-foreground overflow-hidden">
       <div className="mx-auto max-w-[1400px] px-5 md:px-12">
         {/* Header */}
         <motion.div

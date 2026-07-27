@@ -64,7 +64,7 @@ export default function WeeklyRecapPage() {
       <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
         <Card icon={<Flame className="h-5 w-5 text-orange-500" />} label="Streak" value={streak.count.toString()} sub={`أفضل: ${streak.best}`} />
         <Card icon={<Sparkles className="h-5 w-5 text-primary" />} label="أيام نشطة" value={stats.activeDays.toString()} sub="آخر ٧ أيام" />
-        <Card icon={<MessageSquare className="h-5 w-5 text-emerald-500" />} label="رسائل" value={stats.messages.toString()} sub="هذا الأسبوع" />
+        <Card icon={<MessageSquare className="h-5 w-5 text-primary" />} label="رسائل" value={stats.messages.toString()} sub="هذا الأسبوع" />
         <Card icon={<Trophy className="h-5 w-5 text-amber-500" />} label="محادثات" value={stats.conversations.toString()} sub="نشطة" />
       </div>
 

@@ -1,4 +1,14 @@
+/**
+ * ADVISORY UI GATING ONLY.
+ *
+ * These helpers decide what the interface shows or greys out. They are NOT a
+ * security boundary — anyone can call the backend directly. The authoritative
+ * check runs in Postgres; use `assertModelAccess` / `consumeModelUse` from
+ * `@/lib/modelAccess` (RPC → `assert_model_access` / `consume_model_use`)
+ * before performing any paid work.
+ */
 import { FREE_MODEL_IDS } from "@/lib/modelDetails";
+
 
 export const PAID_PLANS = [
   "starter",

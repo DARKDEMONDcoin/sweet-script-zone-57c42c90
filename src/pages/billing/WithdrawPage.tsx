@@ -1,12 +1,13 @@
 /** @doc Withdraw earned affiliate commission to PayPal or bank. */
 // Withdraw — editorial redesign using SubShell (matches account/workspace settings).
 import { useState, useEffect, useCallback } from "react";
-import { Loader2, Plus, X } from "lucide-react";
+import { Plus, X } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { sanitizeErrorMessage } from "@/lib/sanitizeError";
 import { SubShell, SubSection, SubCard, SubStatStrip } from "@/components/settings/SubShell";
 import { cn } from "@/lib/utils";
+import { Spinner } from "@/components/ui/spinner";
 
 const MIN_WITHDRAWAL = 10;
 const WITHDRAWALS_PER_MONTH = 2;
@@ -31,7 +32,7 @@ const statusLabel = (s: string) =>
 
 const statusClasses = (s: string) => {
   if (s === "approved" || s === "paid")
-    return "border-emerald-500/30 bg-emerald-500/10 text-emerald-400";
+    return "border-primary/30 bg-primary/10 text-primary";
   if (s === "rejected") return "border-rose-500/30 bg-rose-500/10 text-rose-400";
   return "border-amber-500/30 bg-amber-500/10 text-amber-400";
 };
@@ -310,7 +311,7 @@ const WithdrawPage = () => {
               disabled={submittingWd || approvedMethods.length === 0 || remainingThisMonth === 0}
               className="w-full h-11 rounded-xl bg-foreground text-background text-[13.5px] font-medium disabled:opacity-40 hover:opacity-90 transition inline-flex items-center justify-center gap-2"
             >
-              {submittingWd && <Loader2 className="w-4 h-4 animate-spin" />}
+              {submittingWd && <Spinner className="w-4 h-4" />}
               {submittingWd
                 ? "Sending…"
                 : remainingThisMonth === 0
@@ -323,7 +324,7 @@ const WithdrawPage = () => {
 
       {openMethod && (
         <div
-          className="fixed inset-0 z-50 flex items-end justify-center p-4 md:items-center bg-black/70 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-end justify-center p-4 md:items-center bg-background/70"
           onClick={() => setOpenMethod(false)}
         >
           <div
@@ -408,7 +409,7 @@ const WithdrawPage = () => {
                 disabled={submittingMethod}
                 className="flex-1 h-11 rounded-xl bg-foreground text-background text-[13px] font-medium disabled:opacity-40 hover:opacity-90 transition inline-flex items-center justify-center gap-2"
               >
-                {submittingMethod && <Loader2 className="w-4 h-4 animate-spin" />}
+                {submittingMethod && <Spinner className="w-4 h-4" />}
                 Submit
               </button>
             </div>

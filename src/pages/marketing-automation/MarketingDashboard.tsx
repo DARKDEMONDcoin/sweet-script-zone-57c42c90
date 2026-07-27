@@ -15,16 +15,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
-import {
-  Loader2,
-  Plus,
-  Sparkles,
-  Send,
-  Trash2,
-  Link as LinkIcon,
-  ShieldAlert,
-  Wifi,
-} from "lucide-react";
+import { Plus, Sparkles, Send, Trash2, Link as LinkIcon, ShieldAlert, Wifi } from "lucide-react";
+import { Spinner } from "@/components/ui/spinner";
 
 type PlatformMeta = {
   id: string;
@@ -671,7 +663,7 @@ export default function MarketingDashboard() {
                       disabled={testingId === a.id}
                     >
                       {testingId === a.id ? (
-                        <Loader2 className="h-3 w-3 animate-spin" />
+                        <Spinner className="h-3 w-3" />
                       ) : (
                         <Wifi className="h-3 w-3 mr-1" />
                       )}
@@ -742,7 +734,7 @@ export default function MarketingDashboard() {
                 className="w-full"
               >
                 {generating ? (
-                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                  <Spinner className="h-4 w-4 mr-2" />
                 ) : (
                   <Sparkles className="h-4 w-4 mr-2" />
                 )}
@@ -798,7 +790,7 @@ export default function MarketingDashboard() {
                             disabled={publishingId === key}
                           >
                             {publishingId === key ? (
-                              <Loader2 className="h-3 w-3 animate-spin mr-1" />
+                              <Spinner className="h-3 w-3 mr-1" />
                             ) : (
                               <Send className="h-3 w-3 mr-1" />
                             )}

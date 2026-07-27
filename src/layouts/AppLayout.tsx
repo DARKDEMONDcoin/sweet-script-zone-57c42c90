@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import SkipToContent from "@/components/common/SkipToContent";
 
 
 // Aurora Spectrum — per-section accent (HSL triplets so we can compose with hsl() / alpha).
@@ -48,7 +49,8 @@ const AppLayout = ({
   }, [isSettings]);
   return (
     <div className={cn("flex min-h-[100dvh] w-full flex-col", isSettings ? "bg-transparent" : "bg-background")}>
-      <main className="flex-1 min-w-0 overflow-visible">{children}</main>
+      <SkipToContent />
+      <main id="main" className="flex-1 min-w-0 overflow-visible">{children}</main>
     </div>
   );
 };

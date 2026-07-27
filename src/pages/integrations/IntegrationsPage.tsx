@@ -1,7 +1,7 @@
 /** @doc Integrations catalog — Claude-style Connectors list with MCP merged in. */
 import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, Plus, X, Loader2, Trash2, RefreshCw, Server } from "lucide-react";
+import { Search, Plus, X, Trash2, RefreshCw, Server } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { integrations, INTEGRATION_CATEGORIES, type Integration } from "@/lib/integrationsData";
@@ -15,6 +15,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
+import { Spinner } from "@/components/ui/spinner";
 
 interface McpRow {
   id: string;
@@ -33,7 +34,7 @@ const BrandLogo = ({ integration, size = 28 }: { integration: Integration; size?
   const url = sources[srcIdx];
   if (!url) {
     return (
-      <span className="font-semibold text-white/80" style={{ fontSize: size * 0.5 }}>
+      <span className="font-semibold text-muted-foreground" style={{ fontSize: size * 0.5 }}>
         {integration.name.charAt(0)}
       </span>
     );
@@ -352,7 +353,7 @@ export default function IntegrationsPage() {
       <GlassSection title={isLoading ? "Loading" : `${filtered.length} connectors`}>
         {isLoading ? (
           <div className="cn-empty">
-            <Loader2 className="w-4 h-4 animate-spin opacity-60" />
+            <Spinner className="w-4 h-4 opacity-60" />
             <p>Loading connectors…</p>
           </div>
         ) : filtered.length === 0 ? (
@@ -388,7 +389,7 @@ export default function IntegrationsPage() {
                     disabled={busy}
                     className={cn("cn-connect-btn", isConn && "is-connected")}
                   >
-                    {busy ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : isConn ? "Connected" : "Connect"}
+                    {busy ? <Spinner className="w-3.5 h-3.5" /> : isConn ? "Connected" : "Connect"}
                   </button>
                 </div>
               );
@@ -426,7 +427,7 @@ export default function IntegrationsPage() {
               <X className="w-4 h-4 mr-1" /> Cancel
             </Button>
             <Button onClick={handleAddMcp} disabled={saving}>
-              {saving ? <Loader2 className="w-4 h-4 mr-1 animate-spin" /> : <Plus className="w-4 h-4 mr-1" />}
+              {saving ? <Spinner className="w-4 h-4 mr-1" /> : <Plus className="w-4 h-4 mr-1" />}
               Add & probe
             </Button>
           </DialogFooter>

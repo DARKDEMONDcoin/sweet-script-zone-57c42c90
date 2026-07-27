@@ -61,7 +61,6 @@ export default function SeoHubPage() {
                 to={`/for/${i.slug}`}
                 className="rounded-xl border p-6 bg-card hover:shadow-lg hover:border-primary transition"
               >
-                <div className="text-4xl mb-3">{i.emoji}</div>
                 <h2 className="font-bold mb-1">{i.name}</h2>
                 <p className="text-sm text-muted-foreground line-clamp-2">{i.subheadline}</p>
               </Link>
@@ -84,7 +83,6 @@ export default function SeoHubPage() {
                 to={`/templates/${t.slug}`}
                 className="rounded-xl border p-6 bg-card hover:shadow-lg hover:border-primary transition"
               >
-                <div className="text-4xl mb-3">{t.emoji}</div>
                 <h2 className="font-bold mb-1">{t.name}</h2>
                 <p className="text-sm text-muted-foreground line-clamp-2">{t.description}</p>
               </Link>

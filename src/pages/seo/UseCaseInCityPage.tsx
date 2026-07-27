@@ -79,7 +79,6 @@ export default function UseCaseInCityPage() {
         <div className="inline-flex items-center gap-2 text-sm text-muted-foreground mb-4">
           <MapPin className="h-4 w-4" /> {loc.name}, {loc.country}
         </div>
-        <div className="text-5xl mb-3">{uc.emoji}</div>
         <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-4">
           {uc.title} in {loc.name}
         </h1>
@@ -198,7 +197,7 @@ export default function UseCaseInCityPage() {
                 to={`/solutions/${u.slug}/in/${loc.slug}`}
                 className="text-sm px-3 py-1.5 rounded-full border hover:bg-accent"
               >
-                {u.emoji} {u.title}
+                {u.title}
               </Link>
             ))}
           </div>

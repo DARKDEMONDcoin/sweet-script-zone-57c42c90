@@ -42,7 +42,6 @@ export default function IndustryPage() {
 
       {/* Hero */}
       <section className="px-6 pt-20 pb-12 max-w-5xl mx-auto text-center">
-        <div className="text-6xl mb-4">{data.emoji}</div>
         <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">{data.headline}</h1>
         <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
           {data.subheadline}
@@ -122,7 +121,7 @@ export default function IndustryPage() {
             <details key={i} className="rounded-xl border p-5 bg-card group">
               <summary className="font-semibold cursor-pointer list-none flex justify-between items-center">
                 {f.q}
-                <span className="text-muted-foreground group-open:rotate-180 transition">▾</span>
+                <span aria-hidden className="text-muted-foreground transition-transform group-open:rotate-180">+</span>
               </summary>
               <p className="mt-3 text-muted-foreground">{f.a}</p>
             </details>
@@ -157,7 +156,7 @@ export default function IndustryPage() {
               to={`/for/${i.slug}`}
               className="text-sm px-3 py-1.5 rounded-full border hover:bg-accent"
             >
-              {i.emoji} {i.name}
+              {i.name}
             </Link>
           ))}
         </div>

@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { Check, Loader2, Search } from "lucide-react";
+import { Check, Search } from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { integrations } from "@/lib/integrationsData";
 import { loadIntegrationConnections, startIntegrationConnection, waitForConnectionRefresh } from "@/lib/integrationBackend";
-
+import { Spinner } from "@/components/ui/spinner";
 
 const GitHubIcon = () => (
   <svg viewBox="0 0 24 24" className="w-6 h-6" fill="currentColor">
@@ -97,7 +97,6 @@ const ConnectorsDialog = ({
     }
   };
 
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[85vh] p-0 overflow-hidden flex flex-col">
@@ -150,9 +149,9 @@ const ConnectorsDialog = ({
                   </p>
                 </div>
                 {loadingConnector === connector.id ? (
-                  <Loader2 className="w-4 h-4 text-muted-foreground animate-spin shrink-0" />
+                  <Spinner className="w-4 h-4 text-muted-foreground shrink-0" />
                 ) : connectedMap[connector.id] ? (
-                  <Check className="w-4 h-4 text-emerald-500 shrink-0" />
+                  <Check className="w-4 h-4 text-primary shrink-0" />
                 ) : (
                   <span className="text-[11px] text-muted-foreground/70 shrink-0">Connect</span>
                 )}

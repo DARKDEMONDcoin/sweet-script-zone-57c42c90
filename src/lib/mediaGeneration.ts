@@ -46,7 +46,15 @@ async function streamImageScene(
       apikey: anonKey,
       Authorization: `Bearer ${token || anonKey}`,
     },
-    body: JSON.stringify({ stream: true, prompt: scene.prompt, partial_images: 3, quality: "low" }),
+    body: JSON.stringify({
+      stream: true,
+      prompt: scene.prompt,
+      partial_images: 3,
+      quality: "low",
+      ...(scene.reference_image_url
+        ? { reference_image_url: scene.reference_image_url, image_url: scene.reference_image_url }
+        : {}),
+    }),
   });
   if (!resp.ok || !resp.body) {
     throw new Error(`stream failed (${resp.status})`);
@@ -162,6 +170,12 @@ async function generateImageScene(
         model_slug: modelSlug,
         num_images: 1,
         aspect_ratio: aspectRatio,
+        ...(scene.reference_image_url
+          ? {
+              reference_image_url: scene.reference_image_url,
+              image_url: scene.reference_image_url,
+            }
+          : {}),
       },
     });
     if (error) throw new Error(error.message || "image gen failed");
@@ -187,7 +201,7 @@ async function generateVideoScene(
     prompt: scene.prompt,
     model_slug: modelSlug,
     duration: scene.duration_seconds || 5,
-    aspect_ratio: aspectRatio,
+    aspect_ratio: scene.aspect_ratio || aspectRatio,
   };
   if (scene.first_frame_url) body.start_frame = scene.first_frame_url;
   if (scene.last_frame_url) body.end_frame = scene.last_frame_url;
@@ -353,6 +367,18 @@ export async function runMediaPlan(opts: RunMediaPlanOptions): Promise<void> {
             : plan.mode === "video"
             ? await generateVideoScene(scene, plan.modelSlug, onScenePartial, plan.aspectRatio, onSceneCountdown)
             : await generateImageScene(scene, plan.modelSlug, onScenePartial, plan.aspectRatio);
+        if (plan.mode === "images" && url) {
+          try {
+            const { rememberCharacter } = await import("./media/characterMemory");
+            rememberCharacter({
+              name: plan.originalPrompt || plan.summary,
+              descriptor: scene.identity || scene.prompt,
+              refUrl: url,
+            });
+          } catch {
+            /* memory is best-effort */
+          }
+        }
         onSceneDone({
           index: scene.index,
           title: scene.title,

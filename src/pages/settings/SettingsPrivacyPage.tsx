@@ -1,12 +1,15 @@
 /** @doc Privacy settings — mobile-first dark cards matching the native iOS privacy screen. */
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import { Download } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import {
   SubShell,
   SubSection,
   SubCard,
 } from "@/components/settings/SubShell";
+import { downloadUserData } from "@/lib/exportUserData";
 
 const TRAINING_OPT_OUT_KEY = "megsy_training_opt_out";
 
@@ -23,6 +26,24 @@ export default function SettingsPrivacyPage() {
       // localStorage unavailable — keep default
     }
   }, []);
+
+  const [isExporting, setIsExporting] = useState(false);
+
+  const handleExportData = async () => {
+    if (isExporting) return;
+    setIsExporting(true);
+    const toastId = toast.loading("Preparing your data export…");
+    try {
+      await downloadUserData(({ table, index, total }) => {
+        toast.loading(`Exporting your data… (${index}/${total}: ${table})`, { id: toastId });
+      });
+      toast.success("Your data export has downloaded.", { id: toastId });
+    } catch (error: any) {
+      toast.error(error?.message || "Couldn't export your data. Please try again.", { id: toastId });
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   const toggleTraining = () => {
     const next = !trainingOptOut;
@@ -47,7 +68,7 @@ export default function SettingsPrivacyPage() {
     >
       <span
         className={[
-          "inline-block h-[24px] w-[24px] transform rounded-full bg-white shadow-sm transition-transform duration-200",
+          "inline-block h-[24px] w-[24px] transform rounded-full bg-primary shadow-sm transition-transform duration-200",
           trainingOptOut ? "translate-x-[22px]" : "translate-x-[2px]",
         ].join(" ")}
         style={{ marginTop: 2 }}
@@ -56,7 +77,7 @@ export default function SettingsPrivacyPage() {
   );
 
   const DataPrivacyCard = () => (
-    <div className="rounded-[18px] bg-[#1C1C1E] border border-white/[0.07] p-4">
+    <div className="rounded-[18px] bg-[#1C1C1E] border border-border/50 p-4">
       <h3 className="text-[17px] font-semibold text-[#EDE4D8] mb-2">Data privacy</h3>
       <p className="text-[13px] leading-[1.45] text-[#EDE4D8]/55">
         Megsy believes in transparent data practices.
@@ -89,8 +110,30 @@ export default function SettingsPrivacyPage() {
     </div>
   );
 
+  const ExportDataCard = () => (
+    <div className="rounded-[18px] bg-[#1C1C1E] border border-border/50 p-4 flex items-start gap-3">
+      <div className="flex-1 min-w-0">
+        <h3 className="text-[17px] font-semibold text-[#EDE4D8] leading-tight">
+          Download my data
+        </h3>
+        <p className="mt-1.5 text-[13px] leading-[1.5] text-[#EDE4D8]/55">
+          Get a copy of your profile, conversations, messages, and other account data as a JSON file.
+        </p>
+        <button
+          type="button"
+          onClick={handleExportData}
+          disabled={isExporting}
+          className="mt-3 inline-flex items-center gap-2 rounded-full bg-muted/40 border border-border/50 px-4 py-2 text-[13px] font-medium text-[#EDE4D8] disabled:opacity-50"
+        >
+          <Download className="w-[14px] h-[14px]" />
+          {isExporting ? "Exporting…" : "Export my data"}
+        </button>
+      </div>
+    </div>
+  );
+
   const TrainingCard = () => (
-    <div className="rounded-[18px] bg-[#1C1C1E] border border-white/[0.07] p-4 flex items-start gap-3">
+    <div className="rounded-[18px] bg-[#1C1C1E] border border-border/50 p-4 flex items-start gap-3">
       <div className="flex-1 min-w-0">
         <h3 className="text-[17px] font-semibold text-[#EDE4D8] leading-tight">
           Help improve our AI models
@@ -131,12 +174,18 @@ export default function SettingsPrivacyPage() {
             <TrainingCard />
           </SubCard>
         </SubSection>
+
+        <SubSection title="Your data">
+          <SubCard>
+            <ExportDataCard />
+          </SubCard>
+        </SubSection>
       </SubShell>
     );
   }
 
   return (
-    <div className="min-h-[100dvh] bg-black text-[#EDE4D8] font-sans">
+    <div className="min-h-[100dvh] bg-background text-[#EDE4D8] font-sans">
       <style>{mobileCss}</style>
       <div className="privacy-root">
         {/* Topbar */}
@@ -154,6 +203,8 @@ export default function SettingsPrivacyPage() {
           <DataPrivacyCard />
           <div className="h-4" />
           <TrainingCard />
+          <div className="h-4" />
+          <ExportDataCard />
         </main>
       </div>
     </div>

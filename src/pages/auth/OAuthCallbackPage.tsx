@@ -1,8 +1,9 @@
 /** @doc Handles the OAuth callback after the user authorizes a provider. */
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Loader2, Check, X } from "lucide-react";
+import { Check, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { Spinner } from "@/components/ui/spinner";
 
 const OAuthCallbackPage = () => {
   const { provider } = useParams<{ provider: string }>();
@@ -30,7 +31,7 @@ const OAuthCallbackPage = () => {
           }
 
           try {
-            await supabase.functions.invoke("pipedream-connect", { body: { action: "list_accounts" } });
+            await supabase.functions.invoke("pipedream", { body: { action: "list_accounts" } });
           } catch (syncErr) {
             console.warn("[oauth-callback] pipedream sync failed", syncErr);
           }
@@ -104,9 +105,9 @@ const OAuthCallbackPage = () => {
 
   return (
     <div className="min-h-dvh flex items-center justify-center bg-background p-6">
-      <div className="rounded-3xl border border-border bg-card/80 backdrop-blur-xl p-8 max-w-sm w-full text-center space-y-4">
+      <div className="rounded-3xl border border-border bg-card/80 p-8 max-w-sm w-full text-center space-y-4">
         {status === "working" && (
-          <Loader2 className="w-10 h-10 mx-auto animate-spin text-primary" />
+          <Spinner className="w-10 h-10 mx-auto text-primary" />
         )}
         {status === "ok" && (
           <div className="w-12 h-12 mx-auto rounded-full bg-primary/10 flex items-center justify-center">

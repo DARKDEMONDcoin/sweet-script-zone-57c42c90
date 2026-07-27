@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
-import { Loader2, AlertCircle } from "lucide-react";
 import { m as motion } from "framer-motion";
+import ToolCard from "@/components/chat/primitives/ToolCard";
+
+import { ToolLoader, ToolStatusBadge } from "@/components/chat/primitives/ToolStatus";
+
 import {
   subscribeToResearchJob,
   approveResearchPlan,
@@ -93,18 +96,20 @@ const ResearchJobBubble = ({ jobId, conversationId, turnIndex = 0, onRunningChan
 
   if (!job) {
     return (
-      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-        <Loader2 className="h-4 w-4 animate-spin" /> Loading research…
-      </div>
+      <ToolCard title="Deep Research">
+        <ToolLoader label="Loading research…" />
+      </ToolCard>
     );
   }
 
   if (job.status === "failed") {
     return (
-      <div className="flex items-start gap-2 rounded-2xl border border-destructive/30 bg-destructive/5 p-4 text-sm text-foreground/90">
-        <AlertCircle className="mt-0.5 h-4 w-4 text-destructive" />
-        <div>{job.error || "Research failed."}</div>
-      </div>
+      <ToolCard
+        title="Deep Research"
+        trailing={<ToolStatusBadge status="error" errorLabel="Failed" />}
+      >
+        <div className="text-sm text-foreground/90">{job.error || "Research failed."}</div>
+      </ToolCard>
     );
   }
 
@@ -185,7 +190,7 @@ const ResearchJobBubble = ({ jobId, conversationId, turnIndex = 0, onRunningChan
 
   // Running (searching / synthesizing)
   const title = (job.plan_goal || job.query || "").trim();
-  const isRtl = /[\u0600-\u06FF\u0750-\u077F]/.test(title);
+  const isRtl = false; // UI copy is English-only for a unified look
   const sourcesCount = Array.isArray(job.sources) ? job.sources.length : 0;
 
   // Determine current phase from stage text
@@ -205,17 +210,14 @@ const ResearchJobBubble = ({ jobId, conversationId, turnIndex = 0, onRunningChan
   const stageLabel = job.stage || phases[phase].label;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="w-full max-w-[440px] rounded-2xl border border-border/40 bg-card/60 backdrop-blur-md p-5"
+    <ToolCard
       dir={isRtl ? "rtl" : "ltr"}
+      className="max-w-[440px]"
+      title={title || (isRtl ? "بحث عميق" : "Deep Research")}
+      trailing={
+        <ToolStatusBadge status="running" runningLabel={isRtl ? "جارٍ" : "Running"} />
+      }
     >
-      {title && (
-        <h3 className="text-[15px] font-medium text-foreground/90 leading-snug mb-4 tracking-tight">
-          {title}
-        </h3>
-      )}
 
       <ul className="space-y-3">
         {phases.map((p, i) => {
@@ -268,9 +270,8 @@ const ResearchJobBubble = ({ jobId, conversationId, turnIndex = 0, onRunningChan
       </div>
 
       <style>{`@keyframes researchShimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }`}</style>
-    </motion.div>
+    </ToolCard>
   );
 };
-
 
 export default ResearchJobBubble;

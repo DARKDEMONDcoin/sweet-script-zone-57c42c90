@@ -52,7 +52,7 @@ export default function WorkspaceOverviewTab() {
       label: "Shared credits",
       value: Number(ws.credits).toFixed(0),
       icon: Wallet,
-      tint: "from-emerald-500/15 to-emerald-500/0 text-emerald-500 ring-emerald-500/20",
+      tint: "from-primary/15 to-primary/0 text-primary ring-primary/20",
     },
     {
       label: "Members",

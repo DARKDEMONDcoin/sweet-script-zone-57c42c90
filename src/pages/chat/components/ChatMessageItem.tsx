@@ -8,6 +8,7 @@ import {
   StandardSlidesCard,
   ImageSlidesCard,
   SlidesOutlineCard,
+  DocsPlanCard,
   OperatorInlineBubbleLazy,
   DocsArtifactCard,
 } from "../lazyComponents";
@@ -295,11 +296,34 @@ const ChatMessageItemImpl = ({
           />
         </div>
       )}
-      {msg.role === "assistant" && msg.slidesOutline && (
+      {msg.role === "assistant" && msg.docsPlan && (
+        <div className="px-3 md:px-12">
+          <Suspense fallback={null}>
+            <DocsPlanCard
+              plan={msg.docsPlan}
+              messageId={msg.id}
+              conversationId={conversationId}
+              userId={chatUserId}
+              status={
+                msg.docsPlan.stage === "done"
+                  ? "done"
+                  : msg.docsPlan.stage === "generating"
+                    ? "generating"
+                    : "planning"
+              }
+            />
+          </Suspense>
+        </div>
+      )}
+      {msg.role === "assistant" && (msg.slidesOutline || msg.slidesPlan) && (
         <div className="px-3 md:px-12">
           <Suspense fallback={null}>
             <SlidesOutlineCard
-              outline={msg.slidesOutline}
+              outline={msg.slidesPlan?.outline || msg.slidesOutline!}
+              plan={msg.slidesPlan}
+              messageId={msg.id}
+              conversationId={conversationId}
+              userId={chatUserId}
               status={msg.slidesDeck || msg.standardSlides || msg.imageSlides ? "done" : msg.slidesJobId ? "generating" : "planning"}
             />
           </Suspense>
@@ -387,7 +411,7 @@ const ChatMessageItemImpl = ({
         !msg.content?.trim() &&
         !isLoading && (
           <div className="px-3 md:px-12 mt-3">
-            <div className="rounded-2xl border border-border/50 bg-card/60 backdrop-blur-xl p-4 max-w-xl">
+            <div className="rounded-2xl border border-border/50 bg-card/60 p-4 max-w-xl">
               <div className="text-[13px] font-medium text-foreground mb-1">
                 Slides not available
               </div>

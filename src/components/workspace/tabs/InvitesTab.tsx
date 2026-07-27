@@ -10,11 +10,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Mail, Copy, Trash2, Loader2, Send } from "lucide-react";
+import { Mail, Copy, Trash2, Send } from "lucide-react";
 import { toast } from "sonner";
 import type { WorkspaceCtx } from "@/hooks/useWorkspaceContext";
 
 import { sanitizeErrorMessage } from "@/lib/sanitizeError";
+import { Spinner } from "@/components/ui/spinner";
 export default function InvitesTab() {
   const { ws, isAdmin } = useOutletContext<{ ws: WorkspaceCtx; isAdmin: boolean }>();
   const [invites, setInvites] = useState<any[]>([]);
@@ -121,7 +122,7 @@ export default function InvitesTab() {
 
   const statusTint = (status: string) => {
     if (status === "pending") return "bg-amber-500/10 text-amber-600 border-amber-500/20";
-    if (status === "accepted") return "bg-emerald-500/10 text-emerald-600 border-emerald-500/20";
+    if (status === "accepted") return "bg-primary/10 text-primary border-primary/20";
     if (status === "revoked") return "bg-muted text-muted-foreground border-border";
     return "bg-muted text-muted-foreground border-border";
   };
@@ -163,7 +164,7 @@ export default function InvitesTab() {
             </Select>
             <Button onClick={send} disabled={sending || !email.trim()} className="h-10 rounded-lg">
               {sending ? (
-                <Loader2 className="w-4 h-4 animate-spin mr-1.5" />
+                <Spinner className="w-4 h-4 mr-1.5" />
               ) : (
                 <Send className="w-4 h-4 mr-1.5" />
               )}

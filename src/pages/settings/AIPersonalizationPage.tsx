@@ -2,7 +2,7 @@
 // AI Personalization ("Tuning Fork") — editorial redesign using SubShell.
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { Loader2, Sparkles, Check } from "lucide-react";
+import { Sparkles, Check } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { SubShell } from "@/components/settings/SubShell";
@@ -16,6 +16,7 @@ import {
   CleanButton,
 } from "@/components/settings/CleanSettings";
 import { cn } from "@/lib/utils";
+import { Spinner } from "@/components/ui/spinner";
 
 const LANGUAGE_STYLES: { id: string; label: string; description?: string }[] = [
   { id: "mixed", label: "Auto", description: "Mix based on your chat" },
@@ -259,7 +260,7 @@ export default function AIPersonalizationPage() {
   if (loading) {
     return (
       <div className="min-h-dvh flex items-center justify-center bg-background text-foreground">
-        <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
+        <Spinner className="w-5 h-5 text-muted-foreground" />
       </div>
     );
   }
@@ -444,7 +445,7 @@ export default function AIPersonalizationPage() {
   const statusPill = (
     <span className="inline-flex items-center gap-1.5 text-[11.5px] text-muted-foreground">
       {saving ? (
-        <><Loader2 className="w-3 h-3 animate-spin" /> Saving…</>
+        <><Spinner className="w-3 h-3" /> Saving…</>
       ) : isDirty ? (
         <>Unsaved changes</>
       ) : (

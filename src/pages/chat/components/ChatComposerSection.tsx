@@ -38,6 +38,8 @@ interface ChatComposerSectionProps {
   desktopGreeting?: ReactNode;
   /** Ref forwarded to the composer wrapper so the plus menu can anchor to it. */
   composerRef?: React.Ref<HTMLDivElement>;
+  /** Image-mode tools strip (upload / background removal / characters). */
+  imageTools?: ReactNode;
 }
 
 /**
@@ -159,8 +161,15 @@ export function ChatComposerSection(props: ChatComposerSectionProps) {
                 chatContext
                 onInputFocusChange={setInputFocused}
                 activeServiceHeader={
-                  attachedFiles.length > 0 ? (
-                    <ComposerAttachments files={attachedFiles} onRemove={removeAttachment} />
+                  d.chatMode === "images" || d.chatMode === "video" || attachedFiles.length > 0 ? (
+                    <>
+                      {(d.chatMode === "images" || d.chatMode === "video") && props.imageTools
+                        ? props.imageTools
+                        : null}
+                      {attachedFiles.length > 0 ? (
+                        <ComposerAttachments files={attachedFiles} onRemove={removeAttachment} />
+                      ) : null}
+                    </>
                   ) : null
                 }
                 activeServiceSlot={

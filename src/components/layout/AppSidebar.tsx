@@ -334,19 +334,34 @@ const AppSidebar = ({
     } else {
       query = query.is("workspace_id", null);
     }
-    const { data } = await query
+    const { data, error } = await query
       .order("is_pinned", { ascending: false })
       .order("updated_at", { ascending: false })
       .limit(50);
+    if (error) {
+      // Network / RLS hiccup: keep whatever is already listed instead of
+      // wiping the history and pretending the user has no conversations.
+      console.error("[AppSidebar] loadConversations failed", error);
+      return;
+    }
     if (data) {
-      setConversations(data);
+      // Guard against duplicate rows (owner + member of the same conversation)
+      // so React keys stay unique and the list never renders twice.
+      const seen = new Set<string>();
+      const unique = data.filter((c: any) => {
+        if (!c?.id || seen.has(c.id)) return false;
+        seen.add(c.id);
+        return true;
+      });
+      setConversations(unique);
       try {
-        localStorage.setItem(cacheKey(modeFilter, user.id, activeWs), JSON.stringify(data));
+        localStorage.setItem(cacheKey(modeFilter, user.id, activeWs), JSON.stringify(unique));
       } catch {}
     } else {
       setConversations([]);
     }
   };
+
 
   const account = useActiveAccount();
   const activeUserId = currentUserId || account.id;
@@ -599,7 +614,7 @@ const AppSidebar = ({
               }}
             >
               <span
-                className="shrink-0 transition-colors duration-200 group-hover:text-white"
+                className="shrink-0 transition-colors duration-200 group-hover:text-foreground"
                 style={{ color: active ? "var(--overlay-white-100)" : "var(--overlay-white-70)" }}
               >
                 <Icon size={17} strokeWidth={2} />
@@ -635,7 +650,7 @@ const AppSidebar = ({
               aria-expanded={moreOpen}
             >
               <span
-                className="shrink-0 transition-colors duration-200 group-hover:text-white"
+                className="shrink-0 transition-colors duration-200 group-hover:text-foreground"
                 style={{ color: moreOpen ? "var(--overlay-white-100)" : "var(--overlay-white-70)" }}
               >
                 <ChevronDown
@@ -688,7 +703,7 @@ const AppSidebar = ({
                         }}
                       >
                         <span
-                          className="shrink-0 transition-colors duration-200 group-hover:text-white"
+                          className="shrink-0 transition-colors duration-200 group-hover:text-foreground"
                           style={{ color: active ? "var(--overlay-white-100)" : "var(--overlay-white-70)" }}
                         >
                           <Icon size={17} strokeWidth={2} />
@@ -837,7 +852,7 @@ const AppSidebar = ({
                               closeInline();
                               if (onChatPage) onSelectConversation?.(conv.id);
                               else
-                                navigateSmoothly("/chat", {
+                                navigateSmoothly(`/chat?conv=${encodeURIComponent(conv.id)}`, {
                                   state: { loadConversationId: conv.id },
                                 });
                             }}
@@ -1136,7 +1151,7 @@ const AppSidebar = ({
                           onClose();
                           if (onChatPage) onSelectConversation?.(conv.id);
                           else
-                            navigateSmoothly("/chat", {
+                            navigateSmoothly(`/chat?conv=${encodeURIComponent(conv.id)}`, {
                               state: { loadConversationId: conv.id },
                             });
                         }}
@@ -1298,7 +1313,7 @@ const AppSidebar = ({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.12, ease: [0.32, 0.72, 0, 1] }}
-              className="fixed inset-0 z-popover bg-black/55 cursor-pointer"
+              className="fixed inset-0 z-popover bg-background/55 cursor-pointer"
               onClick={onClose}
               onTouchStart={onClose}
             />

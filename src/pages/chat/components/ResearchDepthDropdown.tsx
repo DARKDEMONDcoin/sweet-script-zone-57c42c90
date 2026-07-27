@@ -140,7 +140,7 @@ export default function ResearchDepthDropdown({
             {active && (
               <Check
                 className={variant === "sheet" ? "w-5 h-5" : "w-4 h-4"}
-                strokeWidth={2.5}
+                strokeWidth={1.8}
               />
             )}
           </button>

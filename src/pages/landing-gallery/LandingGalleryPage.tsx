@@ -1,10 +1,11 @@
 /** @doc Showcase — a clean, editorial gallery of hero/landing prompts. Free items copy instantly; Pro items route users to the Plus upgrade page. */
 import { useEffect, useState } from "react";
-import { ArrowLeft, ArrowUpRight, Check, Loader2 } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, Check } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Helmet } from "react-helmet-async";
+import { Spinner } from "@/components/ui/spinner";
 
 type Item = {
   id: string;
@@ -152,7 +153,7 @@ const LandingGalleryPage = () => {
                       />
                     )}
                     {item.is_pro && (
-                      <div className="absolute top-3 left-3 rounded-full bg-background/85 backdrop-blur-md px-2.5 py-1 text-[10px] font-semibold tracking-[0.16em] uppercase text-foreground border border-border/60">
+                      <div className="absolute top-3 left-3 rounded-full bg-background/85 px-2.5 py-1 text-[10px] font-semibold tracking-[0.16em] uppercase text-foreground border border-border/60">
                         Pro
                       </div>
                     )}
@@ -181,7 +182,7 @@ const LandingGalleryPage = () => {
                       >
                         {isBusy ? (
                           <>
-                            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                            <Spinner className="w-3.5 h-3.5" />
                             Copying
                           </>
                         ) : isCopied ? (

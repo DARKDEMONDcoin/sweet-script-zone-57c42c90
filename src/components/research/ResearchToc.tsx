@@ -85,7 +85,7 @@ const ResearchToc = ({ markdown, isRtl, onActiveChange }: Props) => {
 
   return (
     <nav
-      className={`fixed top-24 ${isRtl ? "left-4" : "right-4"} z-20 hidden max-h-[70vh] w-60 overflow-y-auto rounded-2xl border border-foreground/10 bg-background/70 p-4 backdrop-blur-xl xl:block`}
+      className={`fixed top-24 ${isRtl ? "left-4" : "right-4"} z-20 hidden max-h-[70vh] w-60 overflow-y-auto rounded-2xl border border-foreground/10 bg-background/70 p-4 xl:block`}
       dir={isRtl ? "rtl" : "ltr"}
       aria-label="Table of contents"
     >

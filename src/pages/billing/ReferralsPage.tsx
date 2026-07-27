@@ -116,7 +116,7 @@ export const fmtDate = (d: string) =>
 
 export const statusTone = (s: string) => {
   if (s === "approved" || s === "paid" || s === "active")
-    return "bg-emerald-500/15 text-emerald-400 ring-emerald-500/20";
+    return "bg-primary/15 text-primary ring-primary/20";
   if (s === "rejected") return "bg-rose-500/15 text-rose-400 ring-rose-500/20";
   return "bg-amber-500/15 text-amber-400 ring-amber-500/20";
 };
@@ -463,7 +463,7 @@ const ReferralsPage = () => {
         >
         <div
           dir="ltr"
-          className="min-h-[100dvh] antialiased bg-[#0a0a0a] text-white"
+          className="min-h-[100dvh] antialiased bg-[#0a0a0a] text-foreground"
           style={{ fontFamily: "Inter, ui-sans-serif, system-ui, sans-serif" }}
         >
           <header
@@ -478,7 +478,7 @@ const ReferralsPage = () => {
               <button
                 onClick={() => setQrOpen(true)}
                 aria-label="QR code"
-                className="grid h-11 w-11 place-items-center rounded-full text-white transition active:scale-90"
+                className="grid h-11 w-11 place-items-center rounded-full text-foreground transition active:scale-90"
               >
                 <QrCode className="h-6 w-6" strokeWidth={2} />
               </button>
@@ -490,7 +490,7 @@ const ReferralsPage = () => {
               <div className="px-4 py-4">
                 <button
                   onClick={() => navigate("/settings/referrals")}
-                  className="mb-4 text-[13px] text-white/70 hover:text-white transition"
+                  className="mb-4 text-[13px] text-muted-foreground hover:text-foreground transition"
                 >
                   ← Back
                 </button>
@@ -526,7 +526,7 @@ const ReferralsPage = () => {
           >
             <button
               onClick={() => setQrOpen(false)}
-              className="lg-liquid-glass absolute right-4 top-4 grid h-9 w-9 place-items-center rounded-full text-white/85 hover:text-white transition"
+              className="lg-liquid-glass absolute right-4 top-4 grid h-9 w-9 place-items-center rounded-full text-muted-foreground hover:text-foreground transition"
               aria-label="Close"
             >
               <X className="h-4 w-4" strokeWidth={1.8} />
@@ -534,12 +534,12 @@ const ReferralsPage = () => {
 
             <div className="text-center">
               <h2
-                className="text-[22px] leading-tight text-white"
+                className="text-[22px] leading-tight text-foreground"
                 style={{ fontWeight: 500, letterSpacing: "-0.02em" }}
               >
                 Your QR code
               </h2>
-              <p className="mx-auto mt-1.5 max-w-[240px] text-[13px] leading-[1.6] text-white/60">
+              <p className="mx-auto mt-1.5 max-w-[240px] text-[13px] leading-[1.6] text-muted-foreground">
                 Scan to join Megsy AI with your referral link.
               </p>
             </div>
@@ -549,7 +549,7 @@ const ReferralsPage = () => {
               style={{ backgroundColor: "#FFFFFF" }}
             >
               {link ? (
-                <Suspense fallback={<div className="h-[200px] w-[200px] animate-pulse rounded-xl bg-black/10" />}>
+                <Suspense fallback={<div className="h-[200px] w-[200px] animate-pulse rounded-xl bg-background/10" />}>
                   <QRCodeSVG
                     ref={qrRef}
                     value={link}
@@ -569,18 +569,18 @@ const ReferralsPage = () => {
                   />
                 </Suspense>
               ) : (
-                <div className="h-[200px] w-[200px] animate-pulse rounded-xl bg-black/10" />
+                <div className="h-[200px] w-[200px] animate-pulse rounded-xl bg-background/10" />
               )}
             </div>
 
-            <p className="mx-auto mt-5 max-w-[260px] truncate text-center text-[12px] text-white/55">
+            <p className="mx-auto mt-5 max-w-[260px] truncate text-center text-[12px] text-muted-foreground">
               {link || "—"}
             </p>
 
             <div className="mt-6 grid grid-cols-2 gap-3">
               <button
                 onClick={copyQRLink}
-                className="lg-liquid-glass flex items-center justify-center gap-2 rounded-full px-4 py-3 text-[13px] font-medium text-white transition hover:text-white"
+                className="lg-liquid-glass flex items-center justify-center gap-2 rounded-full px-4 py-3 text-[13px] font-medium text-foreground transition hover:text-foreground"
               >
                 {justCopied ? (
                   <Check className="h-4 w-4" strokeWidth={1.8} />
@@ -591,7 +591,7 @@ const ReferralsPage = () => {
               </button>
               <button
                 onClick={downloadQR}
-                className="lg-liquid-glass flex items-center justify-center gap-2 rounded-full px-4 py-3 text-[13px] font-medium text-white transition hover:text-white"
+                className="lg-liquid-glass flex items-center justify-center gap-2 rounded-full px-4 py-3 text-[13px] font-medium text-foreground transition hover:text-foreground"
               >
                 <Download className="h-4 w-4" strokeWidth={1.8} />
                 Download

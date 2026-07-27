@@ -30,7 +30,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
             "inline-flex items-center gap-2",
             "!pl-3 !pr-3.5 !py-2",
             "rounded-full",
-            "bg-[hsl(var(--popover)/0.92)] backdrop-blur-xl",
+            "bg-[hsl(var(--popover)/0.92)]",
             "border border-border/50",
             "shadow-[0_8px_24px_-10px_hsl(var(--foreground)/0.35)]",
             "text-popover-foreground antialiased",
@@ -47,7 +47,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
           cancelButton:
             "!bg-muted !text-muted-foreground rounded-full px-2.5 py-1 text-[11.5px] font-medium hover:!bg-muted/70 transition",
           closeButton: "!hidden",
-          success: "[&_[data-icon]_svg]:!text-emerald-500",
+          success: "[&_[data-icon]_svg]:!text-primary",
           error: "[&_[data-icon]_svg]:!text-rose-500",
           info: "[&_[data-icon]_svg]:!text-sky-500",
           warning: "[&_[data-icon]_svg]:!text-amber-500",

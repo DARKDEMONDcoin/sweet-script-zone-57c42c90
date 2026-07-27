@@ -6,7 +6,7 @@
 ## Company Identity (used across all pages)
 - **Legal name:** Megsy for Digital Platforms & E-Commerce Development LLC
 - **Incorporated:** Arab Republic of Egypt
-- **Commercial Registry:** 248691
+- **Commercial Registry:** 284691
 - **Tax ID:** 774034785
 - **Address:** 58 El-Hegaz St., Amoun Tower, Unit 84, Floor 8, Sheraton Al-Matar, Al-Nozha District, Cairo Governorate, Egypt
 - **Founders:** Hamza Hassan (product/design) and Abdalla Mohamed (engineering/infrastructure)
@@ -235,7 +235,7 @@
 
 ### /privacy — Privacy Policy
 - Last updated: 19 May 2026
-- Data controller: Megsy for Digital Platforms & E-Commerce Development LLC (CR 248691, Tax 774034785)
+- Data controller: Megsy for Digital Platforms & E-Commerce Development LLC (CR 284691, Tax 774034785)
 - Data collected: account data, workspace data, content data (prompts/files/outputs), usage data, billing data (last four digits only — no full card numbers)
 - Megsy does NOT sell personal data; does NOT share for cross-context behavioural advertising
 - Account data retained while active and up to 24 months after closure (longer if legally required, e.g. tax records)
@@ -379,7 +379,7 @@
 
 ### /cookies — Cookie Policy
 - Last updated: 19 May 2026
-- Data controller: Megsy for Digital Platforms & E-Commerce Development LLC (CR 248691, Tax 774034785)
+- Data controller: Megsy for Digital Platforms & E-Commerce Development LLC (CR 284691, Tax 774034785)
 - Cookie questions: privacy@megsyai.com
 - **Essential cookies:** session ID (sb-auth-token), auth state, CSRF token, cookie consent prefs, security headers; retention: session or up to 30 days for persistent login; CANNOT be disabled
 - **Analytics cookies:** anonymized/aggregated; no PII; legal basis: consent (GDPR Art. 6(1)(a)); retention: up to 12 months
@@ -437,7 +437,7 @@
 - AML: follows FATF recommendations; monitors suspicious payment patterns; may request identity verification before high-value transactions
 - Anti-bribery: zero-tolerance, complies with UK Bribery Act 2010, US FCPA, Egyptian anti-corruption law
 - Modern slavery: complies with UK Modern Slavery Act 2015, California Transparency in Supply Chains Act, Australian Modern Slavery Act 2018; annual Modern Slavery Statement once turnover thresholds met
-- **Tax registration:** Egyptian tax registration 774034785; commercial registry 248691
+- **Tax registration:** Egyptian tax registration 774034785; commercial registry 284691
 - Law-enforcement requests: legal@megsyai.com (PGP key available); user notified before disclosure unless prohibited; emergency disclosure for risk to life without prior notice
 - Whistleblowing: whistleblower@megsyai.com; anonymous reports accepted; retaliation prohibited
 

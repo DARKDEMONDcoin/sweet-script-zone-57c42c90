@@ -3,6 +3,7 @@ import { memo, useEffect } from "react";
 import { m as motion } from "framer-motion";
 
 import { IOS_SPRING as iosSpring } from "@/pages/chat/constants/motion";
+import { Spinner } from "@/components/ui/spinner";
 
 export type PayOption = "global" | "local" | "wallets";
 export type Gateway = PayOption; // backwards compat
@@ -74,12 +75,12 @@ function PaymentGatewaySheetImpl({
         }}
       >
         <div className="sm:hidden pt-2.5 pb-2 flex items-center justify-center shrink-0">
-          <div className="h-1.5 w-10 rounded-full bg-white/25" />
+          <div className="h-1.5 w-10 rounded-full bg-muted/25" />
         </div>
 
         <div className="px-1 pt-1 pb-3">
-          <p className="text-[14px] font-semibold text-white leading-none">{title}</p>
-          <p className="text-[12px] text-white/50 mt-1 leading-snug">{subtitle}</p>
+          <p className="text-[14px] font-semibold text-foreground leading-none">{title}</p>
+          <p className="text-[12px] text-muted-foreground mt-1 leading-snug">{subtitle}</p>
         </div>
 
         <div
@@ -101,18 +102,18 @@ function PaymentGatewaySheetImpl({
                 whileTap={{ scale: disabled ? 1 : 0.985 }}
                 transition={iosSpring}
                 onClick={() => onSelect(row.id)}
-                className="w-full flex items-center justify-between rounded-xl bg-white/[0.05] px-4 py-3.5 text-left transition-colors"
+                className="w-full flex items-center justify-between rounded-xl bg-muted/40 px-4 py-3.5 text-left transition-colors"
                 style={{
                   border: "1px solid rgba(255,255,255,0.08)",
                 }}
               >
-                <span className="text-[15px] font-medium text-white leading-[1.15]">
+                <span className="text-[15px] font-medium text-foreground leading-[1.15]">
                   {row.label}
                 </span>
                 {isLoading ? (
-                  <span className="w-4 h-4 border-2 border-white/25 border-t-white rounded-full animate-spin shrink-0" />
+                  <Spinner className="size-4" />
                 ) : (
-                  <span className="text-white/40 shrink-0" aria-hidden>
+                  <span className="text-muted-foreground shrink-0" aria-hidden>
                     <svg
                       width="16"
                       height="16"

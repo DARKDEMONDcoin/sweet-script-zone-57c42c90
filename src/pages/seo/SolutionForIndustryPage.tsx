@@ -93,9 +93,6 @@ export default function SolutionForIndustryPage() {
 
       {/* Hero */}
       <section className="px-6 pt-20 pb-12 max-w-5xl mx-auto text-center">
-        <div className="text-6xl mb-4">
-          {useCase.emoji} <span aria-hidden>×</span> {ind.emoji}
-        </div>
         <div className="inline-flex items-center gap-2 text-xs uppercase tracking-wider text-muted-foreground mb-4">
           <Sparkles className="h-3 w-3" /> {useCase.title} • {ind.name}
         </div>
@@ -201,7 +198,7 @@ export default function SolutionForIndustryPage() {
             <details key={i} className="rounded-xl border p-5 bg-card group">
               <summary className="font-semibold cursor-pointer list-none flex justify-between items-center">
                 {f.q}
-                <span className="text-muted-foreground group-open:rotate-180 transition">▾</span>
+                <span aria-hidden className="text-muted-foreground transition-transform group-open:rotate-180">+</span>
               </summary>
               <p className="mt-3 text-muted-foreground">{f.a}</p>
             </details>
@@ -237,7 +234,7 @@ export default function SolutionForIndustryPage() {
                 to={`/solutions/${useCase.slug}/for/${i.slug}`}
                 className="text-sm px-3 py-1.5 rounded-full border hover:bg-accent"
               >
-                {i.emoji} {i.name}
+                {i.name}
               </Link>
             ))}
           </div>
@@ -253,7 +250,7 @@ export default function SolutionForIndustryPage() {
                 to={`/solutions/${u.slug}/for/${ind.slug}`}
                 className="text-sm px-3 py-1.5 rounded-full border hover:bg-accent"
               >
-                {u.emoji} {u.title}
+                {u.title}
               </Link>
             ))}
           </div>

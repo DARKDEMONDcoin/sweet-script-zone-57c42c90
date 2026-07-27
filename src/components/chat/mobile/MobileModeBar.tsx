@@ -114,7 +114,7 @@ export default function MobileModeBar({ mode, onChange }: Props) {
                 border: `1px solid hsl(var(--brand-ink) / 0.25)`,
               }}
             >
-              <X size={14} strokeWidth={3} />
+              <X size={14} strokeWidth={1.8} />
             </button>
           </motion.div>
         ) : (

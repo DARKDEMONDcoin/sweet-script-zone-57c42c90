@@ -78,7 +78,7 @@ const CreativeBlueprintsSection = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.7, delay: i * 0.12, ease: [0.22, 1, 0.36, 1] }}
-            className={`group relative h-[340px] md:h-[520px] overflow-hidden rounded-3xl border border-white/10 ${
+            className={`group relative h-[340px] md:h-[520px] overflow-hidden rounded-3xl border border-border/10 ${
               i === 2 ? "sm:col-span-2 md:col-span-1" : ""
             }`}
           >
@@ -92,7 +92,7 @@ const CreativeBlueprintsSection = () => {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
 
-            <div className="absolute inset-x-4 bottom-4 md:inset-x-5 md:bottom-5 rounded-2xl border border-white/15 bg-black/40 p-4 md:p-5 backdrop-blur-md">
+            <div className="absolute inset-x-4 bottom-4 md:inset-x-5 md:bottom-5 rounded-2xl border border-border/15 bg-background/40 p-4 md:p-5">
               <h3 className="font-display text-lg md:text-3xl font-black uppercase tracking-tight text-foreground">
                 {tx(card.title)}
               </h3>

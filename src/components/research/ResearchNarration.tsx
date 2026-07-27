@@ -180,7 +180,7 @@ const ResearchNarration = ({ items, active }: Props) => {
     <div dir={dir} className="mb-3 max-w-md w-full animate-fade-in">
       <div className="relative flex flex-col gap-4">
         {/* Active status step */}
-        <div className="flex flex-col gap-1 p-5 rounded-2xl bg-foreground/5 border border-border/40 backdrop-blur-md">
+        <div className="flex flex-col gap-1 p-5 rounded-2xl bg-foreground/5 border border-border/40">
           <div className="flex items-center gap-2">
             <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary">
               Deep Researching

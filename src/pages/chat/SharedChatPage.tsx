@@ -8,6 +8,7 @@ import SEOHead from "@/components/common/SEOHead";
 import { translateExactText, useUserLang } from "@/lib/authI18n";
 import { toast } from "sonner";
 import { AuiProvider } from "./adapters/aui/AuiProvider";
+import { Spinner } from "@/components/ui/spinner";
 
 interface Message {
   role: "user" | "assistant";
@@ -128,7 +129,7 @@ const SharedChatPage = () => {
   if (loading) {
     return (
       <div className="min-h-dvh bg-background flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+        <Spinner className="size-8 text-primary" />
       </div>
     );
   }
@@ -143,7 +144,7 @@ const SharedChatPage = () => {
           </p>
           <button
             onClick={() => navigate("/")}
-            className="px-5 py-2.5 rounded-full bg-gradient-to-r from-purple-600 to-fuchsia-500 text-white text-sm font-semibold hover:opacity-95 transition"
+            className="px-5 py-2.5 rounded-full bg-gradient-to-r from-purple-600 to-fuchsia-500 text-foreground text-sm font-semibold hover:opacity-95 transition"
           >
             {tx("Go to Megsy")}
           </button>
@@ -162,7 +163,7 @@ const SharedChatPage = () => {
         type="article"
       />
       {/* Header */}
-      <header className="sticky top-0 z-20 bg-background/75 backdrop-blur-xl border-b border-border/40">
+      <header className="sticky top-0 z-20 bg-background/75 border-b border-border/40">
         <div className="max-w-3xl mx-auto px-4 md:px-6 h-14 flex items-center justify-between gap-3">
           <button
             onClick={() => navigate("/")}
@@ -220,7 +221,7 @@ const SharedChatPage = () => {
                 onClick={copyLink}
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-foreground/5 hover:bg-foreground/10 border border-border/50 text-[12px] font-medium text-foreground transition"
               >
-                {copied ? <Check className="h-3.5 w-3.5 text-emerald-500" /> : <Copy className="h-3.5 w-3.5" />}
+                {copied ? <Check className="h-3.5 w-3.5 text-primary" /> : <Copy className="h-3.5 w-3.5" />}
                 {copied ? tx("Copied") : tx("Copy link")}
               </button>
               <button onClick={() => shareTo("whatsapp")} className="px-3 py-1.5 rounded-full bg-[#25D366]/10 hover:bg-[#25D366]/20 border border-[#25D366]/30 text-[12px] font-medium text-[#25D366] transition">
@@ -270,7 +271,7 @@ const SharedChatPage = () => {
               </p>
               <button
                 onClick={() => navigate("/auth")}
-                className="mt-6 px-6 py-3 rounded-full bg-gradient-to-r from-purple-600 to-fuchsia-500 text-white text-sm font-semibold hover:opacity-95 transition"
+                className="mt-6 px-6 py-3 rounded-full bg-gradient-to-r from-purple-600 to-fuchsia-500 text-foreground text-sm font-semibold hover:opacity-95 transition"
               >
                 {tx("Join Megsy free")}
               </button>

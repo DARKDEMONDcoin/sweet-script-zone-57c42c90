@@ -1,8 +1,11 @@
 import { m as motion, AnimatePresence } from "framer-motion";
-import { AlertCircle, Download, Film, Loader2, RotateCw } from "lucide-react";
+import { AlertCircle, Download, Film, RotateCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import MegsyStar from "@/components/branding/MegsyStar";
+
+import { ToolLoader } from "@/components/chat/primitives/ToolStatus";
+import { Spinner } from "@/components/ui/spinner";
 
 async function forceDownload(url: string, filename: string) {
   try {
@@ -89,16 +92,16 @@ export default function MediaResultCard({
                 initial={{ opacity: 0, y: 4 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
-                className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black px-3 py-1.5 text-[12px] text-white/80 w-fit"
+                className="inline-flex items-center gap-2 rounded-full border border-border/10 bg-background px-3 py-1.5 text-[12px] text-muted-foreground w-fit"
               >
                 <motion.span
                   animate={{ rotate: 360, scale: [1, 1.15, 1] }}
                   transition={{ rotate: { duration: 3, repeat: Infinity, ease: "linear" }, scale: { duration: 1.2, repeat: Infinity } }}
-                  className="text-white"
+                  className="text-foreground"
                 >
                   <MegsyStar className="w-4 h-4" />
                 </motion.span>
-                <span className="opacity-80">جاري توليد الأغنية…</span>
+                <span className="opacity-80">Generating song…</span>
               </motion.div>
             );
           }
@@ -120,13 +123,10 @@ export default function MediaResultCard({
               transition={{ type: "spring", stiffness: 320, damping: 28 }}
               className="group relative"
             >
-              {/* Caption above tile: "Generating <title>" with blue accent while running */}
-              {r.status === "running" && r.title && (
-                <div className="mb-2 px-0.5 text-[12.5px] leading-tight">
-                  <span className="text-foreground/55">Generating </span>
-                  <span className="font-medium" style={{ color: "var(--megsy-blue)" }}>
-                    {r.title}
-                  </span>
+              {/* Unified running caption: shared tool icon + loader label */}
+              {r.status === "running" && (
+                <div className="mb-2 flex items-center gap-2 px-0.5">
+                  <ToolLoader label={r.title ? `Generating ${r.title}` : "Generating…"} />
                 </div>
               )}
 
@@ -141,7 +141,7 @@ export default function MediaResultCard({
                 {r.status === "done" && r.url ? (
                   r.type === "music" ? (
                     <div className="relative w-full h-full flex flex-col items-center justify-center gap-3 px-4 py-3 bg-gradient-to-br from-fuchsia-600/70 via-purple-700/60 to-indigo-800/70 rounded-2xl">
-                      <div className="text-[13px] font-semibold text-white/95 line-clamp-2 text-center drop-shadow">
+                      <div className="text-[13px] font-semibold text-foreground line-clamp-2 text-center drop-shadow">
                         {r.title || "Your song"}
                       </div>
                       <audio
@@ -216,7 +216,7 @@ export default function MediaResultCard({
 
       {/* ── Merge into one video ───────────────────────────────────── */}
       {(canMerge || mergeStatus !== "idle" || finalVideoUrl) && (
-        <div className="sm:col-span-2 mt-1 rounded-2xl border border-border/60 bg-card/60 backdrop-blur p-3 space-y-2">
+        <div className="sm:col-span-2 mt-1 rounded-2xl border border-border/60 bg-card/60 p-3 space-y-2">
           {finalVideoUrl ? (
             <>
               <div className="flex items-center gap-2 text-[12px] font-medium">
@@ -237,12 +237,12 @@ export default function MediaResultCard({
                 controls
                 playsInline
                 preload="metadata"
-                className="w-full rounded-xl bg-black"
+                className="w-full rounded-xl bg-background"
               />
             </>
           ) : mergeStatus === "merging" ? (
             <div className="flex items-center gap-2 text-[12px] text-muted-foreground py-2">
-              <Loader2 className="w-4 h-4 animate-spin" />
+              <Spinner className="w-4 h-4" />
               Stitching {videoDone.length} clips into one video… this can take a minute.
             </div>
           ) : mergeStatus === "unavailable" ? (
@@ -366,7 +366,7 @@ function GlassDownload({ onClick }: { onClick: () => void }) {
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.2, duration: 0.25 }}
-      className="absolute bottom-3 right-3 inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[12px] font-medium text-white shadow-lg backdrop-blur-xl bg-black/35 hover:bg-black/50 border border-white/15 transition-colors"
+      className="absolute bottom-3 right-3 inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[12px] font-medium text-foreground shadow-lg bg-background/35 hover:bg-background/50 border border-border/15 transition-colors"
       aria-label="Download"
     >
       <Download className="w-3.5 h-3.5" />

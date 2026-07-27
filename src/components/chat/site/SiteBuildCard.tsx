@@ -1,17 +1,6 @@
 /** @doc Realtime card for the build_website tool — shows progress, preview URL, and the source files of an AI-generated website inside the chat. */
 import { useEffect, useMemo, useState } from "react";
-import {
-  AlertCircle,
-  ChevronRight,
-  Code2,
-  Copy,
-  Download,
-  ExternalLink,
-  FileCode2,
-  Loader2,
-  Sparkles,
-  X,
-} from "lucide-react";
+import { AlertCircle, ChevronRight, Code2, Copy, Download, ExternalLink, FileCode2, Sparkles, X } from "lucide-react";
 import JSZip from "jszip";
 import { m as motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
@@ -19,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import StatusBadge from "../primitives/StatusBadge";
+import { Spinner } from "@/components/ui/spinner";
 
 type Task = {
   step?: string;
@@ -105,7 +95,7 @@ export default function SiteBuildCard({ siteId }: Props) {
     <motion.div
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      className="my-2 max-w-[640px] rounded-2xl border border-border/60 bg-gradient-to-br from-card/80 to-card/40 backdrop-blur p-4 space-y-3"
+      className="my-2 max-w-[640px] rounded-2xl border border-border/60 bg-gradient-to-br from-card/80 to-card/40 p-4 space-y-3"
     >
       {/* Header */}
       <div className="flex items-start gap-3">
@@ -123,7 +113,7 @@ export default function SiteBuildCard({ siteId }: Props) {
           ) : isDone ? (
             <Sparkles className="w-5 h-5" />
           ) : (
-            <Loader2 className="w-5 h-5 animate-spin" />
+            <Spinner className="w-5 h-5" />
           )}
         </div>
         <div className="flex-1 min-w-0">
@@ -262,7 +252,7 @@ function CodeViewer({
   const lines = useMemo(() => (file.content || "").split("\n"), [file.content]);
   return (
     <div
-      className="fixed inset-0 z-[120] bg-black/70 backdrop-blur flex items-center justify-center p-3 sm:p-6"
+      className="fixed inset-0 z-[120] bg-background/70 flex items-center justify-center p-3 sm:p-6"
       onClick={onClose}
     >
       <motion.div

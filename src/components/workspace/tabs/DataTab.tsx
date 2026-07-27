@@ -2,9 +2,10 @@ import { useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Database, Download, Archive, Loader2 } from "lucide-react";
+import { Database, Download, Archive } from "lucide-react";
 import { toast } from "sonner";
 import type { WorkspaceCtx } from "@/hooks/useWorkspaceContext";
+import { Spinner } from "@/components/ui/spinner";
 
 export default function DataTab() {
   const { ws, isAdmin } = useOutletContext<{ ws: WorkspaceCtx; isAdmin: boolean }>();
@@ -80,7 +81,7 @@ export default function DataTab() {
         </div>
         <Button onClick={exportData} disabled={exporting} className="mt-4 rounded-lg h-9">
           {exporting ? (
-            <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />
+            <Spinner className="w-3.5 h-3.5 mr-1.5" />
           ) : (
             <Download className="w-3.5 h-3.5 mr-1.5" />
           )}

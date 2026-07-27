@@ -4,13 +4,27 @@ import { toast } from "sonner";
 import type { ProjectFile } from "@/lib/extractProjectFiles";
 import { supabase } from "@/integrations/supabase/client";
 
+/** Normalise a model-produced path so it can never escape the archive root. */
+export function safeProjectPath(raw: string): string {
+  const parts = String(raw || "")
+    .replace(/\\/g, "/")
+    .replace(/^[a-zA-Z]:/, "")
+    .split("/");
+  const out: string[] = [];
+  for (const part of parts) {
+    if (!part || part === "." || part === "..") continue;
+    out.push(part.replace(/[\u0000-\u001f]/g, ""));
+  }
+  return out.join("/") || "file.txt";
+}
+
 export async function downloadProjectZip(files: ProjectFile[], name = "megsy-project") {
   if (!files.length) {
     toast.error("No files to download");
     return;
   }
   const zip = new JSZip();
-  for (const f of files) zip.file(f.path, f.content);
+  for (const f of files) zip.file(safeProjectPath(f.path), f.content);
   const blob = await zip.generateAsync({ type: "blob" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
@@ -39,12 +53,12 @@ export async function getSupabaseStatus(): Promise<{ connected: boolean; account
   try {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return { connected: false };
-    const { data, error } = await supabase.functions.invoke("pipedream-connect", { body: { action: "list_accounts" } });
+    const { data, error } = await supabase.functions.invoke("pipedream", { body: { action: "list_accounts" } });
     if (error) return null;
     const accounts = Array.isArray(data?.accounts) ? data.accounts : [];
     const match = accounts.find((a: any) => {
       const slug = a?.app_slug ?? a?.app?.name_slug ?? a?.app?.slug ?? a?.appSlug;
-      return String(slug || "") === "supabase_management_api";
+      return String(slug || "") === "supabase";
     });
     return { connected: !!match, account: match };
   } catch {
@@ -76,7 +90,7 @@ export async function pushFilesToGithub(
     branch: opts.branch || "main",
     message: opts.message || "Initial commit from Megsy Coder",
     private: opts.private ?? true,
-    files: files.map((f) => ({ path: f.path, content: f.content })),
+    files: files.map((f) => ({ path: safeProjectPath(f.path), content: f.content })),
   };
   // Try in order: push, create_and_push, upload, commit
   const actions = ["push", "create_and_push", "upload_files", "commit", "create_repo"];

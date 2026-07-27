@@ -10,22 +10,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
-import {
-  Loader2,
-  CheckCircle2,
-  XCircle,
-  Clock,
-  Square,
-  ExternalLink,
-  FileText,
-  Activity,
-  Globe,
-  Image as ImageIcon,
-} from "lucide-react";
+import { CheckCircle2, XCircle, Clock, Square, ExternalLink, FileText, Activity, Globe, Image as ImageIcon } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import AgentStar, { AGENT_COLORS, type AgentKey } from "./AgentStar";
 import { useMemo, useState } from "react";
 import ImagePreviewModal from "@/components/modals/ImagePreviewModal";
+import { Spinner } from "@/components/ui/spinner";
 
 function StepRow({ step }: { step: OperatorStep }) {
   const icon =
@@ -34,11 +24,11 @@ function StepRow({ step }: { step: OperatorStep }) {
       : step.status === "failed"
         ? XCircle
         : step.status === "running"
-          ? Loader2
+          ? Spinner
           : Clock;
   const cls =
     step.status === "done"
-      ? "text-emerald-500"
+      ? "text-primary"
       : step.status === "failed"
         ? "text-red-500"
         : step.status === "running"
@@ -118,7 +108,7 @@ export function OperatorWorkspace({
     return (
       <div
         className={
-          inline ? "rounded-2xl border border-border/40 bg-background/60 backdrop-blur p-4" : "p-4"
+          inline ? "rounded-2xl border border-border/40 bg-background/60 p-4" : "p-4"
         }
       >
         <div className="flex items-center gap-2 mb-3">
@@ -150,7 +140,7 @@ export function OperatorWorkspace({
     artifacts.find((a) => a.kind === "url")?.url || artifacts.find((a) => a.kind === "image")?.url;
 
   const containerCls = inline
-    ? "grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-3 rounded-2xl border border-border/40 bg-background/60 backdrop-blur p-3"
+    ? "grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-3 rounded-2xl border border-border/40 bg-background/60 p-3"
     : "grid grid-cols-1 md:grid-cols-[260px_1fr_360px] h-[calc(100vh-120px)] gap-3 p-3";
 
   return (
@@ -158,7 +148,7 @@ export function OperatorWorkspace({
       <div className={containerCls}>
         {/* Task plan — only show when there are real steps */}
         {!inline && (
-          <div className="rounded-xl border border-border/50 bg-background/40 backdrop-blur p-3 overflow-hidden flex flex-col">
+          <div className="rounded-xl border border-border/50 bg-background/40 p-3 overflow-hidden flex flex-col">
             {hasSteps ? (
               <>
                 <div className="flex items-center justify-between mb-2">
@@ -204,7 +194,7 @@ export function OperatorWorkspace({
           className={
             inline
               ? "rounded-xl border border-border/40 p-3 flex flex-col min-h-[300px]"
-              : "rounded-xl border border-border/50 bg-background/40 backdrop-blur p-3 overflow-hidden flex flex-col"
+              : "rounded-xl border border-border/50 bg-background/40 p-3 overflow-hidden flex flex-col"
           }
         >
           <div className="text-xs font-bold mb-2 flex items-center gap-2">
@@ -267,7 +257,7 @@ export function OperatorWorkspace({
           className={
             inline
               ? "rounded-xl border border-border/40 p-3 flex flex-col min-h-[300px]"
-              : "rounded-xl border border-border/50 bg-background/40 backdrop-blur p-3 overflow-hidden flex flex-col"
+              : "rounded-xl border border-border/50 bg-background/40 p-3 overflow-hidden flex flex-col"
           }
         >
           <Tabs value={tab} onValueChange={setTab} className="flex-1 flex flex-col">
@@ -327,7 +317,7 @@ export function OperatorWorkspace({
               {(run as any)?.live_view_url ? (
                 <div className="space-y-2 h-full flex flex-col">
                   <div className="flex items-center gap-2 text-[11px] text-muted-foreground">
-                    <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    <span className="inline-block w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
                     Live browser stream
                   </div>
                   <iframe

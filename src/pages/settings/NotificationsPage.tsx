@@ -1,13 +1,14 @@
 /** @doc Notifications settings — real toggles bound to notification_preferences. */
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Check, Loader2 } from "lucide-react";
+import { Check } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { sanitizeErrorMessage } from "@/lib/sanitizeError";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { goBackOr } from "@/lib/navigation";
 import { SubShell, SubSection, SubCard } from "@/components/settings/SubShell";
+import { Spinner } from "@/components/ui/spinner";
 
 type Prefs = {
   app_generation: boolean;
@@ -111,7 +112,7 @@ const NotificationsPage = () => {
 
   const StatusBadge = () => (
     <span className="inline-flex items-center gap-1.5 text-[12px] text-[rgba(235,220,205,0.55)]">
-      {saveState === "saving" && (<><Loader2 className="w-3.5 h-3.5 animate-spin" /> Saving…</>)}
+      {saveState === "saving" && (<><Spinner className="w-3.5 h-3.5" /> Saving…</>)}
       {saveState === "saved" && (<><Check className="w-3.5 h-3.5" /> Saved</>)}
     </span>
   );

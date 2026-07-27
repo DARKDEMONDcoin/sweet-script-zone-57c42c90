@@ -1,7 +1,7 @@
 /** @doc Create a new shared workspace and invite teammates. */
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Loader2, Check, Users } from "lucide-react";
+import { Check, Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { openWorkspaceCheckout } from "@/lib/workspaceCheckout";
@@ -10,6 +10,7 @@ import { setActiveWorkspaceId } from "@/lib/activeWorkspace";
 import { sanitizeErrorMessage } from "@/lib/sanitizeError";
 import { SubShell, SubSection, SubCard } from "@/components/settings/SubShell";
 import { cn } from "@/lib/utils";
+import { Spinner } from "@/components/ui/spinner";
 
 type Step = "name" | "plan";
 
@@ -217,7 +218,7 @@ export default function WorkspaceCreatePage() {
               className="px-4 py-2 rounded-lg text-[13px] font-medium bg-foreground text-background hover:bg-foreground/90 disabled:opacity-40 transition-colors inline-flex items-center gap-2"
             >
               {submitting ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
+                <Spinner className="w-4 h-4" />
               ) : plan === "free" ? (
                 "Create"
               ) : (

@@ -1,7 +1,9 @@
 import { m as motion } from "framer-motion";
-import { Image as ImageIcon, Video as VideoIcon, Play, Pencil, Clock } from "lucide-react";
+import { Play, Pencil, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ToolCard from "../primitives/ToolCard";
+
+import { ToolStatusBadge } from "../primitives/ToolStatus";
 
 export interface MediaPlanScene {
   index: number;
@@ -10,6 +12,13 @@ export interface MediaPlanScene {
   duration_seconds?: number;
   first_frame_url?: string;
   last_frame_url?: string;
+  /** صورة مرجعية للتعديل أو للحفاظ على هوية الشخصية. */
+  reference_image_url?: string;
+  image_url?: string;
+  /** وصف هوية الشخصية المستخدمة في هذا المشهد. */
+  identity?: string;
+  /** بُعد خاص بهذه اللقطة (لتوليد أكثر من بُعد لنفس الفيديو). */
+  aspect_ratio?: string;
 }
 
 export interface MediaPlan {
@@ -22,6 +31,16 @@ export interface MediaPlan {
   notes?: string;
   aspectRatio?: string;
   lyrics?: string;
+  /** نص المستخدم الأصلي قبل تحسين "الروبوت الداخلي". */
+  originalPrompt?: string;
+  /** السيناريو الممتد المعروض للمستخدم قبل الموافقة (فيديو). */
+  storyline?: string;
+  /** وصف الشخصية/المنتج الثابت عبر كل اللقطات. */
+  identity?: string;
+  /** هل الخطة بأسلوب UGC؟ */
+  ugc?: boolean;
+  /** كل الأبعاد المولَّدة لنفس الفيديو. */
+  aspectRatios?: string[];
 }
 
 interface Props {
@@ -41,17 +60,23 @@ export default function MediaPlanCard({
   onEditPrompt,
   errorMessage,
 }: Props) {
-  const Icon = plan.mode === "video" ? VideoIcon : ImageIcon;
+  const service = plan.mode === "video" ? "video" : plan.mode === "music" ? "music" : "images";
   const totalCount = plan.scenes.length;
   const hasGeneratedOutput = status === "running" || status === "done";
 
   return (
     <ToolCard
-      icon={<Icon className="h-4 w-4" />}
       title={plan.mode === "video" ? "Video plan" : "Image plan"}
       subtitle={plan.modelName}
       trailing={
-        plan.estimatedTotalSeconds ? (
+        status === "running" || status === "done" || status === "error" ? (
+          <ToolStatusBadge
+            status={status === "running" ? "running" : status === "done" ? "done" : "error"}
+            runningLabel="Generating…"
+            doneLabel="Done"
+            errorLabel="Failed"
+          />
+        ) : plan.estimatedTotalSeconds ? (
           <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground">
             <Clock className="h-3 w-3" />~{plan.estimatedTotalSeconds}s
           </span>
@@ -60,6 +85,27 @@ export default function MediaPlanCard({
     >
       {plan.summary && (
         <p className="mb-3 text-sm leading-relaxed text-foreground/90">{plan.summary}</p>
+      )}
+
+      {(plan.identity || plan.ugc || (plan.aspectRatios?.length ?? 0) > 1) && (
+        <div className="mb-3 space-y-2 rounded-ios-md border border-border/40 bg-background/40 p-3">
+          {plan.identity && (
+            <div className="text-[12px] leading-relaxed text-muted-foreground">
+              <span className="font-semibold text-foreground/85">Consistent character / product: </span>
+              {plan.identity}
+            </div>
+          )}
+          <div className="flex flex-wrap gap-1.5">
+            {plan.ugc && (
+              <span className="rounded-full bg-foreground/10 px-2 py-0.5 text-[10.5px]">UGC</span>
+            )}
+            {(plan.aspectRatios ?? []).map((a) => (
+              <span key={a} className="rounded-full bg-foreground/10 px-2 py-0.5 text-[10.5px]">
+                {a}
+              </span>
+            ))}
+          </div>
+        </div>
       )}
 
       {hasGeneratedOutput ? (
@@ -79,7 +125,7 @@ export default function MediaPlanCard({
                   (active
                     ? "ring-1 ring-primary/60 bg-primary/5"
                     : done
-                      ? "ring-1 ring-emerald-500/40 bg-emerald-500/5"
+                      ? "ring-1 ring-primary/40 bg-primary/5"
                       : "")
                 }
               >

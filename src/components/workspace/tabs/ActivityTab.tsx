@@ -26,9 +26,9 @@ function iconFor(action: string): { Icon: LucideIcon; tint: string } {
   if (a.includes("invite"))
     return { Icon: Mail, tint: "text-amber-500 bg-amber-500/10 ring-amber-500/20" };
   if (a.includes("join") || a.includes("accept"))
-    return { Icon: LogIn, tint: "text-emerald-500 bg-emerald-500/10 ring-emerald-500/20" };
+    return { Icon: LogIn, tint: "text-primary bg-primary/10 ring-primary/20" };
   if (a.includes("add") && a.includes("member"))
-    return { Icon: UserPlus, tint: "text-emerald-500 bg-emerald-500/10 ring-emerald-500/20" };
+    return { Icon: UserPlus, tint: "text-primary bg-primary/10 ring-primary/20" };
   if (a.includes("remove") || a.includes("delete"))
     return { Icon: UserMinus, tint: "text-destructive bg-destructive/10 ring-destructive/20" };
   if (a.includes("role") || a.includes("permission"))
@@ -38,9 +38,9 @@ function iconFor(action: string): { Icon: LucideIcon; tint: string } {
   if (a.includes("suspend"))
     return { Icon: Pause, tint: "text-orange-500 bg-orange-500/10 ring-orange-500/20" };
   if (a.includes("unsuspend") || a.includes("reactivate"))
-    return { Icon: Play, tint: "text-emerald-500 bg-emerald-500/10 ring-emerald-500/20" };
+    return { Icon: Play, tint: "text-primary bg-primary/10 ring-primary/20" };
   if (a.includes("credit") || a.includes("topup") || a.includes("payment") || a.includes("billing"))
-    return { Icon: Wallet, tint: "text-emerald-500 bg-emerald-500/10 ring-emerald-500/20" };
+    return { Icon: Wallet, tint: "text-primary bg-primary/10 ring-primary/20" };
   if (a.includes("trash"))
     return { Icon: Trash2, tint: "text-destructive bg-destructive/10 ring-destructive/20" };
   if (a.includes("update") || a.includes("edit") || a.includes("rename"))

@@ -74,7 +74,7 @@ export const ChatMessagesList = forwardRef<HTMLDivElement, ChatMessagesListProps
     return (
       <div
         data-no-translate="true"
-        className="max-w-3xl mx-auto pt-20 pb-56 md:pb-64 px-4 md:px-6 space-y-2"
+        className="max-w-3xl mx-auto pt-16 md:pt-20 pb-48 md:pb-64 px-3.5 md:px-6 space-y-5 md:space-y-6"
         style={editingIndex !== null ? { visibility: "hidden" } : undefined}
       >
         {chatMode === "learning" && (
@@ -94,6 +94,7 @@ export const ChatMessagesList = forwardRef<HTMLDivElement, ChatMessagesListProps
               <div
                 key={msg.clientId || msg.id || `idx-${i}`}
                 data-msg-anchor={msg.clientId || msg.id || `idx-${i}`}
+                className="chat-msg-in"
                 style={{
                   contentVisibility: "auto",
                   containIntrinsicSize: "auto 240px",

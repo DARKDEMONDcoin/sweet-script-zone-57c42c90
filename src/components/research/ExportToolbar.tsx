@@ -58,11 +58,11 @@ const ExportToolbar = ({ title, markdown, sources, isRtl }: Props) => {
   const handlePrint = () => window.print();
 
   const btn =
-    "inline-flex items-center gap-1.5 rounded-full border border-border bg-background/60 px-3 py-1.5 text-xs font-medium text-foreground/80 backdrop-blur transition hover:bg-accent hover:text-foreground";
+    "inline-flex items-center gap-1.5 rounded-full border border-border bg-background/60 px-3 py-1.5 text-xs font-medium text-foreground/80 transition hover:bg-accent hover:text-foreground";
 
   return (
     <div
-      className="sticky top-2 z-20 mx-auto mb-4 flex w-fit items-center gap-2 rounded-full border border-border bg-background/70 p-1.5 shadow-sm backdrop-blur print:hidden sm:mb-6"
+      className="sticky top-2 z-20 mx-auto mb-4 flex w-fit items-center gap-2 rounded-full border border-border bg-background/70 p-1.5 shadow-sm print:hidden sm:mb-6"
       aria-label="Export toolbar"
     >
       <button type="button" onClick={handleCopy} className={btn} aria-label="Copy as Markdown">

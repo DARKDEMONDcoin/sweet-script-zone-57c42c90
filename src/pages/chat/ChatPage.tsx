@@ -6,6 +6,12 @@ import { useState, useRef, useEffect, useCallback, Suspense, lazy } from "react"
 import { createPortal } from "react-dom";
 import { animate, m as motion, useMotionValue, useTransform } from "framer-motion";
 import { toast } from "sonner";
+import { dbModeToChatMode } from "./services/dbModeToChatMode";
+
+/** UI language check for the few inline toasts in this file. */
+const isArabicUi = () =>
+  typeof document !== "undefined" &&
+  (document.documentElement.lang?.startsWith("ar") || document.documentElement.dir === "rtl");
 import { useNavigate, useLocation, type NavigateOptions, type To } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { MAX_CHAT_MESSAGE_CHARS } from "@/lib/validation/schemas";
@@ -160,7 +166,6 @@ const InlineCoderRun = lazy(() => import("@/components/coder/InlineCoderRun"));
 // first paint — the greeting only renders when there's no conversation on
 // desktop, and the aurora is a pure visual. Lazy-load both so they never
 // block the chat surface from becoming interactive.
-const ChatAurora = lazy(() => import("@/components/chat/ChatAurora"));
 const DesktopGreeting = lazy(() =>
   import("./components/DesktopGreeting").then((m) => ({ default: m.DesktopGreeting })),
 );
@@ -268,7 +273,34 @@ const ChatPage = () => {
     prompt: string;
     conversationPromise: Promise<string | null>;
   }[]>([]);
+  const [coderProjectFiles, setCoderProjectFiles] = useState<Record<string, { path: string; content: string }[]>>({});
   const savedCoderRunIdsRef = useRef<Set<string>>(new Set());
+
+  // A Coder run can end before the model calls `finish` (iteration/token cap).
+  // The inline card then offers "Continue", which starts a follow-up run that
+  // reuses the accumulated project files as context.
+  useEffect(() => {
+    const onContinue = (e: Event) => {
+      const detail = (e as CustomEvent).detail as { prompt?: string } | undefined;
+      const promptText = (detail?.prompt || "Continue the previous build and finish the remaining tasks.").trim();
+      const runId = `coder-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+      const conversationPromise = createOrUpdateConversation(promptText).catch(() => null);
+      setMessages((prev) => [
+        ...prev,
+        { role: "user", clientId: `user-coder-${Date.now()}`, content: promptText, mode: "code" } as Message,
+      ]);
+      setCoderRuns((prev) => [...prev, { id: runId, prompt: promptText, conversationPromise }]);
+      void (async () => {
+        const cid = await conversationPromise;
+        if (!cid) return;
+        const insertedId = await saveMessage(cid, "user", promptText).catch(() => undefined);
+        if (insertedId) ownInsertedIdsRef.current.add(insertedId);
+      })();
+    };
+    window.addEventListener("megsy:coder-continue", onContinue as EventListener);
+    return () => window.removeEventListener("megsy:coder-continue", onContinue as EventListener);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const isSidebarExpanded = !sidebarCollapsed;
   const desktopSidebarWidth = isSidebarExpanded ? 320 : 60;
   const { plusMenuOpen, setPlusMenuOpen, plusView, setPlusView } =
@@ -996,6 +1028,219 @@ const ChatPage = () => {
     [saveMessage, setMessages],
   );
 
+  /**
+   * Generates the actual deck from an approved plan (outline + deep-research
+   * findings + imported file data + reviewed content).
+   */
+  const startSlidesFromPlan = useCallback(
+    async (plan: import("@/lib/slides/planTypes").SlidesPlanState) => {
+      const { buildSlidesBrief } = await import("@/lib/slides/buildBrief");
+      const localTurnId = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+      setMessages((prev) => [
+        ...prev,
+        { role: "assistant", content: "", clientId: `assistant-${localTurnId}`, mode: "slides" },
+      ]);
+      setIsLoading(true);
+      setIsThinking(true);
+      await runSlidesTurn({
+        userInput: plan.topic,
+        localTurnId,
+        chatUserId,
+        slidesTemplate: plan.templateId || slidesTemplate,
+        setChatMode,
+        setSearchEnabled,
+        setIsLoading,
+        setIsThinking,
+        resetToolUi,
+        setMessages,
+        setSearchStatus,
+        createOrUpdateConversation,
+        saveMessage,
+        ownInsertedIdsRef,
+        fetchSlidesNarration,
+        insertAssistantNarration,
+        clearSlidesTimeout,
+        slidesTimeoutsRef,
+        slidesGenerationTokenRef,
+        skipUserSave: true,
+        brief: buildSlidesBrief(plan),
+        plan,
+      });
+      setIsLoading(false);
+      setIsThinking(false);
+    },
+    [
+      chatUserId,
+      slidesTemplate,
+      setChatMode,
+      setSearchEnabled,
+      setIsLoading,
+      setIsThinking,
+      resetToolUi,
+      setMessages,
+      setSearchStatus,
+      createOrUpdateConversation,
+      saveMessage,
+      fetchSlidesNarration,
+      insertAssistantNarration,
+      clearSlidesTimeout,
+    ],
+  );
+
+  // The plan card asks for generation through a window event so the deep
+  // component tree doesn't need prop drilling.
+  useEffect(() => {
+    const onGenerate = (e: Event) => {
+      const detail = (e as CustomEvent).detail as {
+        plan?: import("@/lib/slides/planTypes").SlidesPlanState;
+      };
+      if (detail?.plan) void startSlidesFromPlan(detail.plan);
+    };
+    window.addEventListener("megsy:slides-generate", onGenerate);
+    return () => window.removeEventListener("megsy:slides-generate", onGenerate);
+  }, [startSlidesFromPlan]);
+  /**
+   * Returns the HTML of the most recent document generated in this
+   * conversation, so follow-up edits keep the same file instead of starting
+   * from scratch. Falls back to the local artifact cache.
+   */
+  const getLastDocHtml = useCallback(async (): Promise<string | null> => {
+    const last = [...messages].reverse().find((m) => m.docsArtifact);
+    if (!last?.docsArtifact) return null;
+    if (last.docsArtifact.html) return last.docsArtifact.html;
+    try {
+      const { loadDocHtml } = await import("@/lib/agent/docs/htmlCache");
+      return loadDocHtml(last.docsArtifact.artifactId) || null;
+    } catch {
+      return null;
+    }
+  }, [messages]);
+
+
+  /**
+   * Step 4 of the docs workflow: writes the real file from an approved plan
+   * (outline + deep-research references + imported file data + reviewed text),
+   * revising the previously generated document when there is one.
+   */
+  const startDocsFromPlan = useCallback(
+    async (plan: import("@/lib/docs/planTypes").DocsPlanState) => {
+      const { buildDocsBrief } = await import("@/lib/docs/buildBrief");
+      const localTurnId = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+      setMessages((prev) => [
+        ...prev,
+        { role: "assistant", content: "", clientId: `assistant-${localTurnId}` },
+      ]);
+      setIsLoading(true);
+      setIsThinking(true);
+      const previousHtml = await getLastDocHtml();
+      await runDocsTurn({
+        userInput: plan.topic,
+        localTurnId,
+        chatUserId,
+        navigate: zoneNavigate,
+        messages,
+        setMessages,
+        setSearchStatus,
+        setIsLoading,
+        setIsThinking,
+        resetToolUi,
+        startDocsStatusFallback,
+        stopDocsStatusFallback,
+        createOrUpdateConversation,
+        saveMessage,
+        ownInsertedIdsRef,
+        skipUserSave: true,
+        brief: buildDocsBrief(plan, previousHtml || undefined),
+        previousHtml: previousHtml || undefined,
+      });
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [chatUserId, messages, zoneNavigate],
+  );
+
+  useEffect(() => {
+    const onDocsGenerate = (e: Event) => {
+      const detail = (e as CustomEvent).detail as {
+        plan?: import("@/lib/docs/planTypes").DocsPlanState;
+      };
+      if (detail?.plan) void startDocsFromPlan(detail.plan);
+    };
+    window.addEventListener("megsy:docs-generate", onDocsGenerate);
+    return () => window.removeEventListener("megsy:docs-generate", onDocsGenerate);
+  }, [startDocsFromPlan]);
+
+
+  /**
+   * "عدّل السلايد 3 …" — rewrites a single slide of the latest plan and
+   * regenerates the deck from the updated plan, preserving everything else.
+   */
+  const runSlidesSlideEdit = useCallback(
+    async (
+      intent: { slideNumber: number; instruction: string },
+      plan: import("@/lib/slides/planTypes").SlidesPlanState,
+      localTurnId: string,
+    ) => {
+      const idx = intent.slideNumber - 1;
+      const step = plan.outline?.steps?.[idx];
+      if (!step) {
+        toast.error(
+          plan.language === "ar"
+            ? `لا توجد شريحة رقم ${intent.slideNumber}`
+            : `There is no slide ${intent.slideNumber}`,
+        );
+        setIsLoading(false);
+        setIsThinking(false);
+        return;
+      }
+      const { reviseSingleSlide } = await import("@/lib/slides/generateOutline");
+      const revised = await reviseSingleSlide({
+        slideNumber: intent.slideNumber,
+        currentTitle: step.title,
+        currentBody: plan.content?.[idx]?.body || (step.items || []).join(" "),
+        instruction: intent.instruction,
+        topic: plan.topic,
+        language: plan.language,
+        userId: chatUserId || undefined,
+      }).catch(() => null);
+      if (!revised) {
+        toast.error(plan.language === "ar" ? "تعذّر تعديل الشريحة" : "Could not edit that slide");
+        setIsLoading(false);
+        setIsThinking(false);
+        return;
+      }
+      const nextPlan: import("@/lib/slides/planTypes").SlidesPlanState = {
+        ...plan,
+        outline: {
+          ...plan.outline,
+          steps: plan.outline.steps.map((s, i) =>
+            i === idx ? { title: revised.title, items: [revised.body] } : s,
+          ),
+        },
+        content: plan.content?.length
+          ? plan.content.map((c, i) => (i === idx ? revised : c))
+          : undefined,
+      };
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.clientId === `assistant-${localTurnId}`
+            ? {
+                ...m,
+                content:
+                  plan.language === "ar"
+                    ? `عدّلت الشريحة ${intent.slideNumber} وأعيد توليد العرض بنفس بقية المحتوى.`
+                    : `Updated slide ${intent.slideNumber} and regenerating the deck.`,
+                slidesPlan: { ...nextPlan, stage: "generating" },
+                mode: "slides",
+              }
+            : m,
+        ),
+      );
+      await startSlidesFromPlan(nextPlan);
+    },
+    [chatUserId, setMessages, setIsLoading, setIsThinking, startSlidesFromPlan],
+  );
+
+
   // Stable per-user color palette resolver (hash → palette).
   const colorForUser = useMemberColors();
 
@@ -1050,11 +1295,30 @@ const ChatPage = () => {
     setLoadingMessages(true);
     setMessages([]);
     setSystemEvents([]);
-    const { data: conv } = await supabase
+    const { data: conv, error: convError } = await supabase
       .from("conversations")
       .select("title, is_shared, share_id, is_pinned, mode, user_id")
       .eq("id", id)
-      .single();
+      .maybeSingle();
+    if (convError) {
+      // Network / RLS failure: tell the user instead of leaving a blank chat.
+      setLoadingMessages(false);
+      toast.error(isArabicUi() ? "تعذّر فتح المحادثة، حاول تاني" : "Couldn't open this conversation. Try again.");
+      return;
+    }
+    if (!conv) {
+      // Deleted or no longer accessible: reset cleanly, never hang on a blank screen.
+      setLoadingMessages(false);
+      setConversationId(null);
+      setConversationTitle("");
+      setIsShared(false);
+      setShareId(null);
+      setShareMode("private");
+      setIsPinned(false);
+      setConversationOwnerId(null);
+      toast.error(isArabicUi() ? "المحادثة دي مش موجودة أو اتمسحت" : "This conversation no longer exists.");
+      return;
+    }
     if (conv) {
       setConversationTitle(conv.title || "Untitled");
       setIsShared(conv.is_shared || false);
@@ -1062,13 +1326,10 @@ const ChatPage = () => {
       setShareMode(conv.is_shared ? "public" : "private");
       setIsPinned(!!conv.is_pinned);
       setConversationOwnerId((conv as any).user_id || null);
-      const m = (conv as any).mode as string | undefined;
-      if (m === "research") setChatMode("deep-research");
-      else if (m === "learning") setChatMode("learning");
-      else if (m === "shopping") setChatMode("shopping");
-      else if (m === "slides") setChatMode("slides");
-      else setChatMode("normal");
+      // Complete DB-mode -> UI-mode mapping (images / videos / code included).
+      setChatMode(dbModeToChatMode((conv as any).mode as string | undefined));
     }
+
     // Bump conversation to top of recent list (works for owner and members via RPC)
     supabase.rpc("bump_conversation" as any, { p_conversation_id: id }).then(() => {});
     const { data: msgs } = await supabase
@@ -1172,6 +1433,30 @@ const ChatPage = () => {
     } catch { /* storage disabled */ }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Keep the URL in sync with the open conversation (`/chat?c=<id>`) so a
+  // refresh, a shared link or a restored tab reopens the same thread — which
+  // is what preserves Coder project files and context across reloads.
+  useEffect(() => {
+    if (typeof window === "undefined" || !conversationId) return;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("c") === conversationId) return;
+    params.set("c", conversationId);
+    window.history.replaceState({}, "", `${window.location.pathname}?${params}`);
+  }, [conversationId]);
+
+  // On first mount, reopen the conversation referenced by `?c=<id>`.
+  const restoredFromUrlRef = useRef(false);
+  useEffect(() => {
+    if (typeof window === "undefined" || restoredFromUrlRef.current) return;
+    const id = new URLSearchParams(window.location.search).get("c");
+    if (!id || id === conversationId) return;
+    restoredFromUrlRef.current = true;
+    void loadConversation(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+
 
 
 
@@ -1331,14 +1616,12 @@ const ChatPage = () => {
           {
             role: "assistant",
             clientId: `assist-code-paywall-${Date.now()}`,
-            content:
-              "🔒 Coder mode is available to subscribers only. Upgrade your plan to start building full sites and apps inside chat.",
+            content: "",
             mode: "code",
             paywall: { feature: "code" },
           } as Message,
         ]);
         setInput("");
-        zoneNavigate("/pricing");
         return;
       }
 
@@ -1644,8 +1927,25 @@ const ChatPage = () => {
         return;
       }
       try {
+        // آخر صورة مولّدة في المحادثة — تُستخدم تلقائيًا عند طلب تعديل عليها.
+        let lastImageUrl: string | null = null;
+        let lastImagePrompt: string | null = null;
+        for (let i = messages.length - 1; i >= 0 && !lastImageUrl; i--) {
+          const m: any = messages[i];
+          const res = Array.isArray(m?.mediaResults) ? m.mediaResults : [];
+          const hit = [...res].reverse().find(
+            (r: any) => r?.type === "image" && r?.status === "done" && r?.url,
+          );
+          if (hit) {
+            lastImageUrl = hit.url;
+            lastImagePrompt =
+              m?.mediaPlan?.originalPrompt || m?.mediaPlan?.summary || null;
+          }
+        }
         await runMediaTurn({
           text,
+          lastImageUrl,
+          lastImagePrompt,
           userMsg,
           localTurnId,
           chatMode,
@@ -1738,9 +2038,29 @@ const ChatPage = () => {
       setChatMode("slides");
     }
 
-    // ── Slides mode: stream from chat-slides-stream and attach a SlideDeck ─
+    // ── Slides mode: plan first (outline + imported data), generate after approval ─
     if (chatMode === "slides" || chatMode === "slides-images" || shouldAutoStartSlides) {
       try {
+        // Follow-up like "عدّل السلايد 3 …" edits one slide of the last plan
+        // instead of re-planning the whole deck.
+        const { parseSlideEditIntent } = await import("@/lib/slides/slideEditIntent");
+        const editIntent = parseSlideEditIntent(userInput);
+        const lastPlanMsg = editIntent
+          ? [...messages].reverse().find((m) => m.slidesPlan)
+          : undefined;
+        if (editIntent && lastPlanMsg?.slidesPlan) {
+          await runSlidesSlideEdit(editIntent, lastPlanMsg.slidesPlan, localTurnId);
+          return;
+        }
+
+        const docFiles = currentFiles.filter(
+          (f) => f.type === "file" && f.data && !f.data.startsWith("__"),
+        );
+        const attachedFilesText = docFiles
+          .map((f) => `### ${f.name}\n${f.data}`)
+          .join("\n\n")
+          .slice(0, 24000);
+
         await runSlidesTurn({
           userInput,
           localTurnId,
@@ -1761,6 +2081,9 @@ const ChatPage = () => {
           clearSlidesTimeout,
           slidesTimeoutsRef,
           slidesGenerationTokenRef,
+          planOnly: true,
+          attachedFilesText: attachedFilesText || undefined,
+          attachedFileMeta: docFiles.map((f) => ({ name: f.name, chars: f.data.length })),
         });
       } finally {
         isSubmittingRef.current = false;
@@ -1768,29 +2091,115 @@ const ChatPage = () => {
       return;
     }
 
-    // ── @docs agent: server-backed background job; survives tab close ───
+
+    // ── @docs agent: plan → research → review → clean writing ───────────
     if (selectedAgent?.id === "docs") {
-      const handled = await runDocsTurn({
-        userInput,
-        localTurnId,
-        chatUserId,
-        navigate: zoneNavigate,
-        messages,
-        setMessages,
-        setSearchStatus,
-        setIsLoading,
-        setIsThinking,
-        resetToolUi,
-        startDocsStatusFallback,
-        stopDocsStatusFallback,
-        createOrUpdateConversation,
-        saveMessage,
-        ownInsertedIdsRef,
-      });
-      isSubmittingRef.current = false;
-      if (handled) return;
-      return;
+      try {
+        const docFiles = currentFiles.filter(
+          (f) => f.type === "file" && f.data && !f.data.startsWith("__"),
+        );
+        const attachedFilesText = docFiles
+          .map((f) => `### ${f.name}\n${f.data}`)
+          .join("\n\n")
+          .slice(0, 24000);
+
+        // Follow-up edits on an already generated document: tweak specific
+        // wording in place instead of regenerating the whole file.
+        const lastDocMsg = [...messages].reverse().find((m) => m.docsArtifact);
+        if (lastDocMsg?.docsArtifact) {
+          const { parseDocsEditIntent, replaceTextInHtml } = await import(
+            "@/lib/docs/textEditIntent"
+          );
+          const intent = parseDocsEditIntent(userInput);
+          const baseHtml = await getLastDocHtml();
+          if (intent && baseHtml && (intent.kind === "replace" || intent.kind === "snippet")) {
+            const ar = /[\u0600-\u06FF]/.test(userInput);
+            let nextHtml: string | null = null;
+            if (intent.kind === "replace") {
+              const res = replaceTextInHtml(baseHtml, intent.from, intent.to);
+              if (res.count > 0) nextHtml = res.html;
+            } else {
+              const { rewriteSnippet } = await import("@/lib/docs/generatePlan");
+              const rewritten = await rewriteSnippet({
+                snippet: intent.snippet,
+                instruction: intent.instruction,
+                language: ar ? "ar" : "en",
+                userId: chatUserId || undefined,
+              });
+              if (rewritten) {
+                const res = replaceTextInHtml(baseHtml, intent.snippet, rewritten);
+                if (res.count > 0) nextHtml = res.html;
+              }
+            }
+            if (nextHtml) {
+              const { saveDocHtml, newArtifactId } = await import("@/lib/agent/docs/htmlCache");
+              const artifactId = newArtifactId();
+              saveDocHtml(artifactId, nextHtml);
+              const docsArtifact = {
+                artifactId,
+                title: lastDocMsg.docsArtifact.title,
+                docType: lastDocMsg.docsArtifact.docType,
+                html: nextHtml,
+              };
+              const note = ar
+                ? "عدّلت النص المطلوب في نفس المستند دون إعادة توليده."
+                : "Updated that text in the same document — nothing else was regenerated.";
+              setMessages((prev) =>
+                prev.map((m) =>
+                  m.clientId === `assistant-${localTurnId}`
+                    ? { ...m, content: note, docsArtifact }
+                    : m,
+                ),
+              );
+              const cid = await createOrUpdateConversation(userInput).catch(() => null);
+              if (cid) {
+                await saveMessage(cid, "user", userInput).catch(() => undefined);
+                const savedId = await saveMessage(cid, "assistant", note, undefined, {
+                  kind: "docsArtifact",
+                  docsArtifact,
+                }).catch(() => undefined);
+                if (savedId) ownInsertedIdsRef.current.add(savedId);
+              }
+              setIsLoading(false);
+              setIsThinking(false);
+              resetToolUi();
+              return;
+            }
+          }
+        }
+
+        // Bigger changes on an existing document keep it as the base version.
+        const previousHtml = lastDocMsg ? await getLastDocHtml() : null;
+        const isRevision = !!previousHtml && !!lastDocMsg;
+
+        const handled = await runDocsTurn({
+          userInput,
+          localTurnId,
+          chatUserId,
+          navigate: zoneNavigate,
+          messages,
+          setMessages,
+          setSearchStatus,
+          setIsLoading,
+          setIsThinking,
+          resetToolUi,
+          startDocsStatusFallback,
+          stopDocsStatusFallback,
+          createOrUpdateConversation,
+          saveMessage,
+          ownInsertedIdsRef,
+          planOnly: !isRevision,
+          attachedFilesText: attachedFilesText || undefined,
+          attachedFileMeta: docFiles.map((f) => ({ name: f.name, chars: f.data.length })),
+          previousHtml: previousHtml || undefined,
+        });
+        if (handled) return;
+        return;
+      } finally {
+        isSubmittingRef.current = false;
+      }
     }
+
 
     const conversationPromise = createOrUpdateConversation(
       userInput || (currentFiles.length > 0 ? `[${currentFiles.length} file(s)]` : "New chat"),
@@ -2254,7 +2663,7 @@ const ChatPage = () => {
           transition={{ duration: 0.16, ease: [0.22, 0.9, 0.3, 1] }}
           data-plus-menu
           onClick={(e) => e.stopPropagation()}
-          className={`hidden md:flex origin-bottom-left z-overlay rounded-2xl border border-white/15 overflow-y-auto overscroll-contain p-2 flex-col unified-menu-surface`}
+          className={`hidden md:flex origin-bottom-left z-overlay rounded-2xl border border-border/15 overflow-y-auto overscroll-contain p-2 flex-col unified-menu-surface`}
           style={{
             position: "fixed",
             left,
@@ -2283,6 +2692,26 @@ const ChatPage = () => {
     (index: number) => setAttachedFiles((prev) => prev.filter((_, idx) => idx !== index)),
     [setAttachedFiles],
   );
+
+  // Image tools now live inside the model settings panel; it talks back via window events.
+  useEffect(() => {
+    const onAttach = (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      if (detail) setAttachedFiles((prev) => [...prev, detail as any]);
+    };
+    const onCharacter = (e: Event) => {
+      const c = (e as CustomEvent).detail as { name?: string } | null;
+      if (!c?.name) return;
+      setInput((prev) => (prev.trim() ? `${prev.trim()} (${c.name})` : `${c.name} — `));
+    };
+    window.addEventListener("megsy:image-tool-attach", onAttach);
+    window.addEventListener("megsy:image-tool-character", onCharacter);
+    return () => {
+      window.removeEventListener("megsy:image-tool-attach", onAttach);
+      window.removeEventListener("megsy:image-tool-character", onCharacter);
+    };
+  }, [setAttachedFiles, setInput]);
+
 
   const seoMeta = getSeoMeta(chatMode);
 
@@ -2346,28 +2775,13 @@ const ChatPage = () => {
         data-shell="manus"
         data-skin="claude"
         data-chat-empty={showDesktopEmptyVideo ? "true" : "false"}
-        className="theme-fixed flex bg-black overflow-hidden relative"
-        style={{ height: "calc(100dvh - var(--promo-banner-h, 0px))" }}
+        className="theme-fixed flex overflow-hidden relative"
+        style={{
+          height: "calc(100dvh - var(--promo-banner-h, 0px))",
+          background: "var(--chat-reference-bg, #1f1f1f)",
+        }}
       >
-        {/* Desktop chat landing background video (hidden on mobile). */}
-        <video
-          src="/videos/chat-landing-bg.mp4"
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="metadata"
-          aria-hidden
-          className="pointer-events-none absolute inset-0 h-full w-full object-cover hidden md:block"
-          style={{ filter: "grayscale(100%) brightness(0.22) contrast(1.1)" }}
-        />
-        {/* Dark veil keeps the overall background black while the moving video remains visible behind it. */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 hidden md:block"
-          style={{ background: "rgba(0,0,0,0.72)" }}
-        />
-        <Suspense fallback={null}><ChatAurora /></Suspense>
+
         {/* Desktop persistent sidebar */}
         <aside
           data-chat-sidebar="true"
@@ -2490,7 +2904,7 @@ const ChatPage = () => {
             setSidebarOpen(!shouldClose);
             animateSidebarTo(!shouldClose);
           }}
-          className="theme-fixed chat-surface-dark flex-1 flex flex-col min-w-0 relative overflow-hidden bg-black text-foreground max-md:z-[2]"
+          className="theme-fixed chat-surface-dark flex-1 flex flex-col min-w-0 relative overflow-hidden bg-background text-foreground max-md:z-[2]"
         >
 
 
@@ -2703,6 +3117,9 @@ const ChatPage = () => {
                           } catch {/* ignore */}
                         }
                       }
+                      for (const runFiles of Object.values(coderProjectFiles)) {
+                        for (const f of runFiles) if (f?.path) fileMap.set(f.path, f.content ?? "");
+                      }
                       for (const [path, content] of fileMap) previousFiles.push({ path, content });
                       return coderRuns.map((run) => (
                       <InlineCoderRun
@@ -2715,6 +3132,7 @@ const ChatPage = () => {
                         onFinish={(files, summary) => {
                           if (savedCoderRunIdsRef.current.has(run.id)) return;
                           savedCoderRunIdsRef.current.add(run.id);
+                          setCoderProjectFiles((prev) => ({ ...prev, [run.id]: files }));
                           const projectText = files
                             .map((file) => {
                               const ext = (file.path.split(".").pop() || "txt").toLowerCase();

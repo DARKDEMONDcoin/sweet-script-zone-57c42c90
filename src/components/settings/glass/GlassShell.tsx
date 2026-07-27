@@ -36,7 +36,7 @@ export function GlassPage({
       />
       {/* Header */}
       <header
-        className="sticky top-0 z-20 backdrop-blur-xl"
+        className="sticky top-0 z-20"
         style={{
           background: "rgba(10,10,11,0.72)",
           borderBottom: "1px solid rgba(255,255,255,0.06)",
@@ -179,7 +179,7 @@ export function GlassRow({
       disabled={disabled}
       className={cn(
         "w-full flex items-center gap-3.5 py-3.5 px-4 text-left transition",
-        "hover:bg-white/[0.02] active:bg-white/[0.05]",
+        "hover:bg-muted/40 active:bg-muted/40",
         disabled && "opacity-60",
       )}
     >

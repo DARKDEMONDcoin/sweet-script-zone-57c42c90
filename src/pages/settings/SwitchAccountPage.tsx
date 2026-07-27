@@ -23,8 +23,8 @@ const SwitchAccountPage = () => {
   };
 
   const ActiveCheck = () => (
-    <span className="grid h-7 w-7 place-items-center rounded-full bg-emerald-500/15 ring-1 ring-emerald-500/30">
-      <Check className="w-3.5 h-3.5 text-emerald-500" strokeWidth={3} />
+    <span className="grid h-7 w-7 place-items-center rounded-full bg-primary/15 ring-1 ring-primary/30">
+      <Check className="w-3.5 h-3.5 text-primary" strokeWidth={3} />
     </span>
   );
 

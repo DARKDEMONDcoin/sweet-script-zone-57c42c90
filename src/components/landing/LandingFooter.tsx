@@ -1,5 +1,5 @@
 /** @doc Site-wide footer — Megsy "liquid glass" design with cinematic video backdrop. */
-import { motion } from "motion/react";
+import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import megsyIcon from "@/assets/megsy-project-logo.png";
 import { translateExactText, useUserLang } from "@/lib/authI18n";
@@ -26,23 +26,36 @@ const columns: { title: string; links: LinkItem[] }[] = [
       { label: "Docs", href: "/docs" },
       { label: "Features Guide", href: "/features-guide" },
       { label: "Blog", href: "/blog" },
-      { label: "Megsy vs ChatGPT", href: "/vs/chatgpt" },
-      { label: "Megsy vs Midjourney", href: "/vs/midjourney" },
-      { label: "Megsy vs Lovable", href: "/vs/lovable" },
-    ],
-  },
-  {
-    title: "Company",
-    links: [
       { label: "About", href: "/about" },
       { label: "Support", href: "/support" },
       { label: "Contact", href: "/contact" },
-      { label: "Security", href: "/security" },
-      { label: "Terms", href: "/terms" },
-      { label: "Privacy", href: "/privacy" },
+    ],
+  },
+  {
+    title: "Legal",
+    links: [
+      { label: "Terms of Service", href: "/terms" },
+      { label: "Privacy Policy", href: "/privacy" },
+      { label: "EULA", href: "/legal/eula" },
+      { label: "Cookie Policy", href: "/cookies" },
+      { label: "Acceptable Use & Community", href: "/policies/content" },
+      { label: "DMCA / Copyright", href: "/legal/dmca" },
+      { label: "Refund Policy", href: "/refund" },
+      { label: "Do Not Sell / Share", href: "/legal/do-not-sell" },
+      { label: "Accessibility", href: "/legal/accessibility-full" },
+      { label: "Imprint / Impressum", href: "/legal/imprint" },
+      { label: "DPA (GDPR)", href: "/legal/dpa" },
+      { label: "Sub-processors", href: "/legal/subprocessors-full" },
+      { label: "SLA", href: "/legal/sla" },
+      { label: "Transparency Report", href: "/legal/transparency" },
+      { label: "Law Enforcement", href: "/legal/law-enforcement" },
+      { label: "Responsible Disclosure", href: "/legal/responsible-disclosure" },
+      { label: "Affiliate Terms", href: "/legal/affiliate" },
+      { label: "Trust Center", href: "/trust" },
     ],
   },
 ];
+
 
 const VIDEO_SRC =
   "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260429_114316_1c7889ad-2885-410e-b493-98119fee0ddb.mp4";
@@ -65,7 +78,7 @@ const LandingFooter = () => {
 
   return (
     <div
-      className="relative w-full overflow-hidden font-sans selection:bg-white/20 selection:text-white"
+      className="relative w-full overflow-hidden font-sans selection:bg-muted/20 selection:text-foreground"
       style={{ fontFamily: '"Helvetica Regular", ui-sans-serif, system-ui, sans-serif' }}
     >
       {/* Cinematic video backdrop */}
@@ -88,7 +101,7 @@ const LandingFooter = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 1, delay: 0.4, ease: "easeOut" }}
-          className="lumina-glass w-full rounded-3xl p-6 md:p-10 text-white/70"
+          className="lumina-glass w-full rounded-3xl p-6 md:p-10 text-muted-foreground"
         >
           {/* Top grid */}
           <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-12">
@@ -105,7 +118,7 @@ const LandingFooter = () => {
                   decoding="async"
                 />
 
-                <span className="text-xl font-medium text-white tracking-wide">MEGSY</span>
+                <span className="text-xl font-medium text-foreground tracking-wide">MEGSY</span>
               </div>
               <p className="text-sm leading-relaxed max-w-sm">
                 {tx("Megsy is the all-in-one AI workspace — chat, images, video, slides, docs and code, in one calm canvas.")}
@@ -116,7 +129,7 @@ const LandingFooter = () => {
             <div className="md:col-span-7 grid grid-cols-1 sm:grid-cols-3 gap-8">
               {columns.map((col) => (
                 <div key={col.title}>
-                  <h3 className="text-sm uppercase tracking-wider text-white font-medium mb-4">
+                  <h3 className="text-sm uppercase tracking-wider text-foreground font-medium mb-4">
                     {tx(col.title)}
                   </h3>
                   <ul className="text-xs space-y-2">
@@ -125,7 +138,7 @@ const LandingFooter = () => {
                         <button
                           type="button"
                           onClick={() => onNavigate(l.href, l.external)}
-                          className="text-left hover:text-white transition-colors"
+                          className="text-left hover:text-foreground transition-colors"
                         >
                           {tx(l.label)}
                         </button>

@@ -1,16 +1,7 @@
 /** @doc Shared tasks and assignments inside a workspace. */
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  Plus,
-  Loader2,
-  X,
-  MessageSquare,
-  CheckCircle2,
-  Circle,
-  Clock,
-  Trash2,
-} from "lucide-react";
+import { Plus, X, MessageSquare, CheckCircle2, Circle, Clock, Trash2 } from "lucide-react";
 import { m as motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -26,6 +17,7 @@ import {
   glassStagger,
 } from "@/components/settings/glass/GlassShell";
 import { cn } from "@/lib/utils";
+import { Spinner } from "@/components/ui/spinner";
 
 type Status = "todo" | "doing" | "done";
 type Priority = "low" | "medium" | "high";
@@ -50,11 +42,11 @@ interface Task {
 const STATUS_COLS: { id: Status; label: string; icon: any; tone: string; ring: string }[] = [
   { id: "todo", label: "To do", icon: Circle, tone: "text-sky-500", ring: "ring-sky-500/30 bg-sky-500/10" },
   { id: "doing", label: "In progress", icon: Clock, tone: "text-amber-500", ring: "ring-amber-500/30 bg-amber-500/10" },
-  { id: "done", label: "Done", icon: CheckCircle2, tone: "text-emerald-500", ring: "ring-emerald-500/30 bg-emerald-500/10" },
+  { id: "done", label: "Done", icon: CheckCircle2, tone: "text-primary", ring: "ring-primary/30 bg-primary/10" },
 ];
 
 const PRIORITY_STYLE: Record<Priority, string> = {
-  low: "bg-white/40 dark:bg-white/10 text-muted-foreground ring-white/40 dark:ring-white/10",
+  low: "bg-muted/40 dark:bg-muted/10 text-muted-foreground ring-border/40 dark:ring-border/10",
   medium: "bg-amber-500/15 text-amber-600 dark:text-amber-300 ring-amber-500/30",
   high: "bg-rose-500/15 text-rose-500 ring-rose-500/30",
 };
@@ -189,7 +181,7 @@ export default function WorkspaceTasksPage() {
     <GlassPage title="Tasks" back={() => navigate(`/settings/workspaces/${id}`)}>
       {loading ? (
         <div className="flex justify-center py-20">
-          <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
+          <Spinner className="w-5 h-5 text-muted-foreground" />
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -210,7 +202,7 @@ export default function WorkspaceTasksPage() {
                     </div>
                     <button
                       onClick={() => setShowCreate(col.id)}
-                      className="grid h-7 w-7 place-items-center rounded-lg bg-white/40 dark:bg-white/10 ring-1 ring-white/50 dark:ring-white/10 hover:bg-white/60 transition"
+                      className="grid h-7 w-7 place-items-center rounded-lg bg-muted/40 dark:bg-muted/10 ring-1 ring-border/50 dark:ring-border/10 hover:bg-muted/60 transition"
                       aria-label="Add task"
                     >
                       <Plus className="w-3.5 h-3.5" />
@@ -225,20 +217,20 @@ export default function WorkspaceTasksPage() {
                         exit={{ opacity: 0, height: 0 }}
                         className="overflow-hidden mb-3"
                       >
-                        <div className="p-3 rounded-xl bg-white/40 dark:bg-white/5 ring-1 ring-white/50 dark:ring-white/10 space-y-2">
+                        <div className="p-3 rounded-xl bg-muted/40 dark:bg-muted/5 ring-1 ring-border/50 dark:ring-border/10 space-y-2">
                           <Input
                             placeholder="Title"
                             autoFocus
                             value={draft.title}
                             onChange={(e) => setDraft({ ...draft, title: e.target.value })}
-                            className="bg-white/60 dark:bg-white/5 border-0 ring-1 ring-white/40 dark:ring-white/10"
+                            className="bg-muted/60 dark:bg-muted/5 border-0 ring-1 ring-border/40 dark:ring-border/10"
                           />
                           <Textarea
                             placeholder="Description"
                             rows={2}
                             value={draft.description}
                             onChange={(e) => setDraft({ ...draft, description: e.target.value })}
-                            className="bg-white/60 dark:bg-white/5 border-0 ring-1 ring-white/40 dark:ring-white/10 resize-none"
+                            className="bg-muted/60 dark:bg-muted/5 border-0 ring-1 ring-border/40 dark:ring-border/10 resize-none"
                           />
                           <div className="grid grid-cols-2 gap-2">
                             <select
@@ -246,7 +238,7 @@ export default function WorkspaceTasksPage() {
                               onChange={(e) =>
                                 setDraft({ ...draft, priority: e.target.value as Priority })
                               }
-                              className="text-xs h-9 rounded-md bg-white/60 dark:bg-white/5 ring-1 ring-white/40 dark:ring-white/10 px-2"
+                              className="text-xs h-9 rounded-md bg-muted/60 dark:bg-muted/5 ring-1 ring-border/40 dark:ring-border/10 px-2"
                             >
                               <option value="low">Low</option>
                               <option value="medium">Medium</option>
@@ -255,7 +247,7 @@ export default function WorkspaceTasksPage() {
                             <select
                               value={draft.assignee_id}
                               onChange={(e) => setDraft({ ...draft, assignee_id: e.target.value })}
-                              className="text-xs h-9 rounded-md bg-white/60 dark:bg-white/5 ring-1 ring-white/40 dark:ring-white/10 px-2"
+                              className="text-xs h-9 rounded-md bg-muted/60 dark:bg-muted/5 ring-1 ring-border/40 dark:ring-border/10 px-2"
                             >
                               <option value="">Unassigned</option>
                               {members.map((m) => (
@@ -269,13 +261,13 @@ export default function WorkspaceTasksPage() {
                             type="date"
                             value={draft.due_date}
                             onChange={(e) => setDraft({ ...draft, due_date: e.target.value })}
-                            className="bg-white/60 dark:bg-white/5 border-0 ring-1 ring-white/40 dark:ring-white/10"
+                            className="bg-muted/60 dark:bg-muted/5 border-0 ring-1 ring-border/40 dark:ring-border/10"
                           />
                           <Input
                             placeholder="Tags (comma-separated)"
                             value={draft.tags}
                             onChange={(e) => setDraft({ ...draft, tags: e.target.value })}
-                            className="bg-white/60 dark:bg-white/5 border-0 ring-1 ring-white/40 dark:ring-white/10"
+                            className="bg-muted/60 dark:bg-muted/5 border-0 ring-1 ring-border/40 dark:ring-border/10"
                           />
                           <div className="flex gap-2 pt-1">
                             <Button
@@ -312,7 +304,7 @@ export default function WorkspaceTasksPage() {
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ duration: 0.3, delay: i * 0.03 }}
                           onClick={() => setOpenTask(t)}
-                          className="w-full text-left p-3 rounded-xl bg-white/50 dark:bg-white/5 ring-1 ring-white/50 dark:ring-white/10 hover:bg-white/70 dark:hover:bg-white/10 transition"
+                          className="w-full text-left p-3 rounded-xl bg-muted/50 dark:bg-muted/5 ring-1 ring-border/50 dark:ring-border/10 hover:bg-muted/70 dark:hover:bg-muted/10 transition"
                         >
                           <div className="flex items-start justify-between gap-2">
                             <p className="text-[13px] font-semibold flex-1 leading-snug">
@@ -332,7 +324,7 @@ export default function WorkspaceTasksPage() {
                               {t.tags.map((tag) => (
                                 <span
                                   key={tag}
-                                  className="text-[10px] px-1.5 py-0.5 rounded-md bg-white/40 dark:bg-white/10 ring-1 ring-white/40 dark:ring-white/10 text-muted-foreground"
+                                  className="text-[10px] px-1.5 py-0.5 rounded-md bg-muted/40 dark:bg-muted/10 ring-1 ring-border/40 dark:ring-border/10 text-muted-foreground"
                                 >
                                   #{tag}
                                 </span>
@@ -362,7 +354,7 @@ export default function WorkspaceTasksPage() {
                                   e.stopPropagation();
                                   updateStatus(t, s.id);
                                 }}
-                                className="text-[10px] h-6 px-2 rounded-md bg-white/40 dark:bg-white/10 ring-1 ring-white/40 dark:ring-white/10 hover:bg-white/60 transition text-muted-foreground hover:text-foreground"
+                                className="text-[10px] h-6 px-2 rounded-md bg-muted/40 dark:bg-muted/10 ring-1 ring-border/40 dark:ring-border/10 hover:bg-muted/60 transition text-muted-foreground hover:text-foreground"
                               >
                                 → {s.label}
                               </button>
@@ -518,7 +510,7 @@ function TaskDrawer({ task, allTasks, members: _members, onClose, onDelete }: an
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 bg-background/60 backdrop-blur-md"
+      className="fixed inset-0 z-50 bg-background/60"
       onClick={onClose}
     >
       <motion.div
@@ -526,22 +518,22 @@ function TaskDrawer({ task, allTasks, members: _members, onClose, onDelete }: an
         animate={{ x: 0 }}
         exit={{ x: "100%" }}
         transition={{ type: "spring", damping: 28, stiffness: 240 }}
-        className="absolute right-0 top-0 bottom-0 w-full max-w-md ios26-glass-strong border-l border-white/40 dark:border-white/10 overflow-y-auto"
+        className="absolute right-0 top-0 bottom-0 w-full max-w-md ios26-glass-strong border-l border-border/40 dark:border-border/10 overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="relative z-[1]">
-          <div className="sticky top-0 z-10 backdrop-blur-xl bg-background/70 border-b border-white/30 dark:border-white/10 p-4 flex items-center justify-between">
+          <div className="sticky top-0 z-10 bg-background/70 border-b border-border/30 dark:border-border/10 p-4 flex items-center justify-between">
             <h2 className="font-semibold tracking-tight truncate flex-1">{task.title}</h2>
             <button
               onClick={onClose}
-              className="grid h-11 w-11 place-items-center rounded-full bg-white/40 dark:bg-white/10 ring-1 ring-white/50 dark:ring-white/10 hover:bg-white/60 transition"
+              className="grid h-11 w-11 place-items-center rounded-full bg-muted/40 dark:bg-muted/10 ring-1 ring-border/50 dark:ring-border/10 hover:bg-muted/60 transition"
             >
               <X className="w-4 h-4" />
             </button>
           </div>
           <div className="p-4 space-y-6">
             {task.description && (
-              <div className="text-[13px] text-muted-foreground whitespace-pre-wrap p-3 rounded-xl bg-white/40 dark:bg-white/5 ring-1 ring-white/40 dark:ring-white/10 leading-relaxed">
+              <div className="text-[13px] text-muted-foreground whitespace-pre-wrap p-3 rounded-xl bg-muted/40 dark:bg-muted/5 ring-1 ring-border/40 dark:ring-border/10 leading-relaxed">
                 {task.description}
               </div>
             )}
@@ -550,15 +542,15 @@ function TaskDrawer({ task, allTasks, members: _members, onClose, onDelete }: an
               <h3 className="text-[10.5px] uppercase tracking-[0.18em] font-semibold text-muted-foreground mb-2">
                 Sub-tasks
               </h3>
-              <div className="rounded-xl bg-white/40 dark:bg-white/5 ring-1 ring-white/40 dark:ring-white/10 p-2 space-y-1">
+              <div className="rounded-xl bg-muted/40 dark:bg-muted/5 ring-1 ring-border/40 dark:ring-border/10 p-2 space-y-1">
                 {subs.map((s: Task) => (
                   <button
                     key={s.id}
                     onClick={() => toggleSub(s)}
-                    className="w-full flex items-center gap-2 p-2 rounded-lg hover:bg-white/40 dark:hover:bg-white/5 text-left text-[13px] transition"
+                    className="w-full flex items-center gap-2 p-2 rounded-lg hover:bg-muted/40 dark:hover:bg-muted/5 text-left text-[13px] transition"
                   >
                     {s.status === "done" ? (
-                      <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                      <CheckCircle2 className="w-4 h-4 text-primary" />
                     ) : (
                       <Circle className="w-4 h-4 text-muted-foreground" />
                     )}
@@ -582,7 +574,7 @@ function TaskDrawer({ task, allTasks, members: _members, onClose, onDelete }: an
                     value={newSub}
                     onChange={(e) => setNewSub(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && addSub()}
-                    className="bg-white/60 dark:bg-white/5 border-0 ring-1 ring-white/40 dark:ring-white/10"
+                    className="bg-muted/60 dark:bg-muted/5 border-0 ring-1 ring-border/40 dark:ring-border/10"
                   />
                   <Button size="sm" onClick={addSub} className="bg-foreground text-background">
                     Add
@@ -599,7 +591,7 @@ function TaskDrawer({ task, allTasks, members: _members, onClose, onDelete }: an
                 {comments.map((c) => (
                   <div
                     key={c.id}
-                    className="text-[13px] p-3 rounded-xl bg-white/40 dark:bg-white/5 ring-1 ring-white/40 dark:ring-white/10"
+                    className="text-[13px] p-3 rounded-xl bg-muted/40 dark:bg-muted/5 ring-1 ring-border/40 dark:ring-border/10"
                   >
                     <p className="text-[10.5px] text-muted-foreground font-medium mb-0.5">
                       {c.profile?.display_name || "User"}
@@ -618,7 +610,7 @@ function TaskDrawer({ task, allTasks, members: _members, onClose, onDelete }: an
                     value={newComment}
                     onChange={(e) => setNewComment(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && addComment()}
-                    className="bg-white/60 dark:bg-white/5 border-0 ring-1 ring-white/40 dark:ring-white/10"
+                    className="bg-muted/60 dark:bg-muted/5 border-0 ring-1 ring-border/40 dark:ring-border/10"
                   />
                   <Button
                     size="sm"

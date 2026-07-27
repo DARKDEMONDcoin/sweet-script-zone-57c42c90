@@ -134,7 +134,7 @@ const SecuritySettingsPage = () => {
               <span
                 className={`text-[11px] font-medium px-2 py-0.5 rounded-full border ${
                   twoFactorEnabled
-                    ? "text-emerald-400 border-emerald-500/30 bg-emerald-500/[0.08]"
+                    ? "text-primary border-primary/30 bg-primary/[0.08]"
                     : "text-muted-foreground border-border"
                 }`}
               >

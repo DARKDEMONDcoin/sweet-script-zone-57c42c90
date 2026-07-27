@@ -1,25 +1,25 @@
 /** @doc Megsy Coder inline run — renders todo/files/terminal/integration cards INSIDE the chat feed (not modal). */
 import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
-import {
-  Check, Loader2, FileCode, Terminal, ListTodo, X, Github, Database,
-  ExternalLink, Eye, ChevronDown, Copy, Download, Pencil, GitCompare, Zap,
-} from "lucide-react";
+import { Check, FileCode, X, Github, Database, Eye, ChevronDown, PlayCircle } from "lucide-react";
 import { runKimiCoder, type KimiEvent, type KimiFile, type KimiTodo } from "@/lib/kimiCoder";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { publishProject } from "@/lib/publishProject";
 import { toast } from "sonner";
-import { extractProjectFiles, type ProjectFile } from "@/lib/extractProjectFiles";
+import { extractProjectFiles, ensureProjectScaffold, type ProjectFile } from "@/lib/extractProjectFiles";
 import { extractPatchBlocks, applyPatchBlocks } from "@/lib/coderPatch";
-import { downloadProjectZip, pushProjectToGithub, getCoderIntegrationStatus } from "@/lib/coderExport";
-import { openInStackBlitz } from "@/lib/coderStackBlitz";
+import { getCoderIntegrationStatus } from "@/lib/coderExport";
+
 import { startIntegrationConnection, waitForConnectionRefresh, loadIntegrationConnections } from "@/lib/integrationBackend";
 import { integrations as integrationsCatalog } from "@/lib/integrationsData";
+import { autoFixProjectFiles } from "@/lib/coderAutoFix";
+import { detectRequiredIntegrations } from "@/lib/coderIntegrationDetect";
+import { Spinner } from "@/components/ui/spinner";
 
-
-const ArtifactCanvas = lazy(() => import("@/components/chat/ArtifactCanvas"));
-const CoderStudioModal = lazy(() => import("@/components/coder/CoderStudioModal"));
 const CoderDiffModal = lazy(() => import("@/components/coder/CoderDiffModal"));
+const CoderFilesPanel = lazy(() => import("@/components/coder/CoderFilesPanel"));
+const CoderPreviewPanel = lazy(() => import("@/components/coder/CoderPreviewPanel"));
+
 
 type BashLog = { command: string; output: string; ok: boolean };
 type IntegrationReq = { kind: "github" | "supabase"; reason: string; state: "pending" | "connected" | "skipped" };
@@ -44,6 +44,20 @@ type RunEntry = {
 };
 const CODER_RUNS = new Map<string, RunEntry>();
 
+function collectFilesFromEvents(events: KimiEvent[]): KimiFile[] {
+  const merged = new Map<string, string>();
+  const text = events
+    .filter((ev): ev is Extract<KimiEvent, { type: "text" }> => ev.type === "text")
+    .map((ev) => ev.text)
+    .join("\n\n");
+  for (const file of extractProjectFiles(text)) merged.set(file.path, file.content);
+  for (const ev of events) {
+    if (ev.type === "file") merged.set(ev.path, ev.content);
+    if (ev.type === "done") for (const file of ev.files || []) merged.set(file.path, file.content);
+  }
+  return Array.from(merged.entries()).map(([path, content]) => ({ path, content }));
+}
+
 function subscribeCoderRun(
   runId: string,
   prompt: string,
@@ -53,31 +67,39 @@ function subscribeCoderRun(
   let entry = CODER_RUNS.get(runId);
   if (!entry) {
     const controller = new AbortController();
-    entry = { events: [], subs: new Set(), finished: false, controller };
-    CODER_RUNS.set(runId, entry);
+    const nextEntry: RunEntry = { events: [], subs: new Set(), finished: false, controller };
+    const emit = (ev: KimiEvent) => {
+      nextEntry.events.push(ev);
+      if (ev.type === "done" || ev.type === "error") nextEntry.finished = true;
+      nextEntry.subs.forEach((s) => { try { s(ev); } catch { /* ignore */ } });
+    };
+    entry = nextEntry;
+    CODER_RUNS.set(runId, nextEntry);
     runKimiCoder({
       prompt,
       history: opts?.history,
       contextFiles: opts?.previousFiles,
       signal: controller.signal,
-      onEvent: (ev) => {
-        entry!.events.push(ev);
-        if (ev.type === "done" || ev.type === "error") entry!.finished = true;
-        entry!.subs.forEach((s) => { try { s(ev); } catch { /* ignore */ } });
-      },
+      onEvent: emit,
+    }).then(() => {
+      if (nextEntry.finished || controller.signal.aborted) return;
+      const files = collectFilesFromEvents(nextEntry.events);
+      if (files.length > 0) {
+        emit({ type: "done", files, summary: "Project generated." });
+      } else {
+        emit({ type: "error", error: "The connection ended before the project finished generating. Please try again." });
+      }
     }).catch((e) => {
       const ev: KimiEvent = { type: "error", error: e?.message || "network error" };
-      entry!.events.push(ev);
-      entry!.finished = true;
-      entry!.subs.forEach((s) => { try { s(ev); } catch { /* ignore */ } });
+      emit(ev);
     });
   }
 
   for (const ev of entry.events) { try { onEvent(ev); } catch { /* ignore */ } }
   entry.subs.add(onEvent);
-  return () => { entry!.subs.delete(onEvent); };
+  const activeEntry = entry;
+  return () => { activeEntry.subs.delete(onEvent); };
 }
-
 
 function abortCoderRun(runId: string) {
   const entry = CODER_RUNS.get(runId);
@@ -96,12 +118,13 @@ export default function InlineCoderRun({ runId, prompt, onClose, onFinish, previ
   const [error, setError] = useState<string | null>(null);
   const [notes, setNotes] = useState("");
   const [selectedFile, setSelectedFile] = useState<string | null>(null);
-  const [tab, setTab] = useState<"plan" | "files" | "logs" | "notes">("plan");
+  
   const [collapsed, setCollapsed] = useState(false);
   const [publishing, setPublishing] = useState(false);
-  const [canvasOpen, setCanvasOpen] = useState(false);
-  const [studioOpen, setStudioOpen] = useState(false);
+  const [filesOpen, setFilesOpen] = useState(false);
+  const [previewOpen, setPreviewOpen] = useState(false);
   const [diffOpen, setDiffOpen] = useState(false);
+
   const finished = useRef(false);
   const filesRef = useRef<Map<string, string>>(new Map());
   const notesRef = useRef("");
@@ -109,7 +132,6 @@ export default function InlineCoderRun({ runId, prompt, onClose, onFinish, previ
   
 
   
-
 
   const mergeProjectFiles = (projectFiles: ProjectFile[]) => {
     if (projectFiles.length === 0) return;
@@ -120,6 +142,25 @@ export default function InlineCoderRun({ runId, prompt, onClose, onFinish, previ
       return next;
     });
     setSelectedFile((cur) => cur ?? projectFiles[0]?.path ?? null);
+  };
+
+  /** Merge backend-emitted and locally-detected integration needs (no duplicates). */
+  const addIntegrations = (reqs: { kind: "github" | "supabase"; reason: string }[]) => {
+    if (reqs.length === 0) return;
+    setIntegrations((prev) => {
+      const next = [...prev];
+      for (const r of reqs) {
+        if (next.some((p) => p.kind === r.kind)) continue;
+        next.push({ ...r, state: integStatusRef.current[r.kind] ? "connected" : "pending" });
+      }
+      return next;
+    });
+    void getCoderIntegrationStatus().then((s) => {
+      integStatusRef.current = { github: s.github, supabase: s.supabase };
+      setIntegrations((prev) =>
+        prev.map((p) => (s[p.kind] && p.state === "pending" ? { ...p, state: "connected" } : p)),
+      );
+    }).catch(() => {});
   };
 
   const appliedPatchesRef = useRef<Set<string>>(new Set());
@@ -140,9 +181,82 @@ export default function InlineCoderRun({ runId, prompt, onClose, onFinish, previ
     mergeProjectFiles(patched);
   };
 
+  // Seed with the previous run's files so a follow-up turn edits the existing
+  // project instead of shrinking it to whatever the model re-emitted.
+  useEffect(() => {
+    if (!previousFiles?.length) return;
+    setFiles((prev) => {
+      if (prev.size > 0) return prev;
+      const next = new Map(prev);
+      for (const f of previousFiles) next.set(f.path, f.content);
+      filesRef.current = next;
+      return next;
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [runId]);
+
+  // Watchdog: if the stream goes silent after producing files (dropped SSE tail,
+  // worker timeout), finalize instead of showing "Building…" forever.
+  const lastEventRef = useRef(Date.now());
+  const sawEventRef = useRef(false);
+  const finalizeFromRef = (summary?: string) => {
+    if (finished.current || filesRef.current.size === 0) return false;
+    finished.current = true;
+    const scaffolded = ensureProjectScaffold(
+      autoFixProjectFiles(
+        Array.from(filesRef.current.entries()).map(([path, content]) => ({
+          path, content, lang: (path.split(".").pop() || "txt").toLowerCase(),
+        })),
+      ),
+    );
+    addIntegrations(detectRequiredIntegrations(prompt, scaffolded));
+    mergeProjectFiles(scaffolded);
+    setStatus("done");
+    onFinish?.(scaffolded.map(({ path, content }) => ({ path, content })), summary ?? notesRef.current.slice(0, 500));
+    return true;
+  };
+
+  useEffect(() => {
+    lastEventRef.current = Date.now();
+    sawEventRef.current = false;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [runId]);
+
+  useEffect(() => {
+    if (status !== "running") return;
+    const id = setInterval(() => {
+      const idle = Date.now() - lastEventRef.current;
+      // Never finalize a run that hasn't emitted anything yet — the model may
+      // still be thinking. Only give up (with a clear error) after 3 minutes.
+      if (!sawEventRef.current) {
+        if (idle > 180_000 && !finished.current) {
+          finished.current = true;
+          setStatus("error");
+          setError("The build didn't start — the connection timed out. Please try again.");
+        }
+        return;
+      }
+      if (idle > 45_000) {
+        if (finalizeFromRef()) return;
+        // Stream went silent without producing a single file: stop pretending
+        // we're still building.
+        if (idle > 90_000 && !finished.current) {
+          finished.current = true;
+          setStatus("error");
+          setError("The build stopped before producing any files. Please try again.");
+        }
+      }
+    }, 5_000);
+    return () => clearInterval(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status]);
+
   useEffect(() => {
     const unsub = subscribeCoderRun(runId, prompt, (ev: KimiEvent) => {
+      lastEventRef.current = Date.now();
+      sawEventRef.current = true;
       if (ev.type === "todo") setTodos(ev.todos);
+
       else if (ev.type === "text") {
         const next = `${notesRef.current}${notesRef.current && ev.text ? "\n\n" : ""}${ev.text || ""}`;
         notesRef.current = next;
@@ -175,25 +289,33 @@ export default function InlineCoderRun({ runId, prompt, onClose, onFinish, previ
       } else if (ev.type === "done") {
         if (finished.current) return;
         finished.current = true;
-        const parsed = extractProjectFiles(notesRef.current);
-        if (parsed.length > 0) mergeProjectFiles(parsed);
-        const finalFiles = parsed.length > 0
-          ? parsed.map(({ path, content }) => ({ path, content }))
-          : Array.from(filesRef.current.entries()).map(([path, content]) => ({ path, content }));
+        // Merge (never replace): late-parsed files, streamed `file` events,
+        // patched files and the backend's own file list all contribute.
+        mergeProjectFiles(extractProjectFiles(notesRef.current));
+        applyPatchesFromNotes(notesRef.current);
+        const merged = new Map(filesRef.current);
+        for (const f of ev.files || []) if (f?.path) merged.set(f.path, f.content ?? "");
+        filesRef.current = merged;
+        const scaffolded = ensureProjectScaffold(
+          autoFixProjectFiles(
+            Array.from(merged.entries()).map(([path, content]) => ({
+              path, content, lang: (path.split(".").pop() || "txt").toLowerCase(),
+            })),
+          ),
+        );
+        addIntegrations(detectRequiredIntegrations(prompt, scaffolded));
+        mergeProjectFiles(scaffolded);
+        const finalFiles = scaffolded.map(({ path, content }) => ({ path, content }));
         setStatus("done");
-        onFinish?.(finalFiles.length > 0 ? finalFiles : ev.files, ev.summary || notesRef.current.slice(0, 500));
+        onFinish?.(finalFiles, ev.summary || notesRef.current.slice(0, 500));
       } else if (ev.type === "error") {
+        if (finished.current) return;
         // Fallback: if the stream errored/closed but we already have files,
         // treat as done so the user can preview/publish/download.
-        if (!finished.current && filesRef.current.size > 0) {
-          finished.current = true;
-          const finalFiles = Array.from(filesRef.current.entries()).map(([path, content]) => ({ path, content }));
-          setStatus("done");
-          onFinish?.(finalFiles, notesRef.current.slice(0, 500));
-          return;
-        }
+        if (finalizeFromRef()) return;
         setStatus("error");
         setError(ev.error);
+
       }
     }, { previousFiles, history });
     return () => { unsub(); };
@@ -207,12 +329,15 @@ export default function InlineCoderRun({ runId, prompt, onClose, onFinish, previ
     }).catch(() => {});
   }, []);
 
-
-
-
-
   const doneCount = todos.filter((t) => t.done).length;
   const fileList = useMemo(() => Array.from(files.keys()).sort(), [files]);
+  const runningLabel =
+    todos.length > 0
+      ? `Building… ${doneCount}/${todos.length} · ${files.size} files`
+      : files.size > 0
+        ? `Building… finalizing · ${files.size} files`
+        : "Building… preparing";
+
   const projectFiles = useMemo<ProjectFile[]>(
     () => Array.from(files.entries()).map(([path, content]) => ({
       path,
@@ -222,24 +347,6 @@ export default function InlineCoderRun({ runId, prompt, onClose, onFinish, previ
     [files],
   );
 
-  const copyAllFiles = async () => {
-    if (projectFiles.length === 0) return toast.error("No files yet");
-    await navigator.clipboard.writeText(
-      projectFiles.map((f) => `--- ${f.path} ---\n${f.content}`).join("\n\n"),
-    );
-    toast.success("Files copied");
-  };
-
-  const downloadProjectJson = () => {
-    if (projectFiles.length === 0) return toast.error("No files yet");
-    const blob = new Blob([JSON.stringify(projectFiles, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "megsy-coder-project.json";
-    a.click();
-    URL.revokeObjectURL(url);
-  };
 
   const handlePreview = async () => {
     if (projectFiles.length === 0) {
@@ -307,112 +414,94 @@ export default function InlineCoderRun({ runId, prompt, onClose, onFinish, previ
     }
   };
 
-
   return (
-    <div className="my-4 w-full rounded-2xl border border-white/10 bg-neutral-950/80 shadow-lg overflow-hidden">
+    <div className="theme-fixed coder-fixed my-4 w-full overflow-hidden rounded-2xl border border-border/40 bg-card">
       {/* Header */}
-      <div className="flex items-center gap-2 border-b border-white/10 px-4 py-2.5">
-        <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10">
+      <div className="flex items-center gap-2.5 px-4 py-3">
+        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-primary/10">
           {status === "running" ? (
-            <Loader2 className="h-4 w-4 animate-spin text-primary" />
+            <Spinner className="h-4 w-4 text-primary" />
           ) : status === "done" ? (
-            <Check className="h-4 w-4 text-emerald-500" />
+            <Check className="h-4 w-4 text-primary" />
           ) : (
             <X className="h-4 w-4 text-destructive" />
           )}
         </div>
         <div className="min-w-0 flex-1">
-          <div className="truncate text-sm font-semibold text-white">Megsy Coder</div>
-          <div className="truncate text-[11px] text-white/60">
+          <div className="truncate text-sm font-semibold text-foreground">Megsy Coder</div>
+          <div className="truncate text-[11px] text-muted-foreground">
             {status === "running"
-              ? `Building… ${doneCount}/${todos.length || "?"} · ${files.size} files`
+              ? runningLabel
               : status === "done"
                 ? `Done · ${files.size} files`
                 : `Error: ${error}`}
           </div>
         </div>
-        {status === "done" && files.size > 0 && (
-          <Button size="sm" variant="secondary" onClick={() => setCanvasOpen(true)} className="h-7 text-xs">
-            <Eye className="h-3.5 w-3.5 mr-1" />
-            Canvas
-          </Button>
-        )}
-        {status === "done" && files.size > 0 && (
-          <Button size="sm" variant="ghost" onClick={() => setStudioOpen(true)} className="h-7 text-xs text-white/80">
-            <Pencil className="h-3.5 w-3.5 mr-1" />
-            Studio
-          </Button>
-        )}
-        {status === "done" && files.size > 0 && (
-          <Button size="sm" variant="ghost" onClick={handlePreview} disabled={publishing} className="h-7 text-xs text-white/80">
-            <ExternalLink className="h-3.5 w-3.5 mr-1" />
-            {publishing ? "..." : "Publish"}
-          </Button>
-        )}
-        {status === "done" && files.size > 0 && (
-          <Button size="sm" variant="ghost" onClick={() => downloadProjectZip(projectFiles)} className="h-7 text-xs text-white/80" title="Download ZIP">
-            <Download className="h-3.5 w-3.5" />
-          </Button>
-        )}
-        {status === "done" && files.size > 0 && previousFiles && previousFiles.length > 0 && (
-          <Button size="sm" variant="ghost" onClick={() => setDiffOpen(true)} className="h-7 text-xs text-white/80" title="View diff vs previous run">
-            <GitCompare className="h-3.5 w-3.5" />
-          </Button>
-        )}
-        {status === "done" && files.size > 0 && (
-          <Button size="sm" variant="ghost" onClick={() => openInStackBlitz(projectFiles, prompt.slice(0, 40) || "megsy-project")} className="h-7 text-xs text-white/80" title="Open in StackBlitz (real Vite build)">
-            <Zap className="h-3.5 w-3.5" />
-          </Button>
-        )}
-        {status === "done" && files.size > 0 && (
-          <Button size="sm" variant="ghost" onClick={() => pushProjectToGithub(projectFiles, prompt.slice(0, 40) || "megsy-project")} className="h-7 text-xs text-white/80" title="Push to GitHub">
-            <Github className="h-3.5 w-3.5" />
-          </Button>
-        )}
-
-        <Button aria-label={collapsed ? "Expand run" : "Collapse run"} variant="ghost" size="icon" className="h-7 w-7" onClick={() => setCollapsed((c) => !c)}>
-          <ChevronDown className={cn("h-4 w-4 text-white/70 transition-transform", collapsed && "-rotate-90")} />
+        <Button
+          aria-label={collapsed ? "Expand" : "Collapse"}
+          variant="ghost"
+          size="icon"
+          className="h-7 w-7 shrink-0"
+          onClick={() => setCollapsed((c) => !c)}
+        >
+          <ChevronDown className={cn("h-4 w-4 text-muted-foreground transition-transform", collapsed && "-rotate-90")} />
         </Button>
-        <Button aria-label="Close run" variant="ghost" size="icon" className="h-7 w-7" onClick={onClose}>
-          <X className="h-4 w-4 text-white/70" />
+        <Button aria-label="Close" variant="ghost" size="icon" className="h-7 w-7 shrink-0" onClick={onClose}>
+          <X className="h-4 w-4 text-muted-foreground" />
         </Button>
       </div>
 
-      {collapsed ? null : (
+      {!collapsed && (
         <>
-          {/* Integration prompts */}
+          {/* Plan */}
+          {todos.length > 0 && (
+            <ul className="space-y-1.5 px-4 pb-3">
+              {todos.map((t) => (
+                <li key={t.id} className="flex items-start gap-2">
+                  <span
+                    className={cn(
+                      "mt-[3px] flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-full",
+                      t.done ? "bg-primary text-primary-foreground" : "border border-border",
+                    )}
+                  >
+                    {t.done && <Check className="h-2.5 w-2.5" />}
+                  </span>
+                  <span className={cn("text-[13px] text-foreground", t.done && "text-muted-foreground line-through")}>
+                    {t.title}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
+
+          {/* Integrations */}
           {integrations.length > 0 && (
-            <div className="flex flex-wrap gap-2 border-b border-white/10 p-3">
+            <div className="flex flex-wrap gap-2 px-4 pb-3">
               {integrations.map((ig) => (
                 <div
                   key={ig.kind}
-                  className="flex min-w-[240px] flex-1 items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-3"
+                  className="flex min-w-[220px] flex-1 items-center gap-2.5 rounded-xl border border-border/40 px-3 py-2"
                 >
                   {ig.kind === "github" ? (
-                    <Github className="h-5 w-5 text-white/80" />
+                    <Github className="h-4 w-4 text-muted-foreground" />
                   ) : (
-                    <Database className="h-5 w-5 text-emerald-400" />
+                    <Database className="h-4 w-4 text-primary" />
                   )}
-                  <div className="flex-1 min-w-0">
-                    <div className="text-xs font-medium text-white capitalize">
+                  <div className="min-w-0 flex-1">
+                    <div className="text-xs font-medium capitalize text-foreground">
                       Connect {ig.kind === "github" ? "GitHub" : "Supabase"}
                     </div>
-                    <div className="text-[10px] text-white/60 truncate">{ig.reason}</div>
+                    <div className="truncate text-[10px] text-muted-foreground">{ig.reason}</div>
                   </div>
                   {ig.state === "pending" ? (
                     <>
-                      <Button
-                        size="sm"
-                        className="h-7 text-xs"
-                        onClick={() => connectIntegration(ig.kind)}
-                      >
-                        Connect <ExternalLink className="h-3 w-3 mr-1" />
+                      <Button size="sm" className="h-7 text-xs" onClick={() => connectIntegration(ig.kind)}>
+                        Connect
                       </Button>
-
                       <Button
                         size="sm"
                         variant="ghost"
-                        className="h-7 text-xs text-white/70"
+                        className="h-7 text-xs text-muted-foreground"
                         onClick={() => updateIntegration(ig.kind, "skipped")}
                       >
                         Skip
@@ -421,13 +510,11 @@ export default function InlineCoderRun({ runId, prompt, onClose, onFinish, previ
                   ) : (
                     <span
                       className={cn(
-                        "text-[10px] px-2 py-0.5 rounded-full",
-                        ig.state === "connected"
-                          ? "bg-emerald-500/20 text-emerald-300"
-                          : "bg-white/10 text-white/50",
+                        "rounded-full px-2 py-0.5 text-[10px]",
+                        ig.state === "connected" ? "bg-primary/15 text-primary" : "bg-muted text-muted-foreground",
                       )}
                     >
-                      {ig.state === "connected" ? "✓ Connected" : "Skipped"}
+                      {ig.state === "connected" ? "Connected" : "Skipped"}
                     </span>
                   )}
                 </div>
@@ -435,162 +522,85 @@ export default function InlineCoderRun({ runId, prompt, onClose, onFinish, previ
             </div>
           )}
 
-          {/* Tabs */}
-          <div className="flex gap-1 border-b border-white/10 px-2 py-1.5">
-            {(
-              [
-                { id: "plan", icon: ListTodo, label: "Plan", count: todos.length },
-                { id: "files", icon: FileCode, label: "Files", count: files.size },
-                { id: "logs", icon: Terminal, label: "Log", count: bash.length },
-                { id: "notes", icon: Copy, label: "Notes", count: notes ? 1 : 0 },
-              ] as const
-            ).map((t) => (
-              <button
-                key={t.id}
-                onClick={() => setTab(t.id)}
-                className={cn(
-                  "inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors",
-                  tab === t.id
-                    ? "bg-primary/20 text-white"
-                    : "text-white/60 hover:bg-white/5",
-                )}
+          {/* The only two actions — files & preview */}
+          {files.size > 0 && (
+            <div className="flex items-center gap-2 border-t border-border/40 px-4 py-2.5">
+              <Button
+                size="sm"
+                variant="secondary"
+                className="h-8 flex-1 text-xs sm:flex-none"
+                onClick={() => setFilesOpen(true)}
               >
-                <t.icon className="h-3.5 w-3.5" />
-                {t.label}
-                {t.count > 0 && (
-                  <span className="rounded-full bg-white/10 px-1.5 text-[10px]">{t.count}</span>
-                )}
-              </button>
-            ))}
-          </div>
-
-          {/* Body */}
-          <div className="max-h-[420px] min-h-[180px] overflow-hidden">
-            {tab === "plan" && (
-              <div className="h-full max-h-[420px] overflow-y-auto p-4">
-                {todos.length === 0 ? (
-                  <div className="text-sm text-white/50">
-                    {status === "running" ? "Preparing plan…" : "No plan"}
-                  </div>
-                ) : (
-                  <ul className="space-y-2">
-                    {todos.map((t) => (
-                      <li
-                        key={t.id}
-                        className="flex items-start gap-2.5 rounded-lg border border-white/10 bg-white/5 px-3 py-2"
-                      >
-                        <span
-                          className={cn(
-                            "mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded",
-                            t.done ? "bg-emerald-500 text-white" : "border border-white/30",
-                          )}
-                        >
-                          {t.done && <Check className="h-3 w-3" />}
-                        </span>
-                        <span className={cn("text-sm text-white", t.done && "text-white/40 line-through")}>
-                          {t.title}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-            )}
-
-            {tab === "files" && (
-              <div className="flex h-full max-h-[420px]">
-                <div className="w-52 shrink-0 overflow-y-auto border-r border-white/10 p-2">
-                  {fileList.length === 0 && (
-                    <div className="p-2 text-xs text-white/50">No files yet…</div>
-                  )}
-                  {fileList.map((path) => (
-                    <button
-                      key={path}
-                      onClick={() => setSelectedFile(path)}
-                      className={cn(
-                        "block w-full truncate rounded px-2 py-1 text-left text-xs",
-                        selectedFile === path
-                          ? "bg-primary/20 text-white"
-                          : "text-white/70 hover:bg-white/5",
-                      )}
-                    >
-                      {path}
-                    </button>
-                  ))}
-                </div>
-                <div className="flex-1 overflow-auto bg-black/40">
-                  {selectedFile ? (
-                    <div className="min-h-full">
-                      <div className="sticky top-0 z-10 flex items-center justify-end gap-1 border-b border-white/10 bg-black/70 px-2 py-1 backdrop-blur">
-                        <button onClick={copyAllFiles} className="inline-flex items-center gap-1 rounded px-2 py-1 text-[11px] text-white/70 hover:bg-white/10">
-                          <Copy className="h-3 w-3" /> Copy all
-                        </button>
-                        <button onClick={downloadProjectJson} className="inline-flex items-center gap-1 rounded px-2 py-1 text-[11px] text-white/70 hover:bg-white/10">
-                          <Download className="h-3 w-3" /> JSON
-                        </button>
-                      </div>
-                      <pre className="p-3 text-xs leading-relaxed text-white/90">
-                        <code>{files.get(selectedFile)}</code>
-                      </pre>
-                    </div>
-                  ) : (
-                    <div className="p-4 text-xs text-white/50">Choose a file</div>
-                  )}
-                </div>
-              </div>
-            )}
-
-            {tab === "logs" && (
-              <div className="h-full max-h-[420px] overflow-y-auto bg-black p-3 font-mono text-xs text-emerald-300">
-                {bash.length === 0 && <div className="text-white/40">No commands yet…</div>}
-                {bash.map((b, i) => (
-                  <div key={i} className="mb-2">
-                    <div className={cn("font-semibold", b.ok ? "text-cyan-300" : "text-red-400")}>
-                      $ {b.command}
-                    </div>
-                    <div className="whitespace-pre-wrap opacity-80">{b.output}</div>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {tab === "notes" && (
-              <div className="h-full max-h-[420px] overflow-y-auto bg-black/60 p-3 text-xs leading-relaxed text-white/80 whitespace-pre-wrap">
-                {notes || (status === "running" ? "Waiting for coder notes…" : "No notes")}
-              </div>
-            )}
-          </div>
+                <FileCode className="mr-1.5 h-3.5 w-3.5" />
+                Files
+                <span className="ml-1.5 text-muted-foreground">{files.size}</span>
+              </Button>
+              <Button
+                size="sm"
+                variant="secondary"
+                className="h-8 flex-1 text-xs sm:flex-none"
+                onClick={() => setPreviewOpen(true)}
+              >
+                <Eye className="mr-1.5 h-3.5 w-3.5" />
+                Preview
+              </Button>
+              {status === "done" && todos.some((t) => !t.done) && (
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="ml-auto h-8 text-xs text-muted-foreground"
+                  onClick={() => {
+                    const remaining = todos.filter((t) => !t.done).map((t) => `- ${t.title}`).join("\n");
+                    window.dispatchEvent(
+                      new CustomEvent("megsy:coder-continue", {
+                        detail: {
+                          prompt: `Continue the previous build. Finish these remaining tasks without redoing completed work:\n${remaining}`,
+                        },
+                      }),
+                    );
+                    toast.success("Continuing the build…");
+                  }}
+                >
+                  <PlayCircle className="mr-1 h-3.5 w-3.5" />
+                  Continue
+                </Button>
+              )}
+            </div>
+          )}
         </>
       )}
+
       <Suspense fallback={null}>
-        {canvasOpen && (
-          <ArtifactCanvas
-            open={canvasOpen}
-            onOpenChange={setCanvasOpen}
-            content={notes || prompt}
+        {filesOpen && (
+          <CoderFilesPanel
+            open={filesOpen}
+            onOpenChange={setFilesOpen}
             files={projectFiles}
+            projectName={prompt.slice(0, 40) || "megsy-project"}
+            canDiff={!!previousFiles?.length}
+            onOpenDiff={() => { setFilesOpen(false); setDiffOpen(true); }}
           />
         )}
-        {studioOpen && (
-          <CoderStudioModal
-            open={studioOpen}
-            onClose={() => setStudioOpen(false)}
-            initialFiles={projectFiles}
-            onFilesChange={(next) => {
-              setFiles(() => {
-                const m = new Map<string, string>();
-                for (const f of next) m.set(f.path, f.content);
-                filesRef.current = m;
-                return m;
-              });
-            }}
+        {previewOpen && (
+          <CoderPreviewPanel
+            open={previewOpen}
+            onOpenChange={setPreviewOpen}
+            files={projectFiles}
+            title={prompt.slice(0, 60) || "Megsy Project"}
+            logs={bash}
+            publishing={publishing}
+            onPublish={handlePreview}
           />
         )}
         {diffOpen && (
           <CoderDiffModal
             open={diffOpen}
             onClose={() => setDiffOpen(false)}
-            baseline={(previousFiles || []).map((f) => ({ path: f.path, content: f.content, lang: (f.path.split(".").pop() || "txt").toLowerCase() }))}
+            baseline={(previousFiles || []).map((f) => ({
+              path: f.path,
+              content: f.content,
+              lang: (f.path.split(".").pop() || "txt").toLowerCase(),
+            }))}
             current={projectFiles}
           />
         )}
@@ -598,3 +608,4 @@ export default function InlineCoderRun({ runId, prompt, onClose, onFinish, previ
     </div>
   );
 }
+

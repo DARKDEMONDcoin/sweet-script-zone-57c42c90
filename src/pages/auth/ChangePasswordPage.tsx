@@ -47,7 +47,7 @@ const ChangePasswordPage = () => {
     : newPassword.length >= 8 ? 2
     : newPassword.length > 0 ? 1 : 0;
   const strengthLabels = ["", "Weak", "Medium", "Strong", "Very Strong"];
-  const strengthTones = ["bg-border", "bg-rose-400", "bg-amber-400", "bg-emerald-400", "bg-emerald-400"];
+  const strengthTones = ["bg-border", "bg-rose-400", "bg-amber-400", "bg-primary", "bg-primary"];
 
   const goBack = () =>
     navigate("/settings/security");
@@ -105,7 +105,7 @@ const ChangePasswordPage = () => {
                     {[1, 2, 3, 4].map((i) => (
                       <div
                         key={i}
-                        className={cn("h-1.5 flex-1 rounded-full transition-all", i <= strength ? strengthTones[strength] : "bg-white/10")}
+                        className={cn("h-1.5 flex-1 rounded-full transition-all", i <= strength ? strengthTones[strength] : "bg-muted/10")}
                       />
                     ))}
                   </div>

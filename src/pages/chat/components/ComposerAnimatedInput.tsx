@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { ComposerPrimitive, useComposerRuntime } from "@assistant-ui/react";
 import AnimatedInput from "@/components/chat/AnimatedInput";
 import type { AgentDef, AgentModel } from "@/lib/agentRegistry";
@@ -71,20 +71,35 @@ function ComposerTextSync({
   setInput: (v: string) => void;
 }) {
   const composer = useComposerRuntime();
+  const inputRef = useRef(input);
+  inputRef.current = input;
+  const setInputRef = useRef(setInput);
+  setInputRef.current = setInput;
+  // آخر نص دفعناه للـ runtime — يمنع ارتداد نفس القيمة إلينا (حلقة لا نهائية
+  // كانت تسبب "Maximum update depth exceeded" وابتلاع حروف أثناء الكتابة).
+  const lastPushed = useRef<string | null>(null);
 
   // local → runtime
   useEffect(() => {
     const state = composer.getState();
-    if (state.text !== input) composer.setText(input);
+    if (state.text !== input) {
+      lastPushed.current = input;
+      composer.setText(input);
+    }
   }, [composer, input]);
 
-  // runtime → local (يلتقط setText الخارجي من Quote/SelectionToolbar)
+  // runtime → local (يلتقط setText الخارجي من Quote/SelectionToolbar فقط)
   useEffect(() => {
     return composer.subscribe(() => {
-      const state = composer.getState();
-      if (state.text !== input) setInput(state.text);
+      const text = composer.getState().text;
+      if (text === lastPushed.current) return; // صدى دفعتنا نحن
+      if (text !== inputRef.current) {
+        lastPushed.current = text;
+        setInputRef.current(text);
+      }
     });
-  }, [composer, input, setInput]);
+  }, [composer]);
+
 
   return null;
 }
@@ -182,6 +197,7 @@ export function ComposerAnimatedInput(props: ComposerAnimatedInputProps) {
       isEditing={editingIndex !== null}
       onCancelEdit={cancelEdit}
       chatContext={chatContext}
+      forceEnterToSend={chatMode === "code"}
       onFocusChange={onInputFocusChange}
       inlineSlot={
         <ComposerInlineSlot

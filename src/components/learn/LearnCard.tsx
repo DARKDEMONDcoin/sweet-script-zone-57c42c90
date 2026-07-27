@@ -141,14 +141,14 @@ type Tone = "emerald" | "blue" | "amber" | "rose" | "violet";
 
 const TONE = {
   emerald: {
-    dot: "bg-emerald-500",
-    bar: "from-emerald-500/0 via-emerald-500/70 to-emerald-500/0",
-    ring: "ring-emerald-400/40",
-    text: "text-emerald-700 dark:text-emerald-300",
-    softBg: "bg-emerald-500/10",
-    softBgHover: "hover:bg-emerald-500/15",
-    softBorder: "border-emerald-400/50",
-    solid: "bg-emerald-500 hover:bg-emerald-500/90 text-white",
+    dot: "bg-primary",
+    bar: "from-primary/0 via-primary/70 to-primary/0",
+    ring: "ring-primary/40",
+    text: "text-primary dark:text-primary",
+    softBg: "bg-primary/10",
+    softBgHover: "hover:bg-primary/15",
+    softBorder: "border-primary/50",
+    solid: "bg-primary hover:bg-primary/90 text-foreground",
     glow: "shadow-[0_0_0_1px_rgba(16,185,129,0.25),0_10px_30px_-12px_rgba(16,185,129,0.35)]",
   },
   blue: {
@@ -159,7 +159,7 @@ const TONE = {
     softBg: "bg-blue-500/10",
     softBgHover: "hover:bg-blue-500/15",
     softBorder: "border-blue-400/50",
-    solid: "bg-blue-500 hover:bg-blue-500/90 text-white",
+    solid: "bg-blue-500 hover:bg-blue-500/90 text-foreground",
     glow: "shadow-[0_0_0_1px_rgba(59,130,246,0.25),0_10px_30px_-12px_rgba(59,130,246,0.35)]",
   },
   amber: {
@@ -170,7 +170,7 @@ const TONE = {
     softBg: "bg-amber-500/10",
     softBgHover: "hover:bg-amber-500/15",
     softBorder: "border-amber-400/50",
-    solid: "bg-amber-500 hover:bg-amber-500/90 text-white",
+    solid: "bg-amber-500 hover:bg-amber-500/90 text-foreground",
     glow: "shadow-[0_0_0_1px_rgba(245,158,11,0.25),0_10px_30px_-12px_rgba(245,158,11,0.35)]",
   },
   rose: {
@@ -181,7 +181,7 @@ const TONE = {
     softBg: "bg-rose-500/10",
     softBgHover: "hover:bg-rose-500/15",
     softBorder: "border-rose-400/50",
-    solid: "bg-rose-500 hover:bg-rose-500/90 text-white",
+    solid: "bg-rose-500 hover:bg-rose-500/90 text-foreground",
     glow: "shadow-[0_0_0_1px_rgba(244,63,94,0.25),0_10px_30px_-12px_rgba(244,63,94,0.35)]",
   },
   violet: {
@@ -192,7 +192,7 @@ const TONE = {
     softBg: "bg-violet-500/10",
     softBgHover: "hover:bg-violet-500/15",
     softBorder: "border-violet-400/50",
-    solid: "bg-violet-500 hover:bg-violet-500/90 text-white",
+    solid: "bg-violet-500 hover:bg-violet-500/90 text-foreground",
     glow: "shadow-[0_0_0_1px_rgba(139,92,246,0.25),0_10px_30px_-12px_rgba(139,92,246,0.35)]",
   },
 } as const;
@@ -216,7 +216,7 @@ const CardShell = ({
       initial={{ opacity: 0, y: 10, scale: 0.985 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ type: "spring", stiffness: 280, damping: 26, mass: 0.7 }}
-      className="relative overflow-hidden rounded-3xl border border-border/60 bg-gradient-to-b from-card via-card to-card/90 p-5 space-y-4 shadow-[0_1px_0_var(--overlay-white-04)_inset,0_20px_50px_-30px_rgba(0,0,0,0.5)] backdrop-blur-xl"
+      className="relative overflow-hidden rounded-3xl border border-border/60 bg-gradient-to-b from-card via-card to-card/90 p-5 space-y-4 shadow-[0_1px_0_var(--overlay-white-04)_inset,0_20px_50px_-30px_rgba(0,0,0,0.5)]"
     >
       {/* tone accent bar */}
       <div className={`pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r ${t.bar}`} />
@@ -249,7 +249,7 @@ const Sparkle = () => (
     initial={{ opacity: 0, scale: 0.4, rotate: -30 }}
     animate={{ opacity: [0, 1, 0], scale: [0.4, 1.2, 1], rotate: 0 }}
     transition={{ duration: 0.9, ease: "easeOut" }}
-    className="pointer-events-none absolute -top-1 -end-1 text-emerald-400"
+    className="pointer-events-none absolute -top-1 -end-1 text-primary"
     aria-hidden
   >
     <Sparkles className="w-3.5 h-3.5" />
@@ -270,7 +270,7 @@ const ResultBanner = ({
     animate={{ opacity: 1, y: 0 }}
     className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold ${
       right
-        ? "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300"
+        ? "bg-primary/15 text-primary dark:text-primary"
         : "bg-rose-500/15 text-rose-700 dark:text-rose-300"
     }`}
   >
@@ -309,7 +309,7 @@ const TeacherNoteInput = ({ onSend, locale }: { onSend: (text: string) => void; 
           if (e.key === "Escape") setOpen(false);
         }}
         placeholder={tt.write_note_teacher}
-        className="flex-1 px-3 py-2 rounded-xl border border-border/50 bg-background/60 text-xs text-foreground outline-none focus:border-emerald-400/60 focus:ring-2 focus:ring-emerald-400/20 transition-all"
+        className="flex-1 px-3 py-2 rounded-xl border border-border/50 bg-background/60 text-xs text-foreground outline-none focus:border-primary/60 focus:ring-2 focus:ring-primary/20 transition-all"
       />
       <button
         type="button"
@@ -322,7 +322,7 @@ const TeacherNoteInput = ({ onSend, locale }: { onSend: (text: string) => void; 
           }
         }}
         disabled={!val.trim()}
-        className="shrink-0 w-9 h-9 rounded-xl bg-emerald-500 text-white grid place-items-center disabled:opacity-40 hover:bg-emerald-500/90 transition-colors"
+        className="shrink-0 w-9 h-9 rounded-xl bg-primary text-foreground grid place-items-center disabled:opacity-40 hover:bg-primary/90 transition-colors"
       >
         <ArrowUp className="w-4 h-4" />
       </button>
@@ -512,9 +512,9 @@ const MCQCard = ({ card, onAnswer }: BaseProps) => {
           const letter = String.fromCharCode(65 + i);
 
           let cls =
-            "border-border/60 bg-card/60 hover:border-emerald-300/60 hover:bg-emerald-500/[0.05] text-foreground/85";
+            "border-border/60 bg-card/60 hover:border-primary/60 hover:bg-primary/[0.05] text-foreground/85";
           let chipCls =
-            "bg-muted/60 text-muted-foreground group-hover:bg-emerald-500/15 group-hover:text-emerald-600 dark:group-hover:text-emerald-300";
+            "bg-muted/60 text-muted-foreground group-hover:bg-primary/15 group-hover:text-primary dark:group-hover:text-primary";
           let icon: React.ReactNode = null;
           if (isEliminated && !revealed) {
             cls = "border-border/30 bg-card/30 text-muted-foreground opacity-40 line-through cursor-not-allowed";
@@ -522,9 +522,9 @@ const MCQCard = ({ card, onAnswer }: BaseProps) => {
           }
           if (revealed && (ungradedSetupChoice || !gradedMcq)) {
             if (isPicked) {
-              cls = "border-emerald-400/70 bg-emerald-500/[0.10] text-emerald-800 dark:text-emerald-100 " + TONE.emerald.glow;
-              chipCls = "bg-emerald-500 text-white";
-              icon = <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-300" />;
+              cls = "border-primary/70 bg-primary/[0.10] text-primary dark:text-primary " + TONE.emerald.glow;
+              chipCls = "bg-primary text-foreground";
+              icon = <Check className="w-3.5 h-3.5 text-primary dark:text-primary" />;
             } else {
               cls = "border-border/40 bg-card/40 text-muted-foreground opacity-60";
               chipCls = "bg-muted/40 text-muted-foreground";
@@ -532,13 +532,13 @@ const MCQCard = ({ card, onAnswer }: BaseProps) => {
           } else if (revealed) {
             if (isCorrectOpt) {
               cls =
-                "border-emerald-400/70 bg-emerald-500/[0.10] text-emerald-800 dark:text-emerald-100 " +
+                "border-primary/70 bg-primary/[0.10] text-primary dark:text-primary " +
                 TONE.emerald.glow;
-              chipCls = "bg-emerald-500 text-white";
-              icon = <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-300" />;
+              chipCls = "bg-primary text-foreground";
+              icon = <Check className="w-3.5 h-3.5 text-primary dark:text-primary" />;
             } else if (isPicked) {
               cls = "border-rose-400/60 bg-rose-500/[0.10] text-rose-800 dark:text-rose-100";
-              chipCls = "bg-rose-500 text-white";
+              chipCls = "bg-rose-500 text-foreground";
               icon = <X className="w-3.5 h-3.5 text-rose-600 dark:text-rose-300" />;
             } else {
               cls = "border-border/40 bg-card/40 text-muted-foreground opacity-60";
@@ -582,7 +582,7 @@ const MCQCard = ({ card, onAnswer }: BaseProps) => {
           >
             <ResultBanner right={isRight} labelRight={tt.correct_answer} labelWrong={tt.wrong_try_again} />
             {card.explain && (
-              <div className="text-xs text-muted-foreground leading-relaxed border-s-2 border-emerald-400/40 ps-3">
+              <div className="text-xs text-muted-foreground leading-relaxed border-s-2 border-primary/40 ps-3">
                 {card.explain}
               </div>
             )}
@@ -632,19 +632,19 @@ const MultiCard = ({ card, onAnswer }: BaseProps) => {
           const isPicked = picks.includes(i);
           const isCorrect = correctSet.has(i);
           let cls =
-            "border-border/60 bg-card/60 hover:border-emerald-300/60 text-foreground/85";
+            "border-border/60 bg-card/60 hover:border-primary/60 text-foreground/85";
           let box = "border-border/60 bg-background/60";
           if (submitted) {
             if (isCorrect) {
-              cls = "border-emerald-400/70 bg-emerald-500/[0.10] text-emerald-800 dark:text-emerald-100";
-              box = "bg-emerald-500 border-emerald-500 text-white";
+              cls = "border-primary/70 bg-primary/[0.10] text-primary dark:text-primary";
+              box = "bg-primary border-primary text-foreground";
             } else if (isPicked) {
               cls = "border-rose-400/60 bg-rose-500/[0.10] text-rose-800 dark:text-rose-100";
-              box = "bg-rose-500 border-rose-500 text-white";
+              box = "bg-rose-500 border-rose-500 text-foreground";
             }
           } else if (isPicked) {
-            cls = "border-emerald-400/60 bg-emerald-500/[0.08] text-foreground";
-            box = "bg-emerald-500 border-emerald-500 text-white";
+            cls = "border-primary/60 bg-primary/[0.08] text-foreground";
+            box = "bg-primary border-primary text-foreground";
           }
           return (
             <motion.button
@@ -695,7 +695,7 @@ const MultiCard = ({ card, onAnswer }: BaseProps) => {
               : `[LEARN_ANSWER] type=multi result=incorrect chosen=[${chosenText}] correct=[${correctText}]`;
             setTimeout(() => onAnswer?.(payload), 120);
           }}
-          className="w-full py-2.5 rounded-2xl bg-gradient-to-b from-emerald-500 to-emerald-600 text-white text-sm font-semibold shadow-[0_8px_20px_-8px_rgba(16,185,129,0.5)] hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+          className="w-full py-2.5 rounded-2xl bg-gradient-to-b from-primary to-primary text-foreground text-sm font-semibold shadow-[0_8px_20px_-8px_rgba(16,185,129,0.5)] hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
         >
           {tt.confirm}
         </button>
@@ -703,7 +703,7 @@ const MultiCard = ({ card, onAnswer }: BaseProps) => {
         <div className="space-y-2">
           <ResultBanner right={allRight} labelRight={tt.all_correct} labelWrong={tt.not_all_correct} />
           {card.explain && (
-            <div className="text-xs text-muted-foreground leading-relaxed border-s-2 border-emerald-400/40 ps-3">
+            <div className="text-xs text-muted-foreground leading-relaxed border-s-2 border-primary/40 ps-3">
               {card.explain}
             </div>
           )}
@@ -760,7 +760,7 @@ const TrueFalseCard = ({ card, onAnswer }: BaseProps) => {
           const t = TONE[b.tone];
           let cls = `border-border/60 bg-card/60 hover:${t.softBorder} hover:${t.softBg} text-foreground/85`;
           if (reveal) {
-            if (isCorrect) cls = `${t.softBorder} bg-emerald-500/10 text-emerald-800 dark:text-emerald-100 ${TONE.emerald.glow}`;
+            if (isCorrect) cls = `${t.softBorder} bg-primary/10 text-primary dark:text-primary ${TONE.emerald.glow}`;
             else if (sel) cls = "border-rose-400/60 bg-rose-500/10 text-rose-800 dark:text-rose-100";
             else cls = "border-border/40 bg-card/40 text-muted-foreground opacity-60";
           } else if (sel) {
@@ -786,7 +786,7 @@ const TrueFalseCard = ({ card, onAnswer }: BaseProps) => {
           <motion.div initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} className="space-y-2">
             <ResultBanner right={isRight} labelRight={tt.correct} labelWrong={tt.wrong} />
             {card.explain && (
-              <div className="text-xs text-muted-foreground leading-relaxed border-s-2 border-emerald-400/40 ps-3">
+              <div className="text-xs text-muted-foreground leading-relaxed border-s-2 border-primary/40 ps-3">
                 {card.explain}
               </div>
             )}
@@ -834,7 +834,7 @@ const ExplainCard = ({ card, onAnswer }: BaseProps) => {
               setSent(true);
               onAnswer?.(tt.my_answer_prefix(val.trim()));
             }}
-            className="w-full py-2.5 rounded-2xl bg-gradient-to-b from-blue-500 to-blue-600 text-white text-sm font-semibold shadow-[0_8px_20px_-8px_rgba(59,130,246,0.5)] hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+            className="w-full py-2.5 rounded-2xl bg-gradient-to-b from-blue-500 to-blue-600 text-foreground text-sm font-semibold shadow-[0_8px_20px_-8px_rgba(59,130,246,0.5)] hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
           >
             {tt.submit_grading}
           </button>
@@ -885,9 +885,9 @@ const FillCard = ({ card, onAnswer }: BaseProps) => {
           className={`flex-1 px-3.5 py-2.5 rounded-2xl border bg-background/60 text-sm outline-none transition-all ${
             sent
               ? isRight
-                ? "border-emerald-400/70 bg-emerald-500/10 text-emerald-800 dark:text-emerald-100 font-semibold"
+                ? "border-primary/70 bg-primary/10 text-primary dark:text-primary font-semibold"
                 : "border-rose-400/60 bg-rose-500/10 text-rose-800 dark:text-rose-100 font-semibold line-through"
-              : "border-border/60 focus:border-emerald-400/60 focus:ring-2 focus:ring-emerald-400/20"
+              : "border-border/60 focus:border-primary/60 focus:ring-2 focus:ring-primary/20"
           }`}
         />
         {!sent && (
@@ -895,7 +895,7 @@ const FillCard = ({ card, onAnswer }: BaseProps) => {
             type="button"
             disabled={!val.trim()}
             onClick={submit}
-            className="px-5 rounded-2xl bg-gradient-to-b from-emerald-500 to-emerald-600 text-white text-sm font-semibold shadow-[0_8px_20px_-8px_rgba(16,185,129,0.5)] hover:brightness-110 disabled:opacity-40 transition-all"
+            className="px-5 rounded-2xl bg-gradient-to-b from-primary to-primary text-foreground text-sm font-semibold shadow-[0_8px_20px_-8px_rgba(16,185,129,0.5)] hover:brightness-110 disabled:opacity-40 transition-all"
           >
             {tt.confirm}
           </button>
@@ -910,7 +910,7 @@ const FillCard = ({ card, onAnswer }: BaseProps) => {
               labelWrong={tt.correct_answer_is(answer)}
             />
             {card.explain && (
-              <div className="text-xs text-muted-foreground leading-relaxed border-s-2 border-emerald-400/40 ps-3">
+              <div className="text-xs text-muted-foreground leading-relaxed border-s-2 border-primary/40 ps-3">
                 {card.explain}
               </div>
             )}
@@ -952,7 +952,7 @@ const MatchCard = ({ card, onAnswer }: BaseProps) => {
           const state = done ? (chosen === p.b ? "right" : "wrong") : chosen ? "picked" : "idle";
           const cls =
             state === "right"
-              ? "border-emerald-400/60 bg-emerald-500/10"
+              ? "border-primary/60 bg-primary/10"
               : state === "wrong"
                 ? "border-rose-400/60 bg-rose-500/10"
                 : state === "picked"
@@ -998,7 +998,7 @@ const MatchCard = ({ card, onAnswer }: BaseProps) => {
             const payload = `[LEARN_ANSWER] type=match result=${allRight ? "correct" : "incorrect"} pairs=[${results}]`;
             setTimeout(() => onAnswer?.(payload), 120);
           }}
-          className="w-full py-2.5 rounded-2xl bg-gradient-to-b from-violet-500 to-violet-600 text-white text-sm font-semibold shadow-[0_8px_20px_-8px_rgba(139,92,246,0.5)] hover:brightness-110 disabled:opacity-40 transition-all"
+          className="w-full py-2.5 rounded-2xl bg-gradient-to-b from-violet-500 to-violet-600 text-foreground text-sm font-semibold shadow-[0_8px_20px_-8px_rgba(139,92,246,0.5)] hover:brightness-110 disabled:opacity-40 transition-all"
         >
           {tt.confirm}
         </button>
@@ -1101,7 +1101,7 @@ const RoadmapCard = ({ card, onAnswer }: BaseProps) => {
             key={i}
             className="relative rounded-2xl border border-border/50 bg-card/60 p-3.5 ps-10 space-y-1.5"
           >
-            <span className="absolute start-[3px] top-[14px] w-6 h-6 rounded-full bg-blue-500 text-white text-[11px] font-bold flex items-center justify-center shadow-[0_0_0_3px_hsl(var(--card))]">
+            <span className="absolute start-[3px] top-[14px] w-6 h-6 rounded-full bg-blue-500 text-foreground text-[11px] font-bold flex items-center justify-center shadow-[0_0_0_3px_hsl(var(--card))]">
               {i + 1}
             </span>
             <div className="text-sm font-semibold text-foreground">{s.title}</div>
@@ -1119,7 +1119,7 @@ const RoadmapCard = ({ card, onAnswer }: BaseProps) => {
               </div>
             )}
             {s.project && (
-              <div className="text-[11px] text-emerald-700 dark:text-emerald-300 inline-flex items-center gap-1">
+              <div className="text-[11px] text-primary dark:text-primary inline-flex items-center gap-1">
                 <Sparkles className="w-3 h-3" /> {s.project}
               </div>
             )}
@@ -1234,7 +1234,7 @@ const ExamSetupCard = ({ card, onAnswer }: BaseProps) => {
           type="button"
           onClick={submit}
           disabled={!topic.trim() || types.length === 0}
-          className="w-full py-2.5 rounded-2xl bg-gradient-to-b from-rose-500 to-rose-600 text-white text-sm font-semibold shadow-[0_8px_20px_-8px_rgba(244,63,94,0.5)] hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+          className="w-full py-2.5 rounded-2xl bg-gradient-to-b from-rose-500 to-rose-600 text-foreground text-sm font-semibold shadow-[0_8px_20px_-8px_rgba(244,63,94,0.5)] hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
         >
           {tt.start_exam}
         </button>
@@ -1355,7 +1355,7 @@ const ExamRunnerCard = ({ card, onAnswer }: BaseProps) => {
               <div key={i} className="flex items-start gap-2 text-xs">
                 <span
                   className={`w-4 h-4 rounded-full grid place-items-center shrink-0 mt-0.5 ${
-                    ok ? "bg-emerald-500/20 text-emerald-600 dark:text-emerald-300" : "bg-rose-500/20 text-rose-600 dark:text-rose-300"
+                    ok ? "bg-primary/20 text-primary dark:text-primary" : "bg-rose-500/20 text-rose-600 dark:text-rose-300"
                   }`}
                 >
                   {ok ? <Check className="w-2.5 h-2.5" /> : <X className="w-2.5 h-2.5" />}
@@ -1368,7 +1368,7 @@ const ExamRunnerCard = ({ card, onAnswer }: BaseProps) => {
         <button
           type="button"
           onClick={() => onAnswer?.(tt.score_analysis(correct, questions.length))}
-          className="w-full py-2.5 rounded-2xl bg-gradient-to-b from-rose-500 to-rose-600 text-white text-sm font-semibold shadow-[0_8px_20px_-8px_rgba(244,63,94,0.5)] hover:brightness-110 transition-all"
+          className="w-full py-2.5 rounded-2xl bg-gradient-to-b from-rose-500 to-rose-600 text-foreground text-sm font-semibold shadow-[0_8px_20px_-8px_rgba(244,63,94,0.5)] hover:brightness-110 transition-all"
         >
           {tt.analyze_result}
         </button>
@@ -1427,7 +1427,7 @@ const ExamRunnerCard = ({ card, onAnswer }: BaseProps) => {
               >
                 <span
                   className={`w-6 h-6 rounded-lg text-[11px] font-bold grid place-items-center shrink-0 ${
-                    picked ? "bg-rose-500 text-white" : "bg-muted/60 text-muted-foreground"
+                    picked ? "bg-rose-500 text-foreground" : "bg-muted/60 text-muted-foreground"
                   }`}
                 >
                   {String.fromCharCode(65 + i)}
@@ -1461,7 +1461,7 @@ const ExamRunnerCard = ({ card, onAnswer }: BaseProps) => {
           <button
             type="button"
             onClick={finish}
-            className="flex-1 py-2 rounded-xl bg-gradient-to-b from-rose-500 to-rose-600 text-white text-xs font-semibold shadow-[0_6px_16px_-8px_rgba(244,63,94,0.5)] hover:brightness-110 transition-all"
+            className="flex-1 py-2 rounded-xl bg-gradient-to-b from-rose-500 to-rose-600 text-foreground text-xs font-semibold shadow-[0_6px_16px_-8px_rgba(244,63,94,0.5)] hover:brightness-110 transition-all"
           >
             {tt.finish_view_score}
           </button>
@@ -1536,7 +1536,7 @@ const OnboardingCard = ({ card, onAnswer }: BaseProps) => {
         value={interests}
         onChange={(e) => setInterests(e.target.value)}
         placeholder="Your hobbies (football, games, cooking...)"
-        className="w-full px-3.5 py-2.5 rounded-2xl border border-border/60 bg-background/60 text-sm outline-none focus:border-emerald-400/60 focus:ring-2 focus:ring-emerald-400/20 transition-all"
+        className="w-full px-3.5 py-2.5 rounded-2xl border border-border/60 bg-background/60 text-sm outline-none focus:border-primary/60 focus:ring-2 focus:ring-primary/20 transition-all"
       />
       <div className="flex gap-1.5 p-1 rounded-2xl bg-muted/40 border border-border/40">
         {[tt.diff_easy, tt.diff_intermediate, tt.diff_hard].map((l) => (
@@ -1562,7 +1562,7 @@ const OnboardingCard = ({ card, onAnswer }: BaseProps) => {
             `My info: hobbies ${interests}, level ${level}. Use analogies from my interests in every explanation from now on.`,
           )
         }
-        className="w-full py-2.5 rounded-2xl bg-gradient-to-b from-emerald-500 to-emerald-600 text-white text-sm font-semibold shadow-[0_8px_20px_-8px_rgba(16,185,129,0.5)] hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+        className="w-full py-2.5 rounded-2xl bg-gradient-to-b from-primary to-primary text-foreground text-sm font-semibold shadow-[0_8px_20px_-8px_rgba(16,185,129,0.5)] hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
       >
         {tt.confirm} →
       </button>
@@ -1624,7 +1624,7 @@ const FlashcardCard = ({ card, onAnswer }: BaseProps) => {
               transition={{ duration: 0.25 }}
               className="space-y-2"
             >
-              <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-emerald-600 dark:text-emerald-300 font-mono">
+              <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-primary dark:text-primary font-mono">
                 {tt.correct_answer}
               </div>
               <div className="text-[16px] text-foreground leading-relaxed">{card.back || card.answer}</div>
@@ -1662,7 +1662,7 @@ const FlashcardCard = ({ card, onAnswer }: BaseProps) => {
             <button
               type="button"
               onClick={() => rate("knew")}
-              className="min-h-11 rounded-2xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 text-xs font-semibold transition-colors"
+              className="min-h-11 rounded-2xl bg-primary/10 hover:bg-primary/20 text-primary dark:text-primary text-xs font-semibold transition-colors"
             >
               {tt.flashcard_knew}
             </button>
@@ -1742,7 +1742,7 @@ const OrderingCard = ({ card, onAnswer }: BaseProps) => {
           const isWrongPos = submitted && si !== correctOrder[i];
           let cls = "border-border/60 bg-card/60 hover:border-blue-300/60";
           if (isSel) cls = "border-blue-400/70 bg-blue-500/[0.12] " + TONE.blue.glow;
-          if (isCorrectPos) cls = "border-emerald-400/70 bg-emerald-500/[0.10]";
+          if (isCorrectPos) cls = "border-primary/70 bg-primary/[0.10]";
           if (isWrongPos) cls = "border-rose-400/60 bg-rose-500/[0.08]";
           return (
             <motion.li
@@ -1760,7 +1760,7 @@ const OrderingCard = ({ card, onAnswer }: BaseProps) => {
                   {i + 1}
                 </span>
                 <span className="flex-1">{steps[si]}</span>
-                {submitted && isCorrectPos && <Check className="w-4 h-4 text-emerald-500" />}
+                {submitted && isCorrectPos && <Check className="w-4 h-4 text-primary" />}
                 {submitted && isWrongPos && <X className="w-4 h-4 text-rose-500" />}
               </button>
             </motion.li>
@@ -1771,7 +1771,7 @@ const OrderingCard = ({ card, onAnswer }: BaseProps) => {
         <button
           type="button"
           onClick={submit}
-          className="w-full py-2.5 rounded-2xl bg-gradient-to-b from-blue-500 to-blue-600 text-white text-sm font-semibold shadow-[0_8px_20px_-8px_rgba(59,130,246,0.5)] hover:brightness-110 transition-all"
+          className="w-full py-2.5 rounded-2xl bg-gradient-to-b from-blue-500 to-blue-600 text-foreground text-sm font-semibold shadow-[0_8px_20px_-8px_rgba(59,130,246,0.5)] hover:brightness-110 transition-all"
         >
           {tt.ordering_check}
         </button>
@@ -1835,7 +1835,7 @@ const SummaryWriteCard = ({ card, onAnswer }: BaseProps) => {
         type="button"
         onClick={submit}
         disabled={val.trim().length < 5 || sent}
-        className="w-full py-2.5 rounded-2xl bg-gradient-to-b from-violet-500 to-violet-600 text-white text-sm font-semibold shadow-[0_8px_20px_-8px_rgba(139,92,246,0.5)] hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+        className="w-full py-2.5 rounded-2xl bg-gradient-to-b from-violet-500 to-violet-600 text-foreground text-sm font-semibold shadow-[0_8px_20px_-8px_rgba(139,92,246,0.5)] hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
       >
         {sent ? tt.sent_grading : tt.summary_submit}
       </button>
@@ -1877,7 +1877,7 @@ const ScenarioCard = ({ card, onAnswer }: BaseProps) => {
           const revealed = picked !== null;
           let cls = "border-border/60 bg-card/60 hover:border-amber-300/60";
           if (revealed) {
-            if (c.correct) cls = "border-emerald-400/70 bg-emerald-500/[0.10]";
+            if (c.correct) cls = "border-primary/70 bg-primary/[0.10]";
             else if (isPicked) cls = "border-rose-400/60 bg-rose-500/[0.08]";
             else cls = "border-border/40 bg-card/40 opacity-60";
           }
@@ -1895,7 +1895,7 @@ const ScenarioCard = ({ card, onAnswer }: BaseProps) => {
                   {String.fromCharCode(65 + i)}
                 </span>
                 <span className="flex-1 font-medium text-foreground/90">{c.text}</span>
-                {revealed && c.correct && <Check className="w-4 h-4 text-emerald-500" />}
+                {revealed && c.correct && <Check className="w-4 h-4 text-primary" />}
                 {revealed && isPicked && !c.correct && <X className="w-4 h-4 text-rose-500" />}
               </div>
             </motion.button>

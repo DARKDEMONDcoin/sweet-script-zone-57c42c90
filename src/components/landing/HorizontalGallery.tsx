@@ -213,7 +213,7 @@ const HorizontalGallery = () => {
                 {tx(item.desc)}
               </p>
               <button
-                className="mt-5 inline-flex rounded-full bg-black px-6 py-2.5 text-xs md:text-sm font-bold text-foreground hover:bg-black/85 transition-colors"
+                className="mt-5 inline-flex rounded-full bg-background px-6 py-2.5 text-xs md:text-sm font-bold text-foreground hover:bg-background/85 transition-colors"
                 aria-label={`${tx("Explore")} ${tx(item.label)}`}
               >
                 {tx("Explore")} {tx(item.label)}

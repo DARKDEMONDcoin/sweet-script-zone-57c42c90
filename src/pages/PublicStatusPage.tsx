@@ -37,7 +37,7 @@ function StatusPill({ status }: { status: string }) {
     operational: {
       icon: <CheckCircle2 className="h-4 w-4" />,
       label: "Operational",
-      className: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20",
+      className: "bg-primary/10 text-primary border-primary/20",
     },
     degraded: {
       icon: <AlertTriangle className="h-4 w-4" />,
@@ -69,7 +69,7 @@ function UptimeBar({ pct }: { pct: number }) {
         return (
           <div
             key={i}
-            className={`flex-1 rounded-sm ${isDown ? "bg-red-500/70" : "bg-emerald-500/60"} hover:opacity-100 opacity-90`}
+            className={`flex-1 rounded-sm ${isDown ? "bg-red-500/70" : "bg-primary/60"} hover:opacity-100 opacity-90`}
             style={{ height: isDown ? "60%" : "100%" }}
             title={isDown ? "Incident detected" : "Operational"}
           />
@@ -158,12 +158,12 @@ export default function PublicStatusPage() {
           <div
             className={`rounded-2xl border p-6 mb-8 flex items-center gap-4 ${
               allOperational
-                ? "bg-emerald-500/5 border-emerald-500/20"
+                ? "bg-primary/5 border-primary/20"
                 : "bg-red-500/5 border-red-500/20"
             }`}
           >
             {allOperational ? (
-              <CheckCircle2 className="h-10 w-10 text-emerald-500 shrink-0" />
+              <CheckCircle2 className="h-10 w-10 text-primary shrink-0" />
             ) : (
               <AlertTriangle className="h-10 w-10 text-red-500 shrink-0" />
             )}

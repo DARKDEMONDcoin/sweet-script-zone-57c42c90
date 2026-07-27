@@ -96,7 +96,7 @@ export default function LithosPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-white tracking-[-0.02em]" style={{ fontFamily: "'Inter', sans-serif" }}>
+    <div className="min-h-screen bg-primary tracking-[-0.02em]" style={{ fontFamily: "'Inter', sans-serif" }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@1,400;1,500;1,600&display=swap');
         .lithos-playfair { font-family: 'Playfair Display', serif; }
@@ -115,28 +115,28 @@ export default function LithosPage() {
           <svg width="26" height="26" viewBox="0 0 256 256" fill="#ffffff">
             <path d="M 256 256 L 128 256 L 0 128 L 128 128 Z M 256 128 L 128 128 L 0 0 L 128 0 Z" />
           </svg>
-          <span className="text-white text-xl font-semibold">Lithos</span>
+          <span className="text-foreground text-xl font-semibold">Lithos</span>
         </div>
-        <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 bg-white/20 backdrop-blur-md border border-white/30 rounded-full px-2 py-2 items-center gap-1">
-          <button className="bg-white text-gray-900 px-4 py-1.5 rounded-full text-sm font-medium">Course</button>
+        <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 bg-muted/20 border border-border/30 rounded-full px-2 py-2 items-center gap-1">
+          <button className="bg-primary text-gray-900 px-4 py-1.5 rounded-full text-sm font-medium">Course</button>
           {["Field Guides", "Geology", "Plans", "Live Tour"].map((l) => (
             <button
               key={l}
-              className="text-white/80 hover:bg-white/20 hover:text-white transition-colors px-4 py-1.5 rounded-full text-sm font-medium"
+              className="text-muted-foreground hover:bg-muted/20 hover:text-foreground transition-colors px-4 py-1.5 rounded-full text-sm font-medium"
             >
               {l}
             </button>
           ))}
         </div>
-        <button className="hidden md:block bg-white text-gray-900 text-sm font-semibold px-6 py-2.5 rounded-full hover:bg-gray-100">
+        <button className="hidden md:block bg-primary text-gray-900 text-sm font-semibold px-6 py-2.5 rounded-full hover:bg-gray-100">
           Sign Up
         </button>
-        <button className="md:hidden text-white">
+        <button className="md:hidden text-foreground">
           <Menu size={26} />
         </button>
       </nav>
 
-      <section className="relative w-full overflow-hidden h-screen bg-black" style={{ height: "100dvh" }}>
+      <section className="relative w-full overflow-hidden h-screen bg-background" style={{ height: "100dvh" }}>
         <div
           className="absolute inset-0 bg-center bg-cover bg-no-repeat z-10 hero-zoom"
           style={{ backgroundImage: `url(${BG_IMAGE_1})` }}
@@ -145,7 +145,7 @@ export default function LithosPage() {
         <RevealLayer image={BG_IMAGE_2} cursorX={cursorPos.x} cursorY={cursorPos.y} />
 
         <div className="absolute top-[14%] left-0 right-0 flex flex-col items-center text-center px-5 pointer-events-none z-50">
-          <h1 className="text-white leading-[0.95]">
+          <h1 className="text-foreground leading-[0.95]">
             <span
               className="block lithos-playfair italic font-normal text-5xl sm:text-7xl md:text-8xl hero-anim hero-reveal"
               style={{ letterSpacing: "-0.05em", animationDelay: "0.25s" }}
@@ -165,7 +165,7 @@ export default function LithosPage() {
           className="hidden sm:block absolute bottom-14 left-10 md:left-14 max-w-[260px] z-50 hero-anim hero-fade"
           style={{ animationDelay: "0.7s" }}
         >
-          <p className="text-white/85 text-sm leading-relaxed">
+          <p className="text-muted-foreground text-sm leading-relaxed">
             Every layer of sediment records a chapter of our planet, from ancient seabeds to drifting ash, layered
             across millions of years beneath us.
           </p>
@@ -175,11 +175,11 @@ export default function LithosPage() {
           className="absolute bottom-10 sm:bottom-24 left-5 right-5 sm:left-auto sm:right-10 md:right-14 max-w-full sm:max-w-[260px] flex flex-col items-start gap-4 sm:gap-5 z-50 hero-anim hero-fade"
           style={{ animationDelay: "0.85s" }}
         >
-          <p className="text-white/85 text-sm leading-relaxed">
+          <p className="text-muted-foreground text-sm leading-relaxed">
             Our interactive maps let you peel back the crust to trace how stones, fossils, and deep time combine to
             shape the ground beneath your feet.
           </p>
-          <button className="bg-[#e8702a] hover:bg-[#d2611f] text-white text-sm font-medium px-7 py-3 rounded-full transition-all hover:scale-[1.03] active:scale-95 hover:shadow-lg hover:shadow-[#e8702a]/30">
+          <button className="bg-[#e8702a] hover:bg-[#d2611f] text-foreground text-sm font-medium px-7 py-3 rounded-full transition-all hover:scale-[1.03] active:scale-95 hover:shadow-lg hover:shadow-[#e8702a]/30">
             Start Digging
           </button>
         </div>

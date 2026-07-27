@@ -1,12 +1,13 @@
 /** @doc HITL Approvals — inbox of pending sensitive tool calls awaiting user decision. */
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { Loader2, Check, X, RefreshCw, ShieldAlert } from "lucide-react";
+import { Check, X, RefreshCw, ShieldAlert } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import ProfileGlassShell, { GlassSection, GlassCard } from "@/components/profile/ProfileGlassShell";
+import { Spinner } from "@/components/ui/spinner";
 
 interface Approval {
   id: string;
@@ -75,7 +76,7 @@ export default function ApprovalsPage() {
         </GlassCard>
 
         {loading ? (
-          <div className="flex justify-center py-12"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>
+          <div className="flex justify-center py-12"><Spinner className="h-6 w-6 text-muted-foreground" /></div>
         ) : rows.length === 0 ? (
           <GlassCard>
             <div className="p-8 text-center text-sm text-muted-foreground">

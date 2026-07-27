@@ -37,6 +37,31 @@ export function extractPatchBlocks(content: string): PatchBlock[] {
   return out;
 }
 
+/**
+ * Whitespace-tolerant fallback match: models often re-indent or normalise
+ * trailing spaces, which would otherwise fail an exact `indexOf`.
+ */
+function findFuzzy(content: string, search: string): { index: number; length: number } | null {
+  const needle = search.split("\n").map((l) => l.trim());
+  if (needle.length === 0) return null;
+  const lines = content.split("\n");
+  const offsets: number[] = [];
+  let pos = 0;
+  for (const l of lines) { offsets.push(pos); pos += l.length + 1; }
+  for (let i = 0; i + needle.length <= lines.length; i++) {
+    let ok = true;
+    for (let j = 0; j < needle.length; j++) {
+      if (lines[i + j].trim() !== needle[j]) { ok = false; break; }
+    }
+    if (!ok) continue;
+    const start = offsets[i];
+    const endLine = i + needle.length - 1;
+    const end = offsets[endLine] + lines[endLine].length;
+    return { index: start, length: end - start };
+  }
+  return null;
+}
+
 export interface ApplyResult {
   files: ProjectFile[];
   applied: number;
@@ -51,11 +76,17 @@ export function applyPatchBlocks(files: ProjectFile[], patches: PatchBlock[]): A
   for (const patch of patches) {
     const file = map.get(patch.path);
     if (!file) { failed.push(patch); continue; }
-    const idx = file.content.indexOf(patch.search);
-    if (idx === -1) { failed.push(patch); continue; }
+    let idx = file.content.indexOf(patch.search);
+    let matchLen = patch.search.length;
+    if (idx === -1) {
+      const fuzzy = findFuzzy(file.content, patch.search);
+      if (!fuzzy) { failed.push(patch); continue; }
+      idx = fuzzy.index;
+      matchLen = fuzzy.length;
+    }
     // Use manual splice to avoid String.replace's $-backreference interpretation
     // (which would mangle any replacement containing $1, $&, $$, etc.).
-    file.content = file.content.slice(0, idx) + patch.replace + file.content.slice(idx + patch.search.length);
+    file.content = file.content.slice(0, idx) + patch.replace + file.content.slice(idx + matchLen);
     applied += 1;
   }
   return { files: Array.from(map.values()), applied, failed };

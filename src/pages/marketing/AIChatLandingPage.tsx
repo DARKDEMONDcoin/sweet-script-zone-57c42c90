@@ -97,7 +97,7 @@ const ModelSection = ({
   return (
     <section
       id={model.id}
-      className="relative overflow-hidden border-t border-white/5 py-24 md:py-36"
+      className="relative overflow-hidden border-t border-border/5 py-24 md:py-36"
     >
       <div className="mx-auto max-w-7xl px-6">
         <div
@@ -109,7 +109,7 @@ const ModelSection = ({
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-            className="relative mx-auto w-full max-w-sm aspect-square overflow-hidden rounded-3xl border border-white/10"
+            className="relative mx-auto w-full max-w-sm aspect-square overflow-hidden rounded-3xl border border-border/10"
           >
             <img
               src={model.image}
@@ -122,13 +122,13 @@ const ModelSection = ({
             <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent" />
             {model.badge && (
               <div className="absolute right-4 top-4">
-                <span className="rounded-full bg-white text-black px-2.5 py-1 text-[10px] font-bold tracking-wider">
+                <span className="rounded-full bg-primary text-primary-foreground px-2.5 py-1 text-[10px] font-bold tracking-wider">
                   {model.badge}
                 </span>
               </div>
             )}
             <div className="absolute inset-0 flex items-center justify-center px-6">
-              <p className="font-display text-white text-[10vw] md:text-[3.4vw] font-black uppercase leading-[0.9] tracking-tight text-center drop-shadow-[0_4px_24px_var(--overlay-black-55)]">
+              <p className="font-display text-foreground text-[10vw] md:text-[3.4vw] font-black uppercase leading-[0.9] tracking-tight text-center drop-shadow-[0_4px_24px_var(--overlay-black-55)]">
                 {model.name}
               </p>
             </div>
@@ -159,7 +159,7 @@ const ModelSection = ({
               {model.bullets.map((b) => (
                 <li
                   key={b}
-                  className="flex items-start gap-3 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-foreground/85"
+                  className="flex items-start gap-3 rounded-xl border border-border/10 bg-muted/40 px-4 py-3 text-sm text-foreground/85"
                 >
                   <span className="mt-1.5 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-foreground/70" />
                   <span>{b}</span>
@@ -180,7 +180,7 @@ const ModelSection = ({
               </Link>
               <Link
                 to="/chat"
-                className="inline-flex items-center gap-2 rounded-full border border-white/20 px-7 py-3.5 text-sm font-semibold text-foreground hover:bg-white/5 transition-colors"
+                className="inline-flex items-center gap-2 rounded-full border border-border/20 px-7 py-3.5 text-sm font-semibold text-foreground hover:bg-muted/5 transition-colors"
               >
                 Try in chat
               </Link>
@@ -308,7 +308,7 @@ const AIChatLandingPage = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="text-[11px] uppercase tracking-[0.35em] text-white/85 mb-6"
+            className="text-[11px] uppercase tracking-[0.35em] text-muted-foreground mb-6"
           >
             Megsy AI Chat
           </motion.p>
@@ -316,10 +316,10 @@ const AIChatLandingPage = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.05 }}
-            className="font-display text-[14vw] font-black uppercase leading-[0.88] tracking-tighter text-white md:text-[8vw]"
+            className="font-display text-[14vw] font-black uppercase leading-[0.88] tracking-tighter text-foreground md:text-[8vw]"
           >
             Every AI.<br />
-            <span className="bg-gradient-to-r from-fuchsia-200 via-pink-100 to-amber-200 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-foreground via-foreground/80 to-muted-foreground bg-clip-text text-transparent">
               One chat.
             </span>
           </motion.h1>
@@ -327,7 +327,7 @@ const AIChatLandingPage = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.2 }}
-            className="mt-8 mx-auto max-w-2xl text-base md:text-xl text-white/90 leading-relaxed"
+            className="mt-8 mx-auto max-w-2xl text-base md:text-xl text-foreground leading-relaxed"
           >
             Megsy 3.9, Gemini 3.5, GPT‑5.5, Grok 4, Claude Sonnet 4.6 &amp; Opus 4.8 — with Anthropic's
             Claude Code natively integrated. Web search, files, image &amp; video generation.
@@ -340,13 +340,13 @@ const AIChatLandingPage = () => {
           >
             <Link
               to="/chat"
-              className="inline-flex items-center justify-center rounded-full bg-yellow-400 hover:bg-yellow-300 text-black font-semibold px-8 py-4 text-sm md:text-base transition-colors"
+              className="inline-flex items-center justify-center rounded-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-8 py-4 text-sm md:text-base transition-colors"
             >
               Open Megsy Chat — Free
             </Link>
             <Link
               to="/pricing"
-              className="inline-flex items-center justify-center rounded-full border border-white/40 hover:border-white text-white px-8 py-4 text-sm md:text-base transition-colors backdrop-blur-sm bg-white/5"
+              className="inline-flex items-center justify-center rounded-full border border-border/40 hover:border-border text-foreground px-8 py-4 text-sm md:text-base transition-colors bg-muted/5"
             >
               See plans
             </Link>
@@ -356,14 +356,14 @@ const AIChatLandingPage = () => {
 
       <main>
         {/* CLAUDE CODE INTEGRATION — top */}
-        <section className="border-t border-white/5 pt-12 pb-16 md:pt-16 md:pb-20">
+        <section className="border-t border-border/5 pt-12 pb-16 md:pt-16 md:pb-20">
           <div className="mx-auto max-w-6xl px-4 md:px-6">
             <motion.h2
               {...fadeUp}
-              className="text-center font-serif font-semibold leading-[0.95] tracking-[-0.02em] text-white text-[7vw] md:text-[3.2vw]"
+              className="text-center font-serif font-semibold leading-[0.95] tracking-[-0.02em] text-foreground text-[7vw] md:text-[3.2vw]"
               style={{ fontFamily: '"Instrument Serif", "Cormorant Garamond", Georgia, serif' }}
             >
-              Claude Code, <em className="italic text-white/70">natively</em> inside Megsy.
+              Claude Code, <em className="italic text-muted-foreground">natively</em> inside Megsy.
             </motion.h2>
             <motion.p
               {...fadeUp}
@@ -396,14 +396,14 @@ const AIChatLandingPage = () => {
                   key={c.title}
                   {...fadeUp}
                   transition={{ ...fadeUp.transition, delay: 0.05 * i }}
-                  className="flex flex-col items-center rounded-t-[120px] rounded-b-[20px] border border-white/10 bg-white/[0.025] px-6 pt-14 pb-8 md:px-7 md:pt-16 md:pb-10 hover:bg-white/[0.05] hover:border-white/20 transition-colors"
+                  className="flex flex-col items-center rounded-t-[120px] rounded-b-[20px] border border-border/10 bg-muted/40 px-6 pt-14 pb-8 md:px-7 md:pt-16 md:pb-10 hover:bg-muted/40 hover:border-border/20 transition-colors"
                 >
                   <div className="flex h-16 md:h-20 items-center justify-center">
-                    <span className="font-mono text-lg md:text-xl font-bold tracking-tight text-white">
+                    <span className="font-mono text-lg md:text-xl font-bold tracking-tight text-foreground">
                       {c.mark}
                     </span>
                   </div>
-                  <h3 className="mt-4 text-center font-display text-base md:text-lg font-bold leading-snug text-white">
+                  <h3 className="mt-4 text-center font-display text-base md:text-lg font-bold leading-snug text-foreground">
                     {c.title}
                   </h3>
                   <p className="mt-3 max-w-xs text-center text-xs md:text-sm text-foreground/65 leading-relaxed">
@@ -428,7 +428,7 @@ const AIChatLandingPage = () => {
 
 
         {/* CAPABILITIES */}
-        <section className="relative overflow-hidden border-t border-white/5 py-24 md:py-32 bg-gradient-to-br from-red-700 via-red-600 to-rose-800 text-white">
+        <section className="relative overflow-hidden border-t border-border/5 py-24 md:py-32 bg-gradient-to-br from-red-700 via-red-600 to-rose-800 text-foreground">
           <div className="pointer-events-none absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_20%_20%,var(--overlay-white-25),transparent_50%),radial-gradient(circle_at_80%_80%,var(--overlay-black-35),transparent_55%)]" />
           <div className="relative mx-auto max-w-7xl px-6">
             <motion.h2
@@ -444,10 +444,10 @@ const AIChatLandingPage = () => {
                   key={c.title}
                   {...fadeUp}
                   transition={{ ...fadeUp.transition, delay: 0.05 * i }}
-                  className="rounded-2xl border border-white/15 bg-white/[0.08] backdrop-blur-sm p-6 hover:bg-white/[0.12] hover:border-white/30 transition-colors"
+                  className="rounded-2xl border border-border/15 bg-muted/40 p-6 hover:bg-muted/40 hover:border-border/30 transition-colors"
                 >
-                  <h3 className="font-display text-base font-bold leading-snug text-white">{c.title}</h3>
-                  <p className="mt-2 text-sm text-white/80 leading-relaxed">{c.body}</p>
+                  <h3 className="font-display text-base font-bold leading-snug text-foreground">{c.title}</h3>
+                  <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{c.body}</p>
                 </motion.article>
               ))}
             </div>
@@ -455,7 +455,7 @@ const AIChatLandingPage = () => {
         </section>
 
         {/* SKILLS */}
-        <section className="relative overflow-hidden border-t border-white/5 bg-white/[0.02] py-24 md:py-32">
+        <section className="relative overflow-hidden border-t border-border/5 bg-muted/40 py-24 md:py-32">
           <div className="mx-auto max-w-7xl px-6">
             <motion.p {...fadeUp} className="text-[11px] uppercase tracking-[0.35em] text-foreground/50">
               Skills
@@ -483,7 +483,7 @@ const AIChatLandingPage = () => {
                   key={s.name}
                   {...fadeUp}
                   transition={{ ...fadeUp.transition, delay: 0.05 * i }}
-                  className="rounded-2xl border border-white/10 bg-background/60 p-6"
+                  className="rounded-2xl border border-border/10 bg-background/60 p-6"
                 >
                   <p className="font-mono text-xs text-foreground/50">/{s.name.toLowerCase().replace(/\s+/g, "-")}</p>
                   <h3 className="mt-2 font-display text-base font-bold">{s.name}</h3>
@@ -495,7 +495,7 @@ const AIChatLandingPage = () => {
         </section>
 
         {/* INTEGRATIONS */}
-        <section className="border-t border-white/5 py-24 md:py-32">
+        <section className="border-t border-border/5 py-24 md:py-32">
           <div className="mx-auto max-w-7xl px-6">
             <motion.p {...fadeUp} className="text-[11px] uppercase tracking-[0.35em] text-foreground/50">
               Integrations
@@ -536,7 +536,7 @@ const AIChatLandingPage = () => {
                       {[...items, ...items, ...items].map((it, idx) => (
                         <div
                           key={`${row}-${idx}-${it.slug}`}
-                          className="flex items-center gap-2.5 rounded-full border border-white/10 bg-white/[0.04] px-5 py-2.5 text-sm text-foreground/90 hover:bg-white/[0.08] hover:border-white/25 transition-colors whitespace-nowrap"
+                          className="flex items-center gap-2.5 rounded-full border border-border/10 bg-muted/40 px-5 py-2.5 text-sm text-foreground/90 hover:bg-muted/40 hover:border-border/25 transition-colors whitespace-nowrap"
                         >
                           <img
                             src={
@@ -570,7 +570,7 @@ const AIChatLandingPage = () => {
         </section>
 
         {/* FAQ */}
-        <section className="border-t border-white/5 bg-white/[0.02] py-24 md:py-32">
+        <section className="border-t border-border/5 bg-muted/40 py-24 md:py-32">
           <div className="mx-auto max-w-5xl px-6">
             <motion.p {...fadeUp} className="text-[11px] uppercase tracking-[0.35em] text-foreground/50">
               FAQ
@@ -586,7 +586,7 @@ const AIChatLandingPage = () => {
             <motion.div
               {...fadeUp}
               transition={{ ...fadeUp.transition, delay: 0.1 }}
-              className="mt-12 divide-y divide-white/10 rounded-2xl border border-white/10 bg-background/60"
+              className="mt-12 divide-y divide-border/10 rounded-2xl border border-border/10 bg-background/60"
             >
               {FAQ.map((f) => (
                 <details key={f.q} className="group p-6">
@@ -602,7 +602,7 @@ const AIChatLandingPage = () => {
         </section>
 
         {/* FINAL CTA */}
-        <section className="relative overflow-hidden border-t border-white/5 px-6 py-32">
+        <section className="relative overflow-hidden border-t border-border/5 px-6 py-32">
           <video
             className="absolute inset-0 h-full w-full object-cover"
             src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260611_183632_c311af08-e4b7-458f-81e7-79847a49b3d3.mp4"
@@ -612,7 +612,7 @@ const AIChatLandingPage = () => {
             playsInline
             preload="auto"
           />
-          <div className="absolute inset-0 bg-black/55" />
+          <div className="absolute inset-0 bg-background/55" />
           <div className="relative mx-auto max-w-4xl text-center">
             <motion.h2
               {...fadeUp}
@@ -627,7 +627,7 @@ const AIChatLandingPage = () => {
             <motion.div {...fadeUp} transition={{ ...fadeUp.transition, delay: 0.15 }}>
               <Link
                 to="/chat"
-                className="mt-10 inline-flex items-center justify-center rounded-full bg-yellow-400 hover:bg-yellow-300 text-black font-semibold px-10 py-4 text-base transition-colors"
+                className="mt-10 inline-flex items-center justify-center rounded-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-10 py-4 text-base transition-colors"
               >
                 Start chatting now
               </Link>

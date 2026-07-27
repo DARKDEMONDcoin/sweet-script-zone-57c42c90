@@ -95,11 +95,11 @@ const PromoUnlockPage = () => {
         style={{ backgroundColor: "#0a0a0a", color: "#fff", fontFamily: "Inter, system-ui, sans-serif" }}
       >
         <div className="max-w-sm text-center space-y-5">
-          <div className="text-[11px] uppercase tracking-[0.3em] text-white">Invalid link</div>
+          <div className="text-[11px] uppercase tracking-[0.3em] text-foreground">Invalid link</div>
           <h1 className="text-3xl font-normal tracking-tight">This invite has expired.</h1>
           <Link
             to="/"
-            className="inline-flex items-center gap-2 text-sm text-white/70 hover:text-white transition"
+            className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition"
           >
             Return home <ArrowUpRight className="h-4 w-4" strokeWidth={1.5} />
           </Link>
@@ -161,12 +161,12 @@ const PromoUnlockPage = () => {
         {/* eyebrow */}
         <div className="flex items-center justify-center mb-8">
           <span
-            className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] backdrop-blur-md px-3.5 py-1.5 text-[10px] uppercase tracking-[0.28em] text-white/90"
+            className="inline-flex items-center gap-2 rounded-full border border-border/10 bg-muted/40 px-3.5 py-1.5 text-[10px] uppercase tracking-[0.28em] text-foreground"
             style={{ animation: "fade-in 600ms ease-out both" }}
           >
             <span className="relative flex h-1.5 w-1.5">
-              <span className="absolute inline-flex h-full w-full rounded-full bg-white/60 opacity-75 animate-ping" />
-              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-white" />
+              <span className="absolute inline-flex h-full w-full rounded-full bg-muted/60 opacity-75 animate-ping" />
+              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-primary" />
             </span>
             Private invite · Applied
           </span>
@@ -195,12 +195,12 @@ const PromoUnlockPage = () => {
             50<span style={{ fontSize: "0.5em", verticalAlign: "super", marginLeft: "0.02em" }}>%</span>
           </div>
           <div
-            className="mt-3 inline-flex items-center gap-3 text-[10px] uppercase tracking-[0.42em] text-white/70"
+            className="mt-3 inline-flex items-center gap-3 text-[10px] uppercase tracking-[0.42em] text-muted-foreground"
             style={{ animation: "fade-in 900ms ease-out 120ms both" }}
           >
-            <span className="h-px w-6 bg-white/30" />
+            <span className="h-px w-6 bg-muted/30" />
             Off · More credits this month
-            <span className="h-px w-6 bg-white/30" />
+            <span className="h-px w-6 bg-muted/30" />
           </div>
         </div>
 
@@ -218,17 +218,17 @@ const PromoUnlockPage = () => {
               return (
                 <div key={label as string} className="flex items-start gap-3">
                   <div className="flex flex-col items-center">
-                    <div className="flex font-light tabular-nums text-[40px] leading-none tracking-tight text-white">
+                    <div className="flex font-light tabular-nums text-[40px] leading-none tracking-tight text-foreground">
                       {str.split("").map((ch, idx) => (
                         <FlipDigit key={`${label}-${idx}`} char={ch} />
                       ))}
                     </div>
-                    <div className="mt-2 text-[10px] uppercase tracking-[0.3em] text-white/60">
+                    <div className="mt-2 text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
                       {label}
                     </div>
                   </div>
                   {i < 3 && (
-                    <span className="text-[32px] font-light text-white/20 leading-none mt-1">
+                    <span className="text-[32px] font-light text-muted-foreground leading-none mt-1">
                       :
                     </span>
                   )}
@@ -243,9 +243,9 @@ const PromoUnlockPage = () => {
         {/* benefits */}
         <ul className="mt-10 space-y-3">
           {BENEFITS.map((b) => (
-            <li key={b} className="flex items-center gap-3 text-[14px] text-white">
+            <li key={b} className="flex items-center gap-3 text-[14px] text-foreground">
               <span className="inline-flex h-5 w-5 items-center justify-center shrink-0">
-                <MegsyStar size={16} static className="text-white" />
+                <MegsyStar size={16} static className="text-foreground" />
               </span>
               {b}
             </li>
@@ -266,7 +266,7 @@ const PromoUnlockPage = () => {
 
           <Link
             to="/pricing"
-            className="block text-center text-[12px] text-white hover:text-white/80 transition"
+            className="block text-center text-[12px] text-foreground hover:text-muted-foreground transition"
           >
             View pricing →
           </Link>
