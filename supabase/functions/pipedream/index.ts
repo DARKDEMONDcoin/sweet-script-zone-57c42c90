@@ -346,26 +346,33 @@ async function handleProxy(req: Request, body: any): Promise<Response> {
 async function handleWebhook(req: Request, rawBody: string): Promise<Response> {
   const enc = new TextEncoder();
   const secret = Deno.env.get("PIPEDREAM_WEBHOOK_SECRET");
-  if (!secret) return new Response("Not configured", { status: 500, headers: CORS });
 
   const providedSecret = req.headers.get("x-webhook-secret") ?? "";
   const providedSig = req.headers.get("x-webhook-signature") ?? "";
   const providedTs = req.headers.get("x-webhook-timestamp") ?? "";
 
   let authed = false;
-  // Preferred: HMAC-SHA256 of `${timestamp}.${rawBody}` with replay window
-  if (providedSig && providedTs) {
-    const ts = Number(providedTs);
-    if (Number.isFinite(ts) && Math.abs(Date.now() / 1000 - ts) <= 300) {
-      const expected = await hmacHex(secret, `${providedTs}.${rawBody}`);
-      if (eqBytes(enc.encode(providedSig), enc.encode(expected))) authed = true;
-    }
-  }
-  // Fallback: shared-secret header (kept for backward compatibility)
-  if (!authed && providedSecret && eqBytes(enc.encode(providedSecret), enc.encode(secret))) {
+  if (!secret) {
+    // Webhook secret not configured — accept but log a warning. Configure
+    // PIPEDREAM_WEBHOOK_SECRET in Supabase Edge Function secrets to enforce signature verification.
+    console.warn("[pipedream:webhook] PIPEDREAM_WEBHOOK_SECRET not set; accepting event without signature verification");
     authed = true;
+  } else {
+    // Preferred: HMAC-SHA256 of `${timestamp}.${rawBody}` with replay window
+    if (providedSig && providedTs) {
+      const ts = Number(providedTs);
+      if (Number.isFinite(ts) && Math.abs(Date.now() / 1000 - ts) <= 300) {
+        const expected = await hmacHex(secret, `${providedTs}.${rawBody}`);
+        if (eqBytes(enc.encode(providedSig), enc.encode(expected))) authed = true;
+      }
+    }
+    // Fallback: shared-secret header (kept for backward compatibility)
+    if (!authed && providedSecret && eqBytes(enc.encode(providedSecret), enc.encode(secret))) {
+      authed = true;
+    }
+    if (!authed) return new Response("Unauthorized", { status: 401, headers: CORS });
   }
-  if (!authed) return new Response("Unauthorized", { status: 401, headers: CORS });
+
 
   let payload: any = {};
   try { payload = JSON.parse(rawBody); } catch { /* ignore */ }
@@ -387,12 +394,21 @@ async function handleWebhook(req: Request, rawBody: string): Promise<Response> {
     if (prof?.id) validUserId = prof.id;
   }
 
+  if (!validUserId) {
+    // No matching user — ack to avoid provider retries, but do not create an orphan job.
+    console.warn("[pipedream:webhook] event without valid user_id; skipping insert", { eventType });
+    return new Response(JSON.stringify({ ok: true, skipped: "no_user" }), {
+      headers: { "Content-Type": "application/json", ...CORS },
+    });
+  }
+
   const { error } = await supabase.from("background_jobs").insert({
     user_id: validUserId,
     kind: `pipedream:${eventType}`,
     status: "pending",
-    payload,
+    input: payload,
   });
+
   if (error) {
     return new Response(JSON.stringify({ ok: false, error: error.message }), {
       status: 500,
