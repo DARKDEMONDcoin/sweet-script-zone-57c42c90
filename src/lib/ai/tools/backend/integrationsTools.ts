@@ -65,3 +65,56 @@ registerTool({
     }
   },
 });
+
+/**
+ * Execute a Pipedream Connect action on behalf of the user. Every call is
+ * routed through the `pipedream-proxy` edge function which:
+ *   - re-validates the caller's Supabase session,
+ *   - enforces the user's per-app enable/disable preference,
+ *   - looks up the user's connected account,
+ *   - runs the action and returns the result.
+ *
+ * Marked `needsApproval` so the agent runtime opens a HITL row and the UI
+ * shows an approval card BEFORE the action fires.
+ */
+registerTool({
+  name: "run_integration_action",
+  description:
+    "Run an action on a third-party app the user has connected via Pipedream (e.g. send a Slack message, create a GitHub issue, add a Notion page). Requires the user to have connected the app and left it enabled for AI use. Human approval is required before the action runs.",
+  category: "workspace",
+  icon: "zap",
+  needsApproval: true,
+  inputSchema: z.object({
+    app_slug: z
+      .string()
+      .min(1)
+      .describe("Pipedream app slug (e.g. 'slack', 'gmail', 'github', 'notion')."),
+    action_key: z
+      .string()
+      .min(1)
+      .describe(
+        "Pipedream action component key, e.g. 'slack-send-message', 'gmail-send-email'.",
+      ),
+    params: z
+      .record(z.string(), z.any())
+      .optional()
+      .describe("Action parameters. Match the action's configured_props schema."),
+    reason: z
+      .string()
+      .optional()
+      .describe("Short human-readable reason shown to the user in the approval card."),
+  }),
+  execute: async ({ app_slug, action_key, params }, ctx) => {
+    try {
+      const supabase = serverSupabase(ctx.supabaseAccessToken);
+      const { data, error } = await supabase.functions.invoke("pipedream-proxy", {
+        body: { app_slug, action_key, params: params ?? {} },
+      });
+      if (error) return { ok: false, error: error.message };
+      return data ?? { ok: false, error: "empty response" };
+    } catch (e: any) {
+      return { ok: false, error: e?.message ?? String(e) };
+    }
+  },
+});
+
