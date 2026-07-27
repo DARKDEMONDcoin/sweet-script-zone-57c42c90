@@ -143,7 +143,7 @@ const TrustCenterPage = () => (
     eyebrow="Trust Center"
     title="Trust & Compliance"
     subtitle="Compliance posture, security program, sub-processors, accessibility, and law-enforcement procedures for Megsy AI worldwide."
-    lastUpdated="19 May 2026"
+    lastUpdated="27 July 2026"
     sections={sections}
     seoTitle="Trust & Compliance Center — Megsy AI"
     seoDescription="Megsy AI Trust Center. GDPR, CCPA, LGPD, EU AI Act, PCI-DSS, sub-processors, accessibility, sanctions, and transparency reporting."

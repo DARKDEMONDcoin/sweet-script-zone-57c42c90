@@ -81,7 +81,7 @@ const CookiePolicyPage = () => (
     eyebrow="Privacy"
     title="Cookie Policy"
     subtitle="A plain-language guide to the cookies Megsy AI uses, why we use them, and how you can control them."
-    lastUpdated="19 May 2026"
+    lastUpdated="27 July 2026"
     sections={sections}
     seoTitle="Cookie Policy"
     seoDescription="How Megsy AI uses cookies, what categories exist, and how to manage your preferences under GDPR, CCPA and Egyptian law."

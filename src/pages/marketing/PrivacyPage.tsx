@@ -151,7 +151,7 @@ const PrivacyPage = () => (
     eyebrow="Legal"
     title="Privacy Policy"
     subtitle="What we collect, why we collect it, and the controls you have over your personal data on Megsy AI."
-    lastUpdated="19 May 2026"
+    lastUpdated="27 July 2026"
     sections={sections}
     seoTitle="Privacy Policy"
     seoDescription="Learn how Megsy AI collects, uses, shares, and protects your personal data, and the rights you have over it."

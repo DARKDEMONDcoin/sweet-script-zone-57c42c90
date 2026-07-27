@@ -125,7 +125,7 @@ const TermsPage = () => (
     eyebrow="Legal"
     title="Terms of Service"
     subtitle="The contract that governs your use of Megsy AI — written in plain language wherever we can, and in precise legal language where we must."
-    lastUpdated="19 May 2026"
+    lastUpdated="27 July 2026"
     sections={sections}
     seoTitle="Terms of Service"
     seoDescription="Read the Megsy AI Terms of Service governing your account, credits, content rights, and use of the platform."
