@@ -93,6 +93,7 @@ const SettingsPage = () => {
         
         { icon: (props: SVGProps<SVGSVGElement>) => <Brain {...props} />, label: "Memory", path: "/settings/memory" },
         { icon: IntegrationsIcon, label: authT("rowIntegrations"), path: "/settings/integrations" },
+        { icon: IntegrationsIcon, label: "AI Tools", path: "/settings/pipedream-tools" },
         {
           icon: (props: SVGProps<SVGSVGElement>) => <Globe {...props} />,
           label: authT("rowLanguage"),
