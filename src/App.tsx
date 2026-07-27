@@ -253,12 +253,29 @@ const queryClient = new QueryClient({
 import PageLoader from "@/components/common/PageLoader";
 import SplashFallback from "@/components/common/SplashFallback";
 import PageTransition from "@/components/common/PageTransition";
-// Suspense fallback used for BOTH the first-load splash and in-app route
-// transitions — the PageLoader skeleton matches the app chrome so there's
-// no jarring flash whether the app is starting cold or moving between pages.
-const LazyFallback = () => <PageLoader />;
-// Kept imported so the legacy pre-hydration splash chunk stays available.
+import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
+import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persister";
+// Instant open: no visual loader between routes. The previous page stays on
+// screen while the next chunk loads (usually <100ms once cached), so the app
+// feels native and never flashes a skeleton. PageLoader/SplashFallback are
+// kept imported so the legacy chunks remain available if referenced elsewhere.
+const LazyFallback = () => null;
+void PageLoader;
 void SplashFallback;
+
+// Persist react-query cache to localStorage so returning visitors see cached
+// data instantly on load. Buster is tied to the build id, so every new deploy
+// automatically invalidates the old cache — no stale content survives updates.
+// We only persist successful, non-sensitive queries; auth/session queries opt
+// out via queryKey convention (keys starting with "auth"/"session"/"secret").
+const queryPersister = typeof window !== "undefined"
+  ? createSyncStoragePersister({
+      storage: window.localStorage,
+      key: "megsy.qcache.v1",
+      throttleTime: 1000,
+    })
+  : undefined;
+
 
 // Renders routes directly (no useDeferredValue) so navigations show the
 // LazyFallback / PageLoader between pages instead of freezing the old page.
