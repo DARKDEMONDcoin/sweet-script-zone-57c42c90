@@ -125,7 +125,7 @@ export function DesktopChatHeader(props: DesktopChatHeaderProps) {
 
       <div className="flex items-center gap-2">
         {chatUserId ? (
-          <UpgradeCtaButton userId={chatUserId} />
+          <UpgradeCtaButton userId={chatUserId} userPlan={props.userPlan} />
         ) : (
           <button
             type="button"
