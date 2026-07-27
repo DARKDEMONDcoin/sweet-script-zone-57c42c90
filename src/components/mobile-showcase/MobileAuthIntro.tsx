@@ -191,7 +191,6 @@ export default function MobileAuthIntro({
         {/* CTAs */}
         <form onSubmit={submitForm} noValidate className="mt-7 space-y-2.5">
           {/* Google button — collapses away when expanded */}
-          <AnimatePresence initial={false}>
             {!expanded && (
               <motion.button
                 key="google"
@@ -213,7 +212,6 @@ export default function MobileAuthIntro({
                 <span>{t.google}</span>
               </motion.button>
             )}
-          </AnimatePresence>
 
           {/* Email pill — morphs from button to input using shared layoutId */}
           <motion.div
@@ -227,16 +225,10 @@ export default function MobileAuthIntro({
               WebkitBackdropFilter: "blur(10px)",
             }}
           >
-            <AnimatePresence mode="wait" initial={false}>
               {!expanded ? (
-                <motion.button
-                  key="email-btn"
+                <button
                   type="button"
                   onClick={handleEmailBtnClick}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.18, ease: "easeOut" }}
                   className="w-full h-full flex items-center justify-center gap-2 text-foreground active:scale-[0.985]"
                   style={{ fontSize: "15px", fontWeight: 500, letterSpacing: "0.1px" }}
                 >
@@ -245,14 +237,9 @@ export default function MobileAuthIntro({
                     <path d="M3.5 7.5l8.5 6 8.5-6" />
                   </svg>
                   <span>{t.email}</span>
-                </motion.button>
+                </button>
               ) : (
-                <motion.div
-                  key="email-input"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.22, ease: "easeOut", delay: 0.08 }}
+                <div
                   className="w-full h-full px-5 flex items-center"
                 >
                   <input
@@ -265,9 +252,8 @@ export default function MobileAuthIntro({
                     className="w-full bg-transparent outline-none text-[15px] text-foreground placeholder:text-muted-foreground disabled:opacity-70"
                     dir="ltr"
                   />
-                </motion.div>
+                </div>
               )}
-            </AnimatePresence>
           </motion.div>
 
           {/* Password field — appears below email when needed */}
@@ -323,17 +309,11 @@ export default function MobileAuthIntro({
           </AnimatePresence>
 
           {/* Primary Continue / Sign in button — only when expanded */}
-          <AnimatePresence initial={false}>
             {expanded && (
-              <motion.button
-                key="primary"
+              <button
                 type="submit"
                 disabled={isSubmitting || !primaryReady}
-                initial={{ opacity: 0, height: 0, marginTop: 0 }}
-                animate={{ opacity: 1, height: 52, marginTop: 10 }}
-                exit={{ opacity: 0, height: 0, marginTop: 0 }}
-                transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1], delay: 0.05 }}
-                className={`w-full rounded-full flex items-center justify-center gap-2 active:scale-[0.985] transition-colors duration-300 disabled:opacity-50 overflow-hidden ${
+                className={`mt-2.5 h-[52px] w-full rounded-full flex items-center justify-center gap-2 active:scale-[0.985] transition-colors duration-300 disabled:opacity-50 overflow-hidden ${
                   primaryReady
                     ? "theme-fixed bg-primary text-[#0b0d12] border border-border"
                     : "bg-transparent text-foreground border border-border/30"
@@ -348,10 +328,9 @@ export default function MobileAuthIntro({
                     <ArrowRight className="w-4 h-4" strokeWidth={2} />
                   </>
                 )}
-              </motion.button>
+              </button>
 
             )}
-          </AnimatePresence>
 
           {/* Tertiary — Telegram (only when collapsed) */}
           {!expanded && onTelegram && (
