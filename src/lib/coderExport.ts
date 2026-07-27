@@ -58,7 +58,7 @@ export async function getSupabaseStatus(): Promise<{ connected: boolean; account
     const accounts = Array.isArray(data?.accounts) ? data.accounts : [];
     const match = accounts.find((a: any) => {
       const slug = a?.app_slug ?? a?.app?.name_slug ?? a?.app?.slug ?? a?.appSlug;
-      return String(slug || "") === "supabase_management_api";
+      return String(slug || "") === "supabase";
     });
     return { connected: !!match, account: match };
   } catch {
