@@ -1163,6 +1163,14 @@ const App = () => {
                               </ProtectedRoute>
                             }
                           />
+                          <Route
+                            path="/settings/pipedream-tools"
+                            element={
+                              <ProtectedRoute>
+                                <PipedreamToolsPage />
+                              </ProtectedRoute>
+                            }
+                          />
 
                           <Route
                             path="/settings/memory"
