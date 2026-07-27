@@ -85,7 +85,7 @@ const DPAPage = () => (
     eyebrow="Legal"
     title="Data Processing Addendum"
     subtitle="GDPR, UK GDPR, Swiss FADP, CCPA/CPRA, and LGPD-compliant data processing terms for Megsy AI customers — including international transfer safeguards."
-    lastUpdated="May 19, 2026"
+    lastUpdated="July 27, 2026"
     sections={sections}
     seoTitle="Data Processing Addendum (DPA) — Megsy AI"
     seoDescription="Megsy AI's GDPR-compliant Data Processing Addendum covering security, sub-processors, international transfers, breach notification, and AI training opt-out."

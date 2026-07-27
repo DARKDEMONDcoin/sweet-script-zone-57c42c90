@@ -55,7 +55,7 @@ const DMCAPage = () => (
     eyebrow="Legal"
     title="DMCA Policy"
     subtitle="How to report copyright infringement on Megsy AI — and how we handle takedowns, counter-notices, and repeat infringers."
-    lastUpdated="May 19, 2026"
+    lastUpdated="July 27, 2026"
     sections={sections}
     seoTitle="DMCA & Copyright Policy — Megsy AI"
     seoDescription="Megsy AI's DMCA notice-and-takedown procedure, counter-notification process, and designated copyright agent."

@@ -54,7 +54,7 @@ const CompliancePage = () => (
     eyebrow="Governance"
     title="Compliance"
     subtitle="Sanctions, AML, anti-bribery, modern slavery, tax, and law-enforcement — the global rules we follow and how to engage us on them."
-    lastUpdated="May 19, 2026"
+    lastUpdated="July 27, 2026"
     sections={sections}
     seoTitle="Compliance Statement — Megsy AI"
     seoDescription="Megsy AI compliance with sanctions, AML, anti-bribery, modern slavery, and law-enforcement process worldwide."
