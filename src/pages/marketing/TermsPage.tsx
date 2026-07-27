@@ -103,12 +103,7 @@ const sections: LegalSection[] = [
     ],
   },
   {
-    heading: "Governing Law & Disputes",
-    paragraphs: [
-      "These Terms are governed by the laws of the Arab Republic of Egypt, without regard to its conflict-of-laws principles. The competent courts of Cairo, Egypt shall have exclusive jurisdiction over any dispute arising from or relating to these Terms, except where mandatory consumer-protection law in your country of residence provides otherwise.",
-    ],
-  },
-  {
+
     heading: "App Store, Play Store & Web Store Distribution",
     paragraphs: [
       "When you access Megsy through a mobile or desktop application distributed via the Apple App Store, Google Play Store, Microsoft Store, Chrome Web Store, or any other platform (each a \"Store\"), the Store's own end-user licence agreement (EULA) and developer distribution agreement apply in addition to these Terms. Where a Store's mandatory terms conflict with these Terms, the Store's mandatory terms prevail solely for that distribution channel.",
