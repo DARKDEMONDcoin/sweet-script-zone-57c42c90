@@ -62,7 +62,7 @@ export const AGENTS: Record<AgentId, AgentDefinition> = {
     description: "Queries and summarizes workspace/user data.",
     model: "google/gemini-3.6-flash",
     systemPrompt: `You are Megsy Data. Query cautiously; ask before destructive actions. ${BASE_STYLE}`,
-    tools: ["get_current_time", "delete_conversation", "list_my_integrations", "run_integration_action"],
+    tools: ["get_current_time", "delete_conversation", "list_my_integrations", "list_integration_actions", "run_integration_action"],
     maxSteps: 30,
   },
   orchestrator: {
