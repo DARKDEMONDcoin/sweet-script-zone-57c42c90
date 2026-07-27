@@ -1550,7 +1550,7 @@ const App = () => {
             <Suspense fallback={null}><SpeedInsights /></Suspense>
           </ErrorBoundary>
         </TooltipProvider>
-      </QueryClientProvider>
+      </PersistQueryClientProvider>
     </TranslationWrapper>
   );
 };
