@@ -40,7 +40,8 @@ export const integrations: Integration[] = [
     description: "Push code, create repos, and read repositories.",
     category: "Development",
     app: "github",
-    type: "oauth",
+    type: "pipedream",
+    pipedreamSlug: "github",
     domain: "github.com",
   },
   {

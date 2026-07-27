@@ -53,7 +53,7 @@ export async function getSupabaseStatus(): Promise<{ connected: boolean; account
   try {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return { connected: false };
-    const { data, error } = await supabase.functions.invoke("pipedream-connect", { body: { action: "list_accounts" } });
+    const { data, error } = await supabase.functions.invoke("pipedream", { body: { action: "list_accounts" } });
     if (error) return null;
     const accounts = Array.isArray(data?.accounts) ? data.accounts : [];
     const match = accounts.find((a: any) => {

@@ -28,7 +28,7 @@ export async function loadIntegrationConnections(
   const needsComposio = catalog.some((integration) => integration.type !== "pipedream" && integration.type !== "oauth" && integration.app !== "email" && integration.app !== "telegram");
   const [pd, gh, userIntegrations, composio] = await Promise.allSettled([
     needsPipedream
-      ? supabase.functions.invoke("pipedream-connect", { body: { action: "list_accounts" } })
+      ? supabase.functions.invoke("pipedream", { body: { action: "list_accounts" } })
       : Promise.resolve({ data: null, error: null }),
     needsGithub
       ? supabase.functions.invoke("github-push", { body: { action: "status" } })
@@ -117,7 +117,7 @@ export async function startIntegrationConnection(integration: Integration) {
   }
 
   if (integration.type === "pipedream" && integration.pipedreamSlug) {
-    const { data, error } = await supabase.functions.invoke("pipedream-connect", {
+    const { data, error } = await supabase.functions.invoke("pipedream", {
       body: { action: "create_token", redirect_origin: window.location.origin },
     });
     if (data?.configured === false) {
@@ -130,7 +130,7 @@ export async function startIntegrationConnection(integration: Integration) {
     url.searchParams.set("app", integration.pipedreamSlug);
     const popup = window.open(
       url.toString(),
-      "pipedream-connect",
+      "pipedream",
       "popup,width=720,height=820",
     );
     if (!popup) throw new Error("Popup blocked. Allow popups and try again.");
@@ -158,7 +158,7 @@ export async function disconnectIntegration(integration: Integration) {
     return;
   }
   if (integration.type === "pipedream" && integration.pipedreamSlug) {
-    const { data, error } = await supabase.functions.invoke("pipedream-connect", {
+    const { data, error } = await supabase.functions.invoke("pipedream", {
       body: { action: "disconnect", app_slug: integration.pipedreamSlug },
     });
     if (error || data?.error) throw new Error(data?.error || error?.message || "Disconnect failed");
