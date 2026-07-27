@@ -44,7 +44,7 @@ export default function DiffView({ before, after, mode = "unified", filename }: 
           <pre className="max-h-[70vh] overflow-auto p-2 font-mono text-[11px] leading-snug">
             {afterLines.map((l, i) => (
               <div key={i} className={
-                l.type === "add" ? "bg-primary/15 text-primary" :
+                l.type === "add" ? "bg-emerald-500/15 text-emerald-500" :
                 l.type === "empty" ? "bg-muted/20" : ""
               }>
                 <span className="pr-2 opacity-40">{l.type === "add" ? "+" : " "}</span>{l.text || " "}
@@ -64,7 +64,7 @@ export default function DiffView({ before, after, mode = "unified", filename }: 
       <pre className="max-h-[70vh] overflow-auto p-2 font-mono text-[11px] leading-snug">
         {parts.map((p, i) => {
           const cls = p.added
-            ? "bg-primary/15 text-primary"
+            ? "bg-emerald-500/15 text-emerald-500"
             : p.removed
               ? "bg-red-500/15 text-red-500"
               : "";

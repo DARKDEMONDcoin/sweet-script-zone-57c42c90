@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { useNavigate, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -46,7 +46,6 @@ const NAV_GROUPS: NavGroup[] = [
     title: "Workspace",
     items: [
       { id: "integrations", label: "Integrations", path: "/settings/integrations", Icon: IntegrationsIcon },
-      { id: "pipedream-tools", label: "AI Tools", path: "/settings/pipedream-tools", Icon: IntegrationsIcon },
       { id: "mcp", label: "MCP Servers", path: "/settings/mcp", Icon: IntegrationsIcon },
     ],
   },
@@ -84,6 +83,7 @@ export function DesktopSettingsLayout({
   const shell = useSettingsShell();
   const [collapsed, setCollapsed, toggleCollapsed] = useSidebarCollapsed();
   const go = (path: string) => navigate(path);
+  const settingsVideoRef = useRef<HTMLVideoElement>(null);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -97,6 +97,18 @@ export function DesktopSettingsLayout({
   };
 
   const isSettingsHome = location.pathname === "/settings";
+
+  useEffect(() => {
+    if (!isSettingsHome) return;
+    const video = settingsVideoRef.current;
+    if (!video) return;
+    video.play().catch(() => {});
+    const handleVisibility = () => {
+      if (!document.hidden) video.play().catch(() => {});
+    };
+    document.addEventListener("visibilitychange", handleVisibility);
+    return () => document.removeEventListener("visibilitychange", handleVisibility);
+  }, [isSettingsHome]);
 
   // When mounted inside the persistent SettingsShell, portal just the inner
   // content (header + body) into the shell's main area so the sidebar/chrome
@@ -119,9 +131,28 @@ export function DesktopSettingsLayout({
         data-settings-home={isSettingsHome ? "true" : undefined}
         className={cn(
           "settings-desktop-canvas relative h-full w-full overflow-hidden antialiased text-foreground",
-          "bg-background"
+          "bg-transparent"
         )}
       >
+        <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden" aria-hidden>
+            <video
+              ref={settingsVideoRef}
+              className="absolute inset-0 h-full w-full object-cover"
+              poster="/media/settings-background-poster.jpg"
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="auto"
+            >
+              <source
+                src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260411_104032_69319010-2458-492b-b04d-b40a5dfa4482.mp4"
+                type="video/mp4"
+              />
+            </video>
+          <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/60 to-black/75" />
+        </div>
+        <div className="pointer-events-none absolute inset-0 z-[1] settings-desktop-grid" aria-hidden />
         <div className="relative z-10 h-full w-full flex">
           {isSettingsHome && (
             <aside
@@ -165,7 +196,7 @@ function SettingsHeader({
 }) {
   if (!title && !subtitle && !action) return null;
   return (
-    <div className="border-b border-border/50 bg-card/25">
+    <div className="border-b border-border/50 bg-card/25 backdrop-blur-xl">
       <div className="mx-auto max-w-6xl px-10 py-8 xl:px-12 flex items-start justify-between gap-6">
         <div className="min-w-0">
           {title && (

@@ -42,7 +42,7 @@ export default function PublishedSitePage() {
 
   if (loading) {
     return (
-      <div className="min-h-dvh flex items-center justify-center bg-background text-muted-foreground text-sm">
+      <div className="min-h-dvh flex items-center justify-center bg-black text-white/70 text-sm">
         Loading project…
       </div>
     );
@@ -50,12 +50,12 @@ export default function PublishedSitePage() {
 
   if (error || !html) {
     return (
-      <div className="min-h-dvh flex flex-col items-center justify-center bg-background text-foreground gap-4 px-6 text-center">
+      <div className="min-h-dvh flex flex-col items-center justify-center bg-black text-white gap-4 px-6 text-center">
         <h1 className="text-xl font-bold">Unable to display project</h1>
-        <p className="text-muted-foreground text-sm max-w-md">{error}</p>
+        <p className="text-white/60 text-sm max-w-md">{error}</p>
         <Link
           to="/"
-          className="mt-2 rounded-full bg-primary text-primary-foreground px-5 py-2 text-sm font-semibold"
+          className="mt-2 rounded-full bg-white text-black px-5 py-2 text-sm font-semibold"
         >
           Back to home
         </Link>
@@ -64,7 +64,7 @@ export default function PublishedSitePage() {
   }
 
   return (
-    <div className="fixed inset-0 bg-background">
+    <div className="fixed inset-0 bg-black">
       <iframe
         title={title}
         srcDoc={html}
@@ -75,7 +75,7 @@ export default function PublishedSitePage() {
         href="https://megsy.ai"
         target="_blank"
         rel="noopener noreferrer"
-        className="absolute bottom-3 left-3 z-10 inline-flex items-center gap-2 rounded-full bg-background/80 px-3 py-1.5 text-[11px] font-semibold text-foreground border border-border/10 hover:border-border/30"
+        className="absolute bottom-3 left-3 z-10 inline-flex items-center gap-2 rounded-full bg-black/80 backdrop-blur px-3 py-1.5 text-[11px] font-semibold text-white border border-white/10 hover:border-white/30"
       >
         <span className="w-1.5 h-1.5 rounded-full bg-[#5B8DEF] shadow-[0_0_10px_#5B8DEF]" />
         Built with Megsy Coder

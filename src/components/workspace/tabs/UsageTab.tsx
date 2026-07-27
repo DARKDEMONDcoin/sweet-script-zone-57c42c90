@@ -121,10 +121,10 @@ export default function UsageTab() {
           </div>
         </div>
         <div className="relative p-5 rounded-2xl border border-border/60 bg-card overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.08] via-primary/0 to-transparent pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/[0.08] via-emerald-500/0 to-transparent pointer-events-none" />
           <div className="relative">
             <div className="flex items-center gap-1.5">
-              <TrendingUp className="w-3 h-3 text-primary" />
+              <TrendingUp className="w-3 h-3 text-emerald-500" />
               <p className="text-[11.5px] uppercase tracking-wider text-muted-foreground/80 font-medium">
                 Forecast
               </p>

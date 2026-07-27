@@ -97,7 +97,7 @@ const AffiliateTermsPage = () => (
     eyebrow="Legal"
     title="Affiliate Terms"
     subtitle="The rules of our performance-based Affiliate Rewards Program — designed to be fair, transparent, and compliant with global advertising and consumer-protection law."
-    lastUpdated="July 27, 2026"
+    lastUpdated="May 19, 2026"
     sections={sections}
     seoTitle="Affiliate Program Terms — Megsy AI"
     seoDescription="Official terms of the Megsy AI Affiliate Rewards Program. Eligibility, payouts, disclosure rules, and compliance with FTC, ASA, and EU advertising laws."

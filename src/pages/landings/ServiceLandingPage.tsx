@@ -14,7 +14,7 @@ const SITE_URL = "https://megsyai.com";
 function FAQItem({ q, a }: { q: string; a: string }) {
   const [open, setOpen] = useState(false);
   return (
-    <div className="rounded-2xl border border-foreground/10 bg-background/40">
+    <div className="rounded-2xl border border-foreground/10 bg-background/40 backdrop-blur-xl">
       <button
         onClick={() => setOpen((v) => !v)}
         className="w-full flex items-center justify-between gap-4 px-5 py-4 text-start"
@@ -121,7 +121,7 @@ export default function ServiceLandingPage() {
       </Helmet>
 
       <div
-        className="min-h-[100dvh] w-full bg-primary dark:bg-brand-ink text-foreground overflow-x-hidden"
+        className="min-h-[100dvh] w-full bg-white dark:bg-brand-ink text-foreground overflow-x-hidden"
         dir={landing.dir ?? "ltr"}
       >
         {/* Ambient background (dark mode) */}
@@ -140,7 +140,7 @@ export default function ServiceLandingPage() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-foreground/10 bg-background/40 text-[12px] font-medium text-muted-foreground"
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-foreground/10 bg-background/40 backdrop-blur-xl text-[12px] font-medium text-muted-foreground"
             >
               <Sparkles className="w-3.5 h-3.5 text-purple-400" />
               {landing.eyebrow}
@@ -182,7 +182,7 @@ export default function ServiceLandingPage() {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="mt-10 max-w-[720px] mx-auto"
             >
-              <div className="flex items-center gap-2 p-2 rounded-3xl border border-foreground/10 bg-background/60 shadow-[0_8px_40px_-12px_rgba(0,0,0,0.25)]">
+              <div className="flex items-center gap-2 p-2 rounded-3xl border border-foreground/10 bg-background/60 backdrop-blur-2xl shadow-[0_8px_40px_-12px_rgba(0,0,0,0.25)]">
                 <input
                   value={prompt}
                   onChange={(e) => setPrompt(e.target.value)}
@@ -202,7 +202,7 @@ export default function ServiceLandingPage() {
                 <button
                   type="button"
                   onClick={() => navigate(landing.primaryCta.href)}
-                  className="h-10 px-5 rounded-full bg-purple-500 text-foreground text-sm font-semibold hover:bg-purple-600 transition"
+                  className="h-10 px-5 rounded-full bg-purple-500 text-white text-sm font-semibold hover:bg-purple-600 transition"
                 >
                   {landing.primaryCta.label}
                 </button>
@@ -225,7 +225,7 @@ export default function ServiceLandingPage() {
                     key={h}
                     className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-foreground/10 bg-background/40 text-[12.5px] text-muted-foreground"
                   >
-                    <Check className="w-3.5 h-3.5 text-primary" />
+                    <Check className="w-3.5 h-3.5 text-emerald-500" />
                     {h}
                   </span>
                 ))}
@@ -247,7 +247,7 @@ export default function ServiceLandingPage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, amount: 0.3 }}
                   transition={{ duration: 0.5, delay: i * 0.05 }}
-                  className="p-6 md:p-8 rounded-3xl border border-foreground/10 bg-background/40"
+                  className="p-6 md:p-8 rounded-3xl border border-foreground/10 bg-background/40 backdrop-blur-xl"
                 >
                   <h2 className="text-xl font-semibold tracking-tight text-foreground">
                     {f.title}
@@ -268,7 +268,7 @@ export default function ServiceLandingPage() {
                 {landing.models.map((m) => (
                   <div
                     key={m.name}
-                    className="p-5 rounded-2xl border border-foreground/10 bg-background/40"
+                    className="p-5 rounded-2xl border border-foreground/10 bg-background/40 backdrop-blur-xl"
                   >
                     <div className="flex items-center justify-between gap-2">
                       <h3 className="font-semibold text-[15px] text-foreground">{m.name}</h3>
@@ -301,7 +301,7 @@ export default function ServiceLandingPage() {
 
           {/* CTA band */}
           <section className="mt-24 max-w-[920px] mx-auto">
-            <div className="p-10 md:p-14 rounded-ios-xl border border-foreground/10 bg-gradient-to-br from-purple-500/15 via-pink-500/10 to-transparent text-center">
+            <div className="p-10 md:p-14 rounded-ios-xl border border-foreground/10 bg-gradient-to-br from-purple-500/15 via-pink-500/10 to-transparent backdrop-blur-2xl text-center">
               <h2 className="text-3xl md:text-5xl font-semibold tracking-tight">
                 {landing.heading}{" "}
                 <span
@@ -332,7 +332,7 @@ export default function ServiceLandingPage() {
                   <a
                     key={r.slug}
                     href={`/l/${r.slug}`}
-                    className="group p-4 rounded-2xl border border-foreground/10 bg-background/40 hover:border-foreground/25 transition"
+                    className="group p-4 rounded-2xl border border-foreground/10 bg-background/40 backdrop-blur-xl hover:border-foreground/25 transition"
                   >
                     <div className="flex items-center gap-2 text-[11px] uppercase tracking-wider text-muted-foreground">
                       <Globe className="w-3 h-3" /> {r.locale}

@@ -204,7 +204,7 @@ const CodePreviewModal = ({ code, lang, onClose, files, initialPath }: CodePrevi
             className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-colors"
             title="نسخ الكود"
           >
-            {copied ? <Check className="w-4 h-4 text-primary" /> : <Copy className="w-4 h-4" />}
+            {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
           </button>
           {mode === "preview" && (
             <>
@@ -274,7 +274,7 @@ const CodePreviewModal = ({ code, lang, onClose, files, initialPath }: CodePrevi
           {mode === "preview" ? (
             <iframe
               ref={iframeRef}
-              className="flex-1 w-full bg-background"
+              className="flex-1 w-full bg-black"
               sandbox="allow-scripts allow-same-origin"
               title="Code preview"
             />

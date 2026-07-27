@@ -1,6 +1,6 @@
 'use client';
 import { cn } from '@/lib/utils';
-import { motion } from "framer-motion";
+import { motion } from 'motion/react';
 import type React from 'react';
 import { useState } from 'react';
 
@@ -44,10 +44,10 @@ export const LiquidGlassCard = ({
   };
 
   const blurClasses = {
-    sm: '',
-    md: '',
-    lg: '',
-    xl: '',
+    sm: 'backdrop-blur-xs',
+    md: 'backdrop-blur-md',
+    lg: 'backdrop-blur-lg',
+    xl: 'backdrop-blur-xl',
   };
 
   const shadowStyles = {

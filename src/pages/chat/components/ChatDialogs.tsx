@@ -1,8 +1,7 @@
-import { Lock, Globe, Copy, Pencil } from "lucide-react";
+import { Lock, Globe, Copy, Pencil, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { ChatDesktopDialog } from "../ChatDesktopDialog";
 import { translateExactText, useUserLang } from "@/lib/authI18n";
-import { Spinner } from "@/components/ui/spinner";
 
 export interface ChatDialogsProps {
   // Share
@@ -200,7 +199,7 @@ export function ChatDialogs(p: ChatDialogsProps) {
               disabled={p.inviteLoading || !p.inviteEmail.trim()}
               className="px-4 h-11 rounded-xl text-sm font-semibold bg-foreground text-background hover:opacity-90 transition-opacity disabled:opacity-40"
             >
-              {p.inviteLoading ? <Spinner className="w-4 h-4" /> : tx("Invite")}
+              {p.inviteLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : tx("Invite")}
             </button>
           </div>
         </div>

@@ -14,7 +14,7 @@ type RouterLog = {
 };
 
 const TIER_COLORS: Record<string, string> = {
-  nano: "bg-primary/15 text-primary border-primary/30",
+  nano: "bg-emerald-500/15 text-emerald-600 border-emerald-500/30",
   standard: "bg-blue-500/15 text-blue-600 border-blue-500/30",
   max: "bg-purple-500/15 text-purple-600 border-purple-500/30",
 };

@@ -46,7 +46,7 @@ const ImageDemoMock = () => {
   return (
     <div className="h-full w-full bg-[#0a0a0a] flex text-foreground font-sans overflow-hidden">
       {/* Left controls */}
-      <div className="w-[38%] border-r border-border/5 p-5 flex flex-col">
+      <div className="w-[38%] border-r border-white/5 p-5 flex flex-col">
         <div className="flex items-center gap-2 mb-5">
           <span className="text-sm font-semibold">Image Studio</span>
         </div>
@@ -59,7 +59,7 @@ const ImageDemoMock = () => {
               className={`px-3 py-2 rounded-lg text-xs flex items-center justify-between ${
                 i === 0
                   ? "bg-[#f5d90a]/15 border border-[#f5d90a]/40 text-[#f5d90a]"
-                  : "bg-muted/40 border border-border/5 text-foreground/60"
+                  : "bg-white/[0.03] border border-white/5 text-foreground/60"
               }`}
             >
               <span className="font-medium">{m}</span>
@@ -69,7 +69,7 @@ const ImageDemoMock = () => {
         </div>
 
         <div className="text-[11px] uppercase tracking-wider text-foreground/40 mb-2">Prompt</div>
-        <div className="flex-1 rounded-lg border border-border/10 bg-muted/40 p-3 text-xs text-foreground/80 leading-relaxed min-h-[60px]">
+        <div className="flex-1 rounded-lg border border-white/10 bg-white/[0.03] p-3 text-xs text-foreground/80 leading-relaxed min-h-[60px]">
           {typed}
           {stage === 0 && (
             <span className="inline-block w-0.5 h-3 bg-[#f5d90a] ml-0.5 align-middle animate-pulse" />
@@ -90,7 +90,7 @@ const ImageDemoMock = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="aspect-[4/5] w-[70%] rounded-xl border border-border/10 bg-muted/40 flex items-center justify-center overflow-hidden relative"
+              className="aspect-[4/5] w-[70%] rounded-xl border border-white/10 bg-white/[0.03] flex items-center justify-center overflow-hidden relative"
             >
               <div
                 className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent"
@@ -107,7 +107,7 @@ const ImageDemoMock = () => {
               animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.7 }}
-              className="aspect-[4/5] w-[70%] rounded-xl object-cover border border-border/10"
+              className="aspect-[4/5] w-[70%] rounded-xl object-cover border border-white/10"
             />
           )}
           {stage === 0 && (

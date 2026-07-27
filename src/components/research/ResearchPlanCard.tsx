@@ -1,7 +1,6 @@
-import { Search, FileText, BarChart3, Clock } from "lucide-react";
+import { m as motion } from "framer-motion";
+import { Search, FileText, BarChart3, Clock, Loader2 } from "lucide-react";
 import { useState } from "react";
-import ToolCard from "@/components/chat/primitives/ToolCard";
-import { ToolLoader, ToolStatusBadge } from "@/components/chat/primitives/ToolStatus";
 
 export interface ResearchPlan {
   goal: string;
@@ -69,20 +68,20 @@ const ResearchPlanCard = ({
   ];
 
   return (
-    <ToolCard
-      dir={isRtl ? "rtl" : "ltr"}
-      title={"Search, analyze, and prepare report"}
-      subtitle={goal || undefined}
-      trailing={
-        <ToolStatusBadge
-          status={loading || starting ? "running" : "idle"}
-          runningLabel={"Researching…"}
-        />
-      }
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="w-full max-w-[420px] space-y-3"
     >
-      {ready && <p className="mb-3 text-sm leading-relaxed text-foreground/85">{ready}</p>}
+      {ready && <p className="text-sm text-foreground/85 leading-relaxed px-1">{ready}</p>}
 
-      <div>
+      <div className="rounded-3xl border border-border/40 bg-card/60 backdrop-blur-sm p-5">
+        {goal && (
+          <h3 className="text-base font-semibold text-foreground leading-snug mb-4">
+            {"Search, analyze, and prepare report"}
+          </h3>
+        )}
+
         <ul className="space-y-5" dir={isRtl ? "rtl" : "ltr"}>
           {phases.map((phase, idx) => {
             const Icon = phase.icon;
@@ -152,7 +151,11 @@ const ResearchPlanCard = ({
               disabled={loading || starting}
               className="inline-flex items-center justify-center px-5 h-10 rounded-full bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors disabled:opacity-60"
             >
-              {loading || starting ? <ToolLoader /> : "Start research"}
+              {loading || starting ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                "Start research"
+              )}
             </button>
             <button
               type="button"
@@ -182,7 +185,7 @@ const ResearchPlanCard = ({
                 disabled={loading || !(feedback || "").trim()}
                 className="inline-flex h-10 items-center justify-center rounded-full bg-primary px-5 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-60"
               >
-                {loading ? <ToolLoader /> : "Regenerate plan"}
+                {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Regenerate plan"}
               </button>
               <button
                 type="button"
@@ -196,7 +199,7 @@ const ResearchPlanCard = ({
           </div>
         )}
       </div>
-    </ToolCard>
+    </motion.div>
   );
 };
 

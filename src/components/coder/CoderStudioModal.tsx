@@ -1,14 +1,13 @@
 /** @doc Full-stack Coder Studio — Monaco file editor, terminal, Python (Pyodide), and GitHub/Supabase integrations, all inside the chat page. */
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { X, FileCode2, Terminal as TerminalIcon, Play, Plug, Github, Plus, Trash2, Save, FolderTree, Check, SkipForward, Eye, RefreshCw } from "lucide-react";
+import {
+  X, FileCode2, Terminal as TerminalIcon, Play, Plug, Github,
+  Plus, Trash2, Save, FolderTree, Loader2, Check, SkipForward,
+} from "lucide-react";
 import type { ProjectFile } from "@/lib/extractProjectFiles";
 import ConnectorsDialog from "@/components/integrations/ConnectorsDialog";
 import { toast } from "sonner";
-import { buildProjectPreviewHtml } from "@/lib/extractProjectFiles";
-import { buildReactRuntimeHtml, isReactProject } from "@/lib/buildReactRuntime";
-import { useRuntimeErrors } from "@/hooks/useRuntimeErrors";
-import { Spinner } from "@/components/ui/spinner";
 
 const MonacoEditor = lazy(() => import("@monaco-editor/react").then((m) => ({ default: m.default })));
 
@@ -19,7 +18,7 @@ const MONACO_LANG: Record<string, string> = {
 };
 const monacoLangFor = (path: string) => MONACO_LANG[(path.split(".").pop() || "").toLowerCase()] || "plaintext";
 
-type Tab = "files" | "preview" | "terminal" | "python" | "integrations";
+type Tab = "files" | "terminal" | "python" | "integrations";
 
 interface Props {
   open: boolean;
@@ -134,22 +133,7 @@ const CoderStudioModal = ({ open, onClose, initialFiles, filesOnly, onFilesChang
   const [pyOut, setPyOut] = useState<string>("");
   const [pyRunning, setPyRunning] = useState(false);
   const [connectorsOpen, setConnectorsOpen] = useState(false);
-  const [previewKey, setPreviewKey] = useState(0);
-  const previewHtml = useMemo(() => {
-    if (tab !== "preview" || fs.files.length === 0) return "";
-    try {
-      return (
-        buildProjectPreviewHtml(fs.files) ||
-        (isReactProject(fs.files) ? buildReactRuntimeHtml(fs.files, "Preview") : "") ||
-        ""
-      );
-    } catch {
-      return "";
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tab, fs.files, previewKey]);
   const termRef = useRef<HTMLDivElement>(null);
-  const { logs: runtimeLogs, clear: clearRuntimeLogs } = useRuntimeErrors(tab === "preview");
 
   useEffect(() => {
     if (!selected && fs.files[0]) setSelected(fs.files[0].path);
@@ -360,27 +344,26 @@ const CoderStudioModal = ({ open, onClose, initialFiles, filesOnly, onFilesChang
   };
 
   const modal = useMemo(() => (
-    <div className="theme-fixed coder-fixed fixed inset-0 z-[100] bg-background/80 flex items-center justify-center p-2 sm:p-4">
-      <div className="w-full h-full sm:w-[min(1200px,96vw)] sm:h-[min(820px,92vh)] bg-[#0b0b0f] border border-border/10 rounded-none sm:rounded-2xl overflow-hidden flex flex-col shadow-2xl">
+    <div className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4">
+      <div className="w-full h-full sm:w-[min(1200px,96vw)] sm:h-[min(820px,92vh)] bg-[#0b0b0f] border border-white/10 rounded-none sm:rounded-2xl overflow-hidden flex flex-col shadow-2xl">
         {/* Header */}
-        <div className="flex items-center justify-between px-3 sm:px-4 h-12 border-b border-border/10 bg-background/40">
+        <div className="flex items-center justify-between px-3 sm:px-4 h-12 border-b border-white/10 bg-black/40">
           <div className="flex items-center gap-2 min-w-0">
             <div className="w-2 h-2 rounded-full bg-red-500" />
             <div className="w-2 h-2 rounded-full bg-yellow-500" />
             <div className="w-2 h-2 rounded-full bg-green-500" />
-            <span className="ml-2 text-[13px] font-semibold text-foreground truncate">Megsy Coder Studio</span>
+            <span className="ml-2 text-[13px] font-semibold text-white truncate">Megsy Coder Studio</span>
           </div>
-          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-muted/10 text-muted-foreground hover:text-foreground">
+          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-white/10 text-white/70 hover:text-white">
             <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Tabs (hidden in filesOnly mode) */}
         {!filesOnly && (
-          <div className="flex items-center gap-1 px-2 sm:px-3 h-11 border-b border-border/10 bg-background/20 overflow-x-auto">
+          <div className="flex items-center gap-1 px-2 sm:px-3 h-11 border-b border-white/10 bg-black/20 overflow-x-auto">
             {([
               { id: "files", label: "Files", icon: FolderTree },
-              { id: "preview", label: "Preview", icon: Eye },
               { id: "terminal", label: "Terminal", icon: TerminalIcon },
               { id: "python", label: "Python", icon: FileCode2 },
               { id: "integrations", label: "Integrations", icon: Plug },
@@ -389,7 +372,7 @@ const CoderStudioModal = ({ open, onClose, initialFiles, filesOnly, onFilesChang
                 key={t.id}
                 onClick={() => setTab(t.id)}
                 className={`inline-flex items-center gap-1.5 px-3 h-8 rounded-lg text-[12.5px] font-medium whitespace-nowrap transition-colors ${
-                  tab === t.id ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted/10"
+                  tab === t.id ? "bg-white text-black" : "text-white/70 hover:bg-white/10"
                 }`}
               >
                 <t.icon className="w-3.5 h-3.5" />
@@ -401,66 +384,16 @@ const CoderStudioModal = ({ open, onClose, initialFiles, filesOnly, onFilesChang
 
         {/* Body */}
         <div className="flex-1 min-h-0 overflow-hidden">
-          {tab === "preview" && (
-            <div className="h-full flex flex-col bg-[#050506]">
-              <div className="flex items-center justify-between px-3 h-9 border-b border-border/10">
-                <span className="text-[12px] text-muted-foreground">Live preview — reflects saved files</span>
-                <button
-                  onClick={() => { clearRuntimeLogs(); setPreviewKey((k) => k + 1); }}
-                  className="inline-flex items-center gap-1.5 px-2 h-7 rounded-md text-[12px] text-muted-foreground hover:bg-muted/10"
-                >
-                  <RefreshCw className="w-3.5 h-3.5" /> Refresh
-                </button>
-              </div>
-              {previewHtml ? (
-                <iframe
-                  key={previewKey}
-                  title="Project preview"
-                  srcDoc={previewHtml}
-                  sandbox="allow-scripts allow-forms allow-popups allow-modals allow-same-origin"
-                  className="flex-1 w-full bg-primary"
-                />
-              ) : (
-                <div className="flex-1 grid place-items-center text-[12.5px] text-muted-foreground p-6 text-center">
-                  No runnable entry found yet. Add an index.html or a React entry file.
-                </div>
-              )}
-              {runtimeLogs.length > 0 && (
-                <div className="shrink-0 max-h-40 overflow-auto border-t border-red-500/30 bg-red-950/30">
-                  <div className="flex items-center justify-between px-3 h-8 sticky top-0 bg-red-950/60">
-                    <span className="text-[11.5px] font-medium text-red-200">
-                      {runtimeLogs.length} runtime issue{runtimeLogs.length > 1 ? "s" : ""}
-                    </span>
-                    <button
-                      onClick={clearRuntimeLogs}
-                      className="text-[11.5px] text-red-200/70 hover:text-red-100 px-2 h-6 rounded-md hover:bg-muted/10"
-                    >
-                      Clear
-                    </button>
-                  </div>
-                  <ul className="px-3 py-2 space-y-1">
-                    {runtimeLogs.map((l) => (
-                      <li key={l.id} className="text-[11.5px] font-mono leading-relaxed text-red-100/90 break-words">
-                        <span className="opacity-60 uppercase mr-1.5">{l.level}</span>
-                        {l.message}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
-            </div>
-          )}
           {tab === "files" && (
             <div className="h-full flex">
-              <aside className="w-56 sm:w-64 shrink-0 border-l border-border/10 bg-background/30 flex flex-col">
-                <div className="flex items-center justify-between px-3 h-9 border-b border-border/10">
-                  <span className="text-[11px] uppercase tracking-wider text-muted-foreground">Files</span>
+              <aside className="w-56 sm:w-64 shrink-0 border-l border-white/10 bg-black/30 flex flex-col">
+                <div className="flex items-center justify-between px-3 h-9 border-b border-white/10">
+                  <span className="text-[11px] uppercase tracking-wider text-white/50">Files</span>
                   <div className="flex items-center gap-1">
-                    <button onClick={newFile} className="p-1 rounded hover:bg-muted/10 text-muted-foreground" title="New">
+                    <button onClick={newFile} className="p-1 rounded hover:bg-white/10 text-white/70" title="New">
                       <Plus className="w-3.5 h-3.5" />
                     </button>
-                    <button onClick={deleteCurrent} className="p-1 rounded hover:bg-muted/10 text-muted-foreground" title="Delete">
+                    <button onClick={deleteCurrent} className="p-1 rounded hover:bg-white/10 text-white/70" title="Delete">
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
                   </div>
@@ -471,7 +404,7 @@ const CoderStudioModal = ({ open, onClose, initialFiles, filesOnly, onFilesChang
                       key={f.path}
                       onClick={() => setSelected(f.path)}
                       className={`w-full text-right px-3 py-1.5 truncate ${
-                        selected === f.path ? "bg-muted/10 text-foreground" : "text-muted-foreground hover:bg-muted/5"
+                        selected === f.path ? "bg-white/10 text-white" : "text-white/70 hover:bg-white/5"
                       }`}
                       dir="ltr"
                     >
@@ -479,24 +412,24 @@ const CoderStudioModal = ({ open, onClose, initialFiles, filesOnly, onFilesChang
                     </button>
                   ))}
                   {!fs.files.length && (
-                    <div className="px-3 py-4 text-[12px] text-muted-foreground">No files</div>
+                    <div className="px-3 py-4 text-[12px] text-white/40">No files</div>
                   )}
                 </div>
               </aside>
               <section className="flex-1 flex flex-col min-w-0">
-                <div className="flex items-center justify-between px-3 h-9 border-b border-border/10">
-                  <span className="text-[12px] text-muted-foreground truncate" dir="ltr">{selected || "—"}</span>
+                <div className="flex items-center justify-between px-3 h-9 border-b border-white/10">
+                  <span className="text-[12px] text-white/60 truncate" dir="ltr">{selected || "—"}</span>
                   <button
                     onClick={saveFile}
                     disabled={!dirty}
-                    className="inline-flex items-center gap-1.5 h-7 px-2.5 rounded-md text-[11.5px] font-medium bg-primary text-primary-foreground disabled:opacity-40"
+                    className="inline-flex items-center gap-1.5 h-7 px-2.5 rounded-md text-[11.5px] font-medium bg-white text-black disabled:opacity-40"
                   >
                     <Save className="w-3.5 h-3.5" /> Save
                   </button>
                 </div>
                 <div className="flex-1 min-h-0">
                   {selected ? (
-                    <Suspense fallback={<div className="p-3 text-xs text-muted-foreground">Loading editor…</div>}>
+                    <Suspense fallback={<div className="p-3 text-xs text-white/50">Loading editor…</div>}>
                       <MonacoEditor
                         height="100%"
                         theme="vs-dark"
@@ -515,7 +448,7 @@ const CoderStudioModal = ({ open, onClose, initialFiles, filesOnly, onFilesChang
                       />
                     </Suspense>
                   ) : (
-                    <div className="p-4 text-xs text-muted-foreground">Choose a file to start editing…</div>
+                    <div className="p-4 text-xs text-white/50">Choose a file to start editing…</div>
                   )}
                 </div>
               </section>
@@ -529,9 +462,9 @@ const CoderStudioModal = ({ open, onClose, initialFiles, filesOnly, onFilesChang
                   <div
                     key={i}
                     className={
-                      h.kind === "in" ? "text-primary" :
+                      h.kind === "in" ? "text-emerald-400" :
                       h.kind === "err" ? "text-red-400" :
-                      h.kind === "sys" ? "text-muted-foreground" : "text-muted-foreground"
+                      h.kind === "sys" ? "text-white/40" : "text-white/85"
                     }
                     style={{ whiteSpace: "pre-wrap" }}
                   >
@@ -541,16 +474,16 @@ const CoderStudioModal = ({ open, onClose, initialFiles, filesOnly, onFilesChang
               </div>
               <form
                 onSubmit={(e) => { e.preventDefault(); const c = cmd; setCmd(""); void runCommand(c); }}
-                className="flex items-center gap-2 border-t border-border/10 px-3 h-11 bg-background"
+                className="flex items-center gap-2 border-t border-white/10 px-3 h-11 bg-black"
                 dir="ltr"
               >
-                <span className="text-primary font-mono text-[12.5px]">{fs.cwd} $</span>
+                <span className="text-emerald-400 font-mono text-[12.5px]">{fs.cwd} $</span>
                 <input
                   value={cmd}
                   onChange={(e) => setCmd(e.target.value)}
                   autoFocus
                   spellCheck={false}
-                  className="flex-1 bg-transparent outline-none text-foreground font-mono text-[12.5px]"
+                  className="flex-1 bg-transparent outline-none text-white/90 font-mono text-[12.5px]"
                   placeholder="Type a command… (help)"
                 />
               </form>
@@ -559,19 +492,19 @@ const CoderStudioModal = ({ open, onClose, initialFiles, filesOnly, onFilesChang
 
           {tab === "python" && (
             <div className="h-full flex flex-col">
-              <div className="flex items-center justify-between px-3 h-10 border-b border-border/10 bg-background/40">
-                <div className="flex items-center gap-2 text-[12px] text-muted-foreground">
+              <div className="flex items-center justify-between px-3 h-10 border-b border-white/10 bg-black/40">
+                <div className="flex items-center gap-2 text-[12px] text-white/70">
                   <FileCode2 className="w-3.5 h-3.5" />
                   Python 3 (Pyodide) — runs in the browser
-                  {pyReady === "loading" && <Spinner className="w-3.5 h-3.5" />}
-                  {pyReady === "ready" && <Check className="w-3.5 h-3.5 text-primary" />}
+                  {pyReady === "loading" && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+                  {pyReady === "ready" && <Check className="w-3.5 h-3.5 text-emerald-400" />}
                 </div>
                 <button
                   onClick={runPython}
                   disabled={pyRunning}
-                  className="inline-flex items-center gap-1.5 h-7 px-3 rounded-md text-[12px] font-semibold bg-primary text-primary-foreground disabled:opacity-50"
+                  className="inline-flex items-center gap-1.5 h-7 px-3 rounded-md text-[12px] font-semibold bg-emerald-500 text-black disabled:opacity-50"
                 >
-                  {pyRunning ? <Spinner className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" fill="currentColor" />}
+                  {pyRunning ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Play className="w-3.5 h-3.5" fill="currentColor" />}
                   Run
                 </button>
               </div>
@@ -581,11 +514,11 @@ const CoderStudioModal = ({ open, onClose, initialFiles, filesOnly, onFilesChang
                   onChange={(e) => setPyCode(e.target.value)}
                   spellCheck={false}
                   dir="ltr"
-                  className="w-full h-full bg-[#0b0b0f] text-foreground font-mono text-[12.5px] leading-relaxed p-3 outline-none resize-none border-b border-border/10"
+                  className="w-full h-full bg-[#0b0b0f] text-white/90 font-mono text-[12.5px] leading-relaxed p-3 outline-none resize-none border-b border-white/10"
                 />
                 <pre
                   dir="ltr"
-                  className="w-full h-full overflow-auto bg-background/60 text-muted-foreground font-mono text-[12px] leading-relaxed p-3 whitespace-pre-wrap"
+                  className="w-full h-full overflow-auto bg-black/60 text-white/80 font-mono text-[12px] leading-relaxed p-3 whitespace-pre-wrap"
                 >{pyOut || "// Press Run to see results"}</pre>
               </div>
             </div>
@@ -594,40 +527,40 @@ const CoderStudioModal = ({ open, onClose, initialFiles, filesOnly, onFilesChang
           {tab === "integrations" && (
             <div className="h-full overflow-y-auto p-6">
               <div className="max-w-2xl mx-auto space-y-4">
-                <h3 className="text-foreground text-lg font-bold">Connect external tools</h3>
-                <p className="text-muted-foreground text-[13px]">
+                <h3 className="text-white text-lg font-bold">Connect external tools</h3>
+                <p className="text-white/60 text-[13px]">
                   Connect GitHub to push code, or Supabase to run the database — or skip and start right away.
                   The AI can also skip the integration automatically if not needed for this project.
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <button
                     onClick={() => setConnectorsOpen(true)}
-                    className="flex items-center gap-3 p-4 rounded-2xl border border-border/15 bg-muted/5 hover:bg-muted/10 text-right transition"
+                    className="flex items-center gap-3 p-4 rounded-2xl border border-white/15 bg-white/5 hover:bg-white/10 text-right transition"
                   >
-                    <span className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-primary text-primary-foreground">
+                    <span className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-white text-black">
                       <Github className="w-5 h-5" />
                     </span>
                     <span className="flex-1 min-w-0">
-                      <span className="block text-foreground text-[14px] font-semibold">Connect GitHub</span>
-                      <span className="block text-muted-foreground text-[12px]">Push code and manage repos</span>
+                      <span className="block text-white text-[14px] font-semibold">Connect GitHub</span>
+                      <span className="block text-white/60 text-[12px]">Push code and manage repos</span>
                     </span>
                   </button>
                   <button
                     onClick={() => setConnectorsOpen(true)}
-                    className="flex items-center gap-3 p-4 rounded-2xl border border-border/15 bg-muted/5 hover:bg-muted/10 text-right transition"
+                    className="flex items-center gap-3 p-4 rounded-2xl border border-white/15 bg-white/5 hover:bg-white/10 text-right transition"
                   >
-                    <span className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-primary text-primary-foreground font-black">
+                    <span className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-emerald-500 text-black font-black">
                       S
                     </span>
                     <span className="flex-1 min-w-0">
-                      <span className="block text-foreground text-[14px] font-semibold">Connect Supabase</span>
-                      <span className="block text-muted-foreground text-[12px]">Database, auth, and storage</span>
+                      <span className="block text-white text-[14px] font-semibold">Connect Supabase</span>
+                      <span className="block text-white/60 text-[12px]">Database, auth, and storage</span>
                     </span>
                   </button>
                 </div>
                 <button
                   onClick={() => { toast.success("Skipped — you can continue without connecting"); setTab("files"); }}
-                  className="w-full inline-flex items-center justify-center gap-2 h-11 rounded-2xl border border-border/15 bg-transparent hover:bg-muted/5 text-muted-foreground text-[13px] font-medium"
+                  className="w-full inline-flex items-center justify-center gap-2 h-11 rounded-2xl border border-white/15 bg-transparent hover:bg-white/5 text-white/80 text-[13px] font-medium"
                 >
                   <SkipForward className="w-4 h-4" /> Skip and start now
                 </button>

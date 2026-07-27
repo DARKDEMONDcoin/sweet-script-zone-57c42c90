@@ -321,7 +321,7 @@ const FeaturesGuidePage = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4 }}
               onClick={() => goBackOr(navigate, "/pricing")}
-              className="inline-flex items-center gap-2 mb-8 px-4 py-1.5 rounded-full border border-border bg-card/60 text-xs font-semibold text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors"
+              className="inline-flex items-center gap-2 mb-8 px-4 py-1.5 rounded-full border border-border bg-card/60 backdrop-blur-sm text-xs font-semibold text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors"
             >
               <span className="leading-none">←</span>
               <span>Back to pricing</span>
@@ -364,7 +364,7 @@ const FeaturesGuidePage = () => {
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.2 }}
-              className="mt-10 inline-flex flex-wrap justify-center gap-1.5 p-1.5 rounded-full border border-border bg-card/50"
+              className="mt-10 inline-flex flex-wrap justify-center gap-1.5 p-1.5 rounded-full border border-border bg-card/50 backdrop-blur-sm"
             >
               {TIERS.map((t) => {
                 const meta = TIER_META[t];
@@ -474,12 +474,12 @@ const FeaturesGuidePage = () => {
               ))}
             </div>
 
-            <div className="hidden rounded-3xl border border-border bg-card/60 overflow-hidden md:block">
+            <div className="hidden rounded-3xl border border-border bg-card/60 backdrop-blur-sm overflow-hidden md:block">
               <div className="overflow-x-auto">
                 <table className="w-full min-w-[760px] border-collapse">
                   <thead>
                     <tr className="border-b border-border">
-                      <th className="text-left px-6 py-6 font-bold text-[11px] uppercase tracking-[0.2em] text-muted-foreground/70 sticky left-0 bg-card/95 z-10 min-w-[220px]">
+                      <th className="text-left px-6 py-6 font-bold text-[11px] uppercase tracking-[0.2em] text-muted-foreground/70 sticky left-0 bg-card/95 backdrop-blur-sm z-10 min-w-[220px]">
                         Service
                       </th>
                       {TIERS.map((t) => {
@@ -512,7 +512,7 @@ const FeaturesGuidePage = () => {
                           i % 2 === 1 ? "bg-foreground/[0.012]" : ""
                         }`}
                       >
-                        <td className="px-6 py-5 sticky left-0 bg-card/95 z-10">
+                        <td className="px-6 py-5 sticky left-0 bg-card/95 backdrop-blur-sm z-10">
                           <div className="font-bold text-[15px] text-foreground tracking-tight">
                             {s.name}
                           </div>

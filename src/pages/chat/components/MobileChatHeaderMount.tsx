@@ -136,7 +136,6 @@ export function MobileChatHeaderMount(props: MobileChatHeaderMountProps) {
       onDelete={confirmDelete as any}
       isDeleting={isDeleting}
       chatUserId={chatUserId}
-      userPlan={userPlan}
       scrollContainerRef={scrollContainerRef}
       modelSlot={
 

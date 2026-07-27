@@ -4,10 +4,20 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
-import { ShieldCheck, Bot, Terminal, Globe, Users, Wallet, ScrollText, Cpu, ChevronRight } from "lucide-react";
+import {
+  Loader2,
+  ShieldCheck,
+  Bot,
+  Terminal,
+  Globe,
+  Users,
+  Wallet,
+  ScrollText,
+  Cpu,
+  ChevronRight,
+} from "lucide-react";
 import { toast } from "sonner";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { Spinner } from "@/components/ui/spinner";
 
 interface OperatorSettings {
   ask_before_sensitive: boolean;
@@ -78,7 +88,7 @@ export default function MegsyOperatorSettingsPage() {
   if (loading) {
     return (
       <div className="amber-settings grid place-items-center">
-        <Spinner className="w-6 h-6 text-[color:var(--amb-gold-2)]" />
+        <Loader2 className="w-6 h-6 animate-spin text-[color:var(--amb-gold-2)]" />
       </div>
     );
   }
@@ -191,7 +201,7 @@ export default function MegsyOperatorSettingsPage() {
           </p>
         </div>
         {saving && (
-          <Spinner className="w-4 h-4 text-[color:var(--amb-gold-2)] mt-1" />
+          <Loader2 className="w-4 h-4 animate-spin text-[color:var(--amb-gold-2)] mt-1" />
         )}
       </div>
 

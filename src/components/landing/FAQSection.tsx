@@ -20,7 +20,7 @@ const FAQSection = () => {
   };
 
   return (
-    <section id="faq" className="relative overflow-hidden bg-background py-16 md:py-28">
+    <section id="faq" className="relative overflow-hidden bg-black py-16 md:py-28">
       <Helmet>
         <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
       </Helmet>
@@ -40,11 +40,11 @@ const FAQSection = () => {
 
       {/* Question list */}
       <div className="mx-auto mt-16 max-w-6xl px-6">
-        <ul className="border-t border-border/10">
+        <ul className="border-t border-white/10">
           {faq.items.map((f, i) => {
             const isOpen = openIndex === i;
             return (
-              <li key={i} className="border-b border-border/10">
+              <li key={i} className="border-b border-white/10">
                 <button
                   type="button"
                   onClick={() => setOpenIndex(isOpen ? null : i)}

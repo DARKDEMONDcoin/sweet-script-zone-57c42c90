@@ -3,11 +3,10 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Check, X, Users } from "lucide-react";
+import { Loader2, Check, X, Users } from "lucide-react";
 import { toast } from "sonner";
 
 import { sanitizeErrorMessage } from "@/lib/sanitizeError";
-import { Spinner } from "@/components/ui/spinner";
 export default function AcceptWorkspaceInvitePage() {
   const { token } = useParams<{ token: string }>();
   const navigate = useNavigate();
@@ -103,7 +102,7 @@ export default function AcceptWorkspaceInvitePage() {
   if (loading)
     return (
       <div className="min-h-dvh flex items-center justify-center">
-        <Spinner className="w-5 h-5 text-muted-foreground" />
+        <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
       </div>
     );
 
@@ -152,7 +151,7 @@ export default function AcceptWorkspaceInvitePage() {
             className="flex-1 bg-foreground text-background hover:bg-foreground/90"
           >
             {accepting ? (
-              <Spinner className="w-4 h-4" />
+              <Loader2 className="w-4 h-4 animate-spin" />
             ) : user ? (
               <>
                 <Check className="w-4 h-4 mr-1" /> Accept

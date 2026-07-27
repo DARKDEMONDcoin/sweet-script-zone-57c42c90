@@ -39,8 +39,7 @@ export function useChatEntryEffects(params: {
     const stateCid = (location.state as any)?.loadConversationId as string | undefined;
     if (stateCid && stateCid !== conversationId) {
       loadConversation(stateCid);
-      // Clear the handoff state but KEEP `?conv=` so a reload/back keeps the record.
-      navigate(`${location.pathname}${location.search}`, { replace: true, state: {} });
+      navigate(location.pathname, { replace: true, state: {} });
       return;
     }
     const params = new URLSearchParams(window.location.search);

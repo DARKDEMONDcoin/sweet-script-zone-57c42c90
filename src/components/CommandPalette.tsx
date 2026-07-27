@@ -15,6 +15,8 @@ import {
   Compass,
   FileText,
   LogOut,
+  Sun,
+  Moon,
   Palette,
   Clock,
 } from "lucide-react";
@@ -110,8 +112,15 @@ export default function CommandPalette() {
   };
 
 
-  // Light theme removed — app is dark-only, so no theme toggle.
-
+  const toggleTheme = () => {
+    setOpen(false);
+    const root = document.documentElement;
+    const isDark = root.classList.contains("dark");
+    root.classList.toggle("dark", !isDark);
+    try {
+      localStorage.setItem("theme", isDark ? "light" : "dark");
+    } catch {}
+  };
 
   const nav: Cmd[] = [
     { id: "chat", label: "New Chat", icon: MessageSquare, hint: "/", run: go("/") },
@@ -135,7 +144,13 @@ export default function CommandPalette() {
   ];
 
   const actions: Cmd[] = [
-
+    {
+      id: "theme",
+      label: "Toggle Theme",
+      hint: "light/dark",
+      icon: document.documentElement.classList.contains("dark") ? Sun : Moon,
+      run: toggleTheme,
+    },
     {
       id: "signout",
       label: "Sign out",

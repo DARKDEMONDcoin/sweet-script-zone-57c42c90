@@ -1,7 +1,7 @@
 /** @doc Full-page integration detail: connect, disconnect, or manage a single app. Glass redesign. */
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Shield, Zap } from "lucide-react";
+import { Loader2, Shield, Zap } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { integrations, type Integration } from "@/lib/integrationsData";
@@ -18,7 +18,6 @@ import ProfileGlassShell, {
   GlassPrimaryButton,
 } from "@/components/profile/ProfileGlassShell";
 import { brandLogoSources } from "@/lib/brandLogoSources";
-import { Spinner } from "@/components/ui/spinner";
 
 const SUPABASE_FUNCTIONS_URL = "https://ltgampdtawuefwwayncx.supabase.co/functions/v1";
 const SUPABASE_PUBLISHABLE_KEY =
@@ -47,6 +46,7 @@ async function invokeIntegrationStatus(functionName: string, body: Record<string
     window.clearTimeout(timeout);
   }
 }
+
 
 function AppLogo({ integration, size = 56 }: { integration: Integration; size?: number }) {
   const [idx, setIdx] = useState(0);
@@ -164,6 +164,7 @@ export default function IntegrationDetailPage() {
     }
   };
 
+
   if (!integration) {
     return (
       <ProfileGlassShell
@@ -208,7 +209,7 @@ export default function IntegrationDetailPage() {
             disabled={loading || loadingStatus}
             className={`idp-pill ${connected ? "is-connected" : ""}`}
           >
-            {loading ? <Spinner className="w-3.5 h-3.5" /> : connected ? "Connected" : "Connect"}
+            {loading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : connected ? "Connected" : "Connect"}
           </button>
         </div>
       </GlassSection>

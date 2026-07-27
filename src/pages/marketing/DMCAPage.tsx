@@ -45,7 +45,7 @@ const sections: LegalSection[] = [
     paragraphs: [
       "Copyright Agent — Megsy for Digital Platforms & E-Commerce Development LLC",
       "Email: copyright@megsyai.com",
-      "Address: 58 El-Hegaz St., Amoun Tower, Unit 84, Floor 8, Sheraton Al-Matar, Al-Nozha District, Cairo Governorate, Arab Republic of Egypt · CR 284691 · Tax 774034785",
+      "Address: 58 El-Hegaz St., Amoun Tower, Unit 84, Floor 8, Sheraton Al-Matar, Al-Nozha District, Cairo Governorate, Arab Republic of Egypt · CR 248691 · Tax 774034785",
     ],
   },
 ];
@@ -55,7 +55,7 @@ const DMCAPage = () => (
     eyebrow="Legal"
     title="DMCA Policy"
     subtitle="How to report copyright infringement on Megsy AI — and how we handle takedowns, counter-notices, and repeat infringers."
-    lastUpdated="July 27, 2026"
+    lastUpdated="May 19, 2026"
     sections={sections}
     seoTitle="DMCA & Copyright Policy — Megsy AI"
     seoDescription="Megsy AI's DMCA notice-and-takedown procedure, counter-notification process, and designated copyright agent."

@@ -61,7 +61,7 @@ export const ChatMessagesArea = forwardRef<HTMLDivElement, ChatMessagesAreaProps
     const isEmpty = !loadingMessages && messages.length === 0;
     return (
       <div
-        className={`flex-1 min-h-0 relative z-[1] bg-background md:bg-transparent ${isEmpty ? "overflow-hidden" : "overflow-y-auto"}`}
+        className={`flex-1 min-h-0 relative z-[1] bg-black md:bg-transparent ${isEmpty ? "overflow-hidden" : "overflow-y-auto"}`}
         ref={messagesContainerRef}
         onScroll={handleScroll}
         role="log"
@@ -70,7 +70,7 @@ export const ChatMessagesArea = forwardRef<HTMLDivElement, ChatMessagesAreaProps
         aria-atomic="false"
       >
         {loadingMessages && messages.length === 0 ? (
-          <div className="relative z-[1] max-w-3xl mx-auto pt-16 md:pt-20 pb-48 md:pb-64 px-3.5 md:px-6 space-y-5 md:space-y-6">
+          <div className="relative z-[1] max-w-3xl mx-auto pt-20 pb-44 md:pb-52 px-4 md:px-6 space-y-5">
             {[
               { side: "end", w: "55%", lines: 1 },
               { side: "start", w: "78%", lines: 3 },

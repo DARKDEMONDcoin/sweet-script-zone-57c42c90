@@ -163,11 +163,17 @@ export function MobileModeChips({
                 onPointerCancel={endPress}
                 onContextMenu={(e) => e.preventDefault()}
                 className={
-                  `relative shrink-0 inline-flex items-center gap-1.5 h-9 px-3.5 rounded-full text-[12.5px] font-medium border overflow-hidden select-none transition-colors mode-chip-btn ${
-                    active
-                      ? "text-foreground border-border bg-muted/60"
-                      : "text-muted-foreground border-border/60 bg-transparent hover:text-foreground hover:bg-muted/30"
-                  }`
+                  isDesktopChat
+                    ? `relative shrink-0 inline-flex items-center gap-1.5 h-9 px-3.5 rounded-full text-[12.5px] font-semibold overflow-hidden select-none border backdrop-blur-2xl saturate-150 transition-colors mode-chip-btn ${
+                        active
+                          ? "text-foreground border-border bg-transparent shadow-[0_6px_20px_var(--overlay-white-12)]"
+                          : "text-foreground border-border bg-transparent shadow-[inset_0_1px_0_var(--overlay-white-08),0_6px_18px_var(--overlay-black-35)]"
+                      }`
+                    : `relative shrink-0 inline-flex items-center gap-1.5 h-9 px-3.5 rounded-full text-[12.5px] font-semibold border overflow-hidden select-none transition-colors mode-chip-btn ${
+                        active
+                          ? "text-foreground border-border bg-transparent shadow-[0_4px_14px_rgba(0,0,0,0.45)]"
+                          : "text-foreground border-border bg-transparent shadow-[0_4px_14px_rgba(0,0,0,0.45)]"
+                      }`
                 }
                 style={{ touchAction: "manipulation", WebkitTapHighlightColor: "transparent" }}
               >
@@ -180,11 +186,11 @@ export function MobileModeChips({
                     backgroundColor: pressing
                       ? active
                         ? "var(--overlay-white-18)"
-                        : "var(--overlay-white-08)"
-                      : "transparent",
+                        : "rgba(127,127,127,0.22)"
+                      : "rgba(127,127,127,0)",
                     boxShadow: longFired
-                      ? "0 0 0 3px var(--overlay-white-12)"
-                      : "0 0 0 0 transparent",
+                      ? "0 0 0 3px rgba(127,127,127,0.25)"
+                      : "0 0 0 0 rgba(127,127,127,0)",
                   }}
                   transition={{ duration: longFired ? 0.35 : 0.2, ease: [0.22, 1, 0.36, 1] }}
                 />
@@ -196,7 +202,7 @@ export function MobileModeChips({
                   }}
                   transition={{ duration: longFired ? 0.5 : 0.45, ease: [0.22, 1, 0.36, 1] }}
                 >
-                  <Icon className="w-[15px] h-[15px]" strokeWidth={1.8} />
+                  <Icon className="w-[15px] h-[15px]" strokeWidth={2} />
                 </motion.span>
                 <motion.span layout="position" className="relative z-10 whitespace-nowrap">
                   {label}

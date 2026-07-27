@@ -38,7 +38,7 @@ const AccessibilityPage = () => (
     eyebrow="Inclusion"
     title="Accessibility"
     subtitle="Our commitment to WCAG 2.2 AA, the European Accessibility Act, the ADA, and an inclusive experience for every user."
-    lastUpdated="July 27, 2026"
+    lastUpdated="May 19, 2026"
     sections={sections}
     seoTitle="Accessibility Statement — Megsy AI"
     seoDescription="Megsy AI's accessibility commitments under WCAG 2.2, the European Accessibility Act, the ADA, and how to report barriers."

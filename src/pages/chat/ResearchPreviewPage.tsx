@@ -1,7 +1,15 @@
 /** @doc Full-screen preview of a deep-research report. */
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, Download, MoreHorizontal, List, ClipboardCheck, Send } from "lucide-react";
+import {
+  ArrowLeft,
+  Download,
+  Loader2,
+  MoreHorizontal,
+  List,
+  ClipboardCheck,
+  Send,
+} from "lucide-react";
 import { SiGoogledrive } from "@/components/icons/BrandIcons";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -23,7 +31,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { Spinner } from "@/components/ui/spinner";
 
 const ResearchPreviewPage = () => {
   const navigate = useNavigate();
@@ -237,7 +244,7 @@ const ResearchPreviewPage = () => {
   if (loading) {
     return (
       <div className="flex h-[100dvh] items-center justify-center bg-background">
-        <Spinner className="h-5 w-5 text-muted-foreground" />
+        <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
       </div>
     );
   }
@@ -379,7 +386,7 @@ const ResearchPreviewPage = () => {
   const handleDriveUpload = async () => {
     const t = toast.loading("Uploading to Drive…");
     try {
-      const { data: res, error } = await supabase.functions.invoke("pipedream", {
+      const { data: res, error } = await supabase.functions.invoke("pipedream-connect", {
         body: {
           action: "google_drive_upload",
           filename: `${(data.query || "research").slice(0, 80)}.md`,
@@ -417,7 +424,7 @@ const ResearchPreviewPage = () => {
                 goBackOr(navigate, "/chat");
               }
             }}
-            className="pointer-events-auto flex h-10 w-10 items-center justify-center rounded-full border border-border/60 bg-background/90 text-foreground shadow-lg ring-1 ring-black/5 transition hover:bg-background dark:border-border/15 dark:bg-background/80 dark:hover:bg-background/95"
+            className="pointer-events-auto flex h-10 w-10 items-center justify-center rounded-full border border-border/60 bg-background/90 text-foreground shadow-lg ring-1 ring-black/5 backdrop-blur-xl transition hover:bg-background dark:border-white/15 dark:bg-background/80 dark:hover:bg-background/95"
             aria-label="Back to conversation"
           >
             <ArrowLeft className={`h-[18px] w-[18px] ${isRtl ? "rotate-180" : ""}`} />
@@ -427,7 +434,7 @@ const ResearchPreviewPage = () => {
             <Sheet open={tocOpen} onOpenChange={setTocOpen}>
               <SheetTrigger asChild>
                 <button
-                  className="pointer-events-auto flex h-10 w-10 items-center justify-center rounded-full border border-border/60 bg-background/90 text-foreground shadow-lg ring-1 ring-black/5 transition hover:bg-background dark:border-border/15 dark:bg-background/80 dark:hover:bg-background/95"
+                  className="pointer-events-auto flex h-10 w-10 items-center justify-center rounded-full border border-border/60 bg-background/90 text-foreground shadow-lg ring-1 ring-black/5 backdrop-blur-xl transition hover:bg-background dark:border-white/15 dark:bg-background/80 dark:hover:bg-background/95"
                   aria-label={"Contents"}
                 >
                   <List className="h-[18px] w-[18px]" />
@@ -435,7 +442,7 @@ const ResearchPreviewPage = () => {
               </SheetTrigger>
               <SheetContent
                 side="bottom"
-                className="mx-auto flex max-h-[62dvh] w-full max-w-[39rem] flex-col overflow-hidden rounded-t-[2rem] border border-border/40 bg-muted/30 px-6 pb-[max(env(safe-area-inset-bottom),1.5rem)] pt-3 shadow-[0_8px_32px_rgba(0,0,0,0.12),inset_0_1px_0_var(--overlay-white-60)] backdrop-saturate-150 dark:border-border/10 dark:bg-muted/10 dark:shadow-[0_8px_32px_rgba(0,0,0,0.5),inset_0_1px_0_var(--overlay-white-08)] sm:max-w-lg"
+                className="mx-auto flex max-h-[62dvh] w-full max-w-[39rem] flex-col overflow-hidden rounded-t-[2rem] border border-white/40 bg-white/30 px-6 pb-[max(env(safe-area-inset-bottom),1.5rem)] pt-3 shadow-[0_8px_32px_rgba(0,0,0,0.12),inset_0_1px_0_var(--overlay-white-60)] backdrop-blur-2xl backdrop-saturate-150 dark:border-white/10 dark:bg-white/10 dark:shadow-[0_8px_32px_rgba(0,0,0,0.5),inset_0_1px_0_var(--overlay-white-08)] sm:max-w-lg"
                 dir={isRtl ? "rtl" : "ltr"}
               >
                 <div className="mx-auto mb-6 h-1 w-11 shrink-0 rounded-full bg-foreground/25" />
@@ -460,7 +467,7 @@ const ResearchPreviewPage = () => {
                           }, 200);
                         }}
                         className={cn(
-                          "group relative flex w-full items-center gap-3 rounded-[16px] border px-3 py-3 text-left transition-all",
+                          "group relative flex w-full items-center gap-3 rounded-[16px] border px-3 py-3 text-left transition-all backdrop-blur-md",
                           activeTocId === it.id
                             ? "border-foreground/30 bg-foreground/[0.16] text-foreground shadow-[inset_0_1px_0_hsl(var(--foreground)_/_0.16)]"
                             : "border-foreground/10 bg-foreground/[0.05] text-foreground/85 hover:bg-foreground/[0.11] hover:border-foreground/20",
@@ -479,7 +486,7 @@ const ResearchPreviewPage = () => {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button
-                className="pointer-events-auto flex h-10 w-10 items-center justify-center rounded-full border border-border/60 bg-background/90 text-foreground shadow-lg ring-1 ring-black/5 transition hover:bg-background dark:border-border/15 dark:bg-background/80 dark:hover:bg-background/95"
+                className="pointer-events-auto flex h-10 w-10 items-center justify-center rounded-full border border-border/60 bg-background/90 text-foreground shadow-lg ring-1 ring-black/5 backdrop-blur-xl transition hover:bg-background dark:border-white/15 dark:bg-background/80 dark:hover:bg-background/95"
                 aria-label={"Options"}
               >
                 <MoreHorizontal className="h-[18px] w-[18px]" />
@@ -488,25 +495,25 @@ const ResearchPreviewPage = () => {
             <DropdownMenuContent
               align={isRtl ? "start" : "end"}
               sideOffset={10}
-              className="w-60 overflow-hidden rounded-2xl border border-border/40 bg-muted/30 p-1.5 shadow-[0_8px_32px_rgba(0,0,0,0.12),inset_0_1px_0_var(--overlay-white-60)] backdrop-saturate-150 dark:border-border/10 dark:bg-muted/10 dark:shadow-[0_8px_32px_rgba(0,0,0,0.5),inset_0_1px_0_var(--overlay-white-08)]"
+              className="w-60 overflow-hidden rounded-2xl border border-white/40 bg-white/30 p-1.5 shadow-[0_8px_32px_rgba(0,0,0,0.12),inset_0_1px_0_var(--overlay-white-60)] backdrop-blur-2xl backdrop-saturate-150 dark:border-white/10 dark:bg-white/10 dark:shadow-[0_8px_32px_rgba(0,0,0,0.5),inset_0_1px_0_var(--overlay-white-08)]"
             >
               <DropdownMenuItem
                 onClick={handleCopy}
-                className="gap-3 rounded-xl px-3 py-2.5 text-[14px] text-foreground focus:bg-muted/40 dark:focus:bg-muted/15"
+                className="gap-3 rounded-xl px-3 py-2.5 text-[14px] text-foreground focus:bg-white/40 dark:focus:bg-white/15"
               >
                 <ClipboardCheck className="h-[18px] w-[18px]" />
                 <span>{"Copy text"}</span>
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={handleNativeShare}
-                className="gap-3 rounded-xl px-3 py-2.5 text-[14px] text-foreground focus:bg-muted/40 dark:focus:bg-muted/15"
+                className="gap-3 rounded-xl px-3 py-2.5 text-[14px] text-foreground focus:bg-white/40 dark:focus:bg-white/15"
               >
                 <Send className="h-[18px] w-[18px]" />
                 <span>{"Send to friends"}</span>
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={handleDriveUpload}
-                className="gap-3 rounded-xl px-3 py-2.5 text-[14px] text-foreground focus:bg-muted/40 dark:focus:bg-muted/15"
+                className="gap-3 rounded-xl px-3 py-2.5 text-[14px] text-foreground focus:bg-white/40 dark:focus:bg-white/15"
               >
                 <SiGoogledrive className="h-[18px] w-[18px]" color="#FBBC04" />
                 <span>{"Upload to Google Drive"}</span>

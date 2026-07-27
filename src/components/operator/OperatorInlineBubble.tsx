@@ -78,7 +78,7 @@ export function OperatorInlineBubble({
               {c.label}
             </span>
             {!isRunning && run.status === "done" && (
-              <span className="opacity-70 text-primary">Done</span>
+              <span className="opacity-70 text-emerald-600">Done</span>
             )}
             {run.status === "failed" && <span className="opacity-70 text-red-500">Failed</span>}
             {isRunning ? (
@@ -143,7 +143,7 @@ export function OperatorInlineBubble({
               {files.length > 0 && (
                 <button
                   onClick={() => setOpen(true)}
-                  className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-primary/10 text-primary hover:bg-primary/20 text-[11px] transition-colors"
+                  className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/20 text-[11px] transition-colors"
                 >
                   <FileText className="w-3 h-3" /> {files.length} Files
                 </button>

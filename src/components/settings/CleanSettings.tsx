@@ -1,8 +1,7 @@
 /** @doc Clean SaaS primitives for the desktop settings shell. */
 import { ReactNode, InputHTMLAttributes, TextareaHTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
-import { Check } from "lucide-react";
-import { Spinner } from "@/components/ui/spinner";
+import { Check, Loader2 } from "lucide-react";
 
 /* ---------- Layout ---------- */
 
@@ -26,20 +25,20 @@ export function CleanCard({
   return (
     <section
       className={cn(
-        "rounded-2xl border border-border/10 bg-muted/40 text-foreground shadow-[0_20px_60px_-30px_rgba(0,0,0,0.7)]",
+        "rounded-2xl border border-white/10 bg-white/[0.05] backdrop-blur-xl text-white shadow-[0_20px_60px_-30px_rgba(0,0,0,0.7)]",
         className,
       )}
     >
       {(title || description || action) && (
-        <header className="flex items-start justify-between gap-4 px-6 pt-5 pb-4 border-b border-border/10">
+        <header className="flex items-start justify-between gap-4 px-6 pt-5 pb-4 border-b border-white/10">
           <div className="min-w-0">
             {title && (
-              <h3 className="font-display text-[15px] font-bold tracking-tight text-foreground">
+              <h3 className="font-display text-[15px] font-bold tracking-tight text-white">
                 {title}
               </h3>
             )}
             {description && (
-              <p className="mt-1 text-[12.5px] text-muted-foreground leading-relaxed">
+              <p className="mt-1 text-[12.5px] text-white/60 leading-relaxed">
                 {description}
               </p>
             )}
@@ -67,12 +66,12 @@ export function CleanField({
     <div className="space-y-1.5">
       <label
         htmlFor={htmlFor}
-        className="block text-[12px] font-semibold text-foreground tracking-tight"
+        className="block text-[12px] font-semibold text-white/90 tracking-tight"
       >
         {label}
       </label>
       {children}
-      {hint && <p className="text-[11.5px] text-muted-foreground">{hint}</p>}
+      {hint && <p className="text-[11.5px] text-white/55">{hint}</p>}
     </div>
   );
 }
@@ -80,7 +79,7 @@ export function CleanField({
 /* ---------- Inputs ---------- */
 
 const inputCls =
-  "w-full h-10 px-3.5 rounded-lg border border-border/12 bg-muted/40 text-[13.5px] text-foreground placeholder:text-muted-foreground outline-none transition-colors focus:border-border/40 focus:bg-muted/40";
+  "w-full h-10 px-3.5 rounded-lg border border-white/12 bg-white/[0.06] text-[13.5px] text-white placeholder:text-white/40 outline-none transition-colors focus:border-white/40 focus:bg-white/[0.09]";
 
 export function CleanInput(props: InputHTMLAttributes<HTMLInputElement>) {
   return <input {...props} className={cn(inputCls, props.className)} />;
@@ -274,7 +273,7 @@ export function CleanButton({
         className,
       )}
     >
-      {loading && <Spinner className="w-3.5 h-3.5" />}
+      {loading && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
       {children}
     </button>
   );

@@ -1,9 +1,9 @@
 /** @doc Mobile /auth intro — Screen 1 showcase design with inline email/password expansion. */
+import { useEffect, useRef, useState } from "react";
 import { m as motion, AnimatePresence } from "framer-motion";
 import { AlertCircle, ArrowRight, Eye, EyeOff } from "lucide-react";
 import { useBrandLogo } from "@/hooks/useBrandLogo";
 import { t as authT, useUserLang } from "@/lib/authI18n";
-import { Spinner } from "@/components/ui/spinner";
 
 const AUTH_MOBILE_VIDEO_URL =
   "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260424_064411_9e9d7f84-9277-41f4-ab10-59172d89e6be.mp4";
@@ -50,6 +50,23 @@ export default function MobileAuthIntro({
   const lang = useUserLang();
   const isAr = lang === "ar";
   const logo = useBrandLogo();
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    const t = setTimeout(() => setReady(true), 5000);
+    const v = videoRef.current;
+    if (!v) return () => clearTimeout(t);
+    const on = () => setReady(true);
+    v.addEventListener("loadeddata", on);
+    v.addEventListener("canplay", on);
+    return () => {
+      v.removeEventListener("loadeddata", on);
+      v.removeEventListener("canplay", on);
+      clearTimeout(t);
+    };
+  }, []);
+
   const t = isAr
     ? {
         title1: "منصة الذكاء",
@@ -100,7 +117,7 @@ export default function MobileAuthIntro({
   return (
     <div
       dir={isAr ? "rtl" : "ltr"}
-      className="fixed inset-0 min-h-[100svh] w-full overflow-hidden bg-[#02040c] text-foreground"
+      className="relative min-h-[100dvh] w-full overflow-hidden bg-[#02040c] text-white"
       style={{ fontFamily: 'Inter, -apple-system, "SF Pro Text", system-ui, sans-serif' }}
     >
       {/* Hero video */}
@@ -109,17 +126,17 @@ export default function MobileAuthIntro({
         alt=""
         aria-hidden="true"
         className="absolute inset-0 h-full w-full object-cover"
-        style={{ objectPosition: "center 48%", zIndex: 0 }}
+        style={{ objectPosition: "center 48%", zIndex: 0, opacity: ready ? 0 : 1, transition: "opacity 1.2s ease-out" }}
       />
       <video
+        ref={videoRef}
         autoPlay
         loop
         muted
         playsInline
         preload="auto"
-        poster="/auth/auth-mobile-fallback.webp"
         className="absolute inset-0 h-full w-full object-cover"
-        style={{ objectPosition: "center 48%", zIndex: 0 }}
+        style={{ objectPosition: "center 48%", zIndex: 0, opacity: ready ? 1 : 0, transition: "opacity 1.2s ease-out" }}
         src={AUTH_MOBILE_VIDEO_URL}
       />
 
@@ -135,12 +152,12 @@ export default function MobileAuthIntro({
 
       {/* Content pinned to bottom */}
       <div
-        className="absolute inset-0 flex flex-col justify-end overflow-y-auto px-6 pb-10"
-        style={{ zIndex: 4, paddingTop: "max(1rem, env(safe-area-inset-top, 0px))", paddingBottom: "max(2.25rem, env(safe-area-inset-bottom, 0px))" }}
+        className="absolute inset-x-0 bottom-0 px-6 pb-10"
+        style={{ zIndex: 4, paddingBottom: "max(2.25rem, env(safe-area-inset-bottom, 0px))" }}
       >
         {/* Title */}
         <h1
-          className="text-center text-foreground"
+          className="text-center text-white"
           style={{
             fontFamily: '"ITC Garamond Std Narrow", "Playfair Display", Garamond, serif',
             fontWeight: 300,
@@ -159,7 +176,7 @@ export default function MobileAuthIntro({
 
         {/* Subtitle */}
         <p
-          className="mt-4 text-center whitespace-pre-line text-foreground"
+          className="mt-4 text-center whitespace-pre-line text-white"
           style={{
             fontFamily: 'Inter, sans-serif',
             fontSize: "14px",
@@ -180,9 +197,9 @@ export default function MobileAuthIntro({
               transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
               className="mb-3 overflow-hidden"
             >
-              <div className="flex items-center gap-2.5 rounded-xl border border-red-400/25 bg-red-500/10 px-3.5 py-3">
+              <div className="flex items-center gap-2.5 rounded-xl border border-red-400/25 bg-red-500/10 px-3.5 py-3 backdrop-blur-md">
                 <AlertCircle className="h-4 w-4 shrink-0 text-red-300" />
-                <p className="text-[13px] leading-[18px] text-foreground">{error}</p>
+                <p className="text-[13px] leading-[18px] text-white/90">{error}</p>
               </div>
             </motion.div>
           )}
@@ -191,6 +208,7 @@ export default function MobileAuthIntro({
         {/* CTAs */}
         <form onSubmit={submitForm} noValidate className="mt-7 space-y-2.5">
           {/* Google button — collapses away when expanded */}
+          <AnimatePresence initial={false}>
             {!expanded && (
               <motion.button
                 key="google"
@@ -200,7 +218,7 @@ export default function MobileAuthIntro({
                 animate={{ opacity: 1, height: 52, marginBottom: 0 }}
                 exit={{ opacity: 0, height: 0, marginBottom: -10 }}
                 transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-                className="theme-fixed w-full flex items-center justify-center gap-2.5 rounded-full bg-primary text-[#0b0d12] active:scale-[0.985] overflow-hidden"
+                className="theme-fixed w-full flex items-center justify-center gap-2.5 rounded-full bg-white text-[#0b0d12] active:scale-[0.985] overflow-hidden"
                 style={{ fontSize: "15px", fontWeight: 600, letterSpacing: "0.1px" }}
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden>
@@ -212,6 +230,7 @@ export default function MobileAuthIntro({
                 <span>{t.google}</span>
               </motion.button>
             )}
+          </AnimatePresence>
 
           {/* Email pill — morphs from button to input using shared layoutId */}
           <motion.div
@@ -225,11 +244,17 @@ export default function MobileAuthIntro({
               WebkitBackdropFilter: "blur(10px)",
             }}
           >
+            <AnimatePresence mode="wait" initial={false}>
               {!expanded ? (
-                <button
+                <motion.button
+                  key="email-btn"
                   type="button"
                   onClick={handleEmailBtnClick}
-                  className="w-full h-full flex items-center justify-center gap-2 text-foreground active:scale-[0.985]"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.18, ease: "easeOut" }}
+                  className="w-full h-full flex items-center justify-center gap-2 text-white active:scale-[0.985]"
                   style={{ fontSize: "15px", fontWeight: 500, letterSpacing: "0.1px" }}
                 >
                   <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
@@ -237,9 +262,14 @@ export default function MobileAuthIntro({
                     <path d="M3.5 7.5l8.5 6 8.5-6" />
                   </svg>
                   <span>{t.email}</span>
-                </button>
+                </motion.button>
               ) : (
-                <div
+                <motion.div
+                  key="email-input"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.22, ease: "easeOut", delay: 0.08 }}
                   className="w-full h-full px-5 flex items-center"
                 >
                   <input
@@ -249,11 +279,13 @@ export default function MobileAuthIntro({
                     value={email}
                     onChange={(e) => setEmail?.(e.target.value)}
                     disabled={showPasswordField}
-                    className="w-full bg-transparent outline-none text-[15px] text-foreground placeholder:text-muted-foreground disabled:opacity-70"
+                    autoFocus
+                    className="w-full bg-transparent outline-none text-[15px] text-white placeholder:text-white/40 disabled:opacity-70"
                     dir="ltr"
                   />
-                </div>
+                </motion.div>
               )}
+            </AnimatePresence>
           </motion.div>
 
           {/* Password field — appears below email when needed */}
@@ -283,13 +315,13 @@ export default function MobileAuthIntro({
                     value={password}
                     onChange={(e) => setPassword?.(e.target.value)}
                     autoFocus
-                    className="flex-1 bg-transparent outline-none text-[15px] text-foreground placeholder:text-muted-foreground"
+                    className="flex-1 bg-transparent outline-none text-[15px] text-white placeholder:text-white/40"
                     dir="ltr"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword?.(!showPassword)}
-                    className="text-muted-foreground hover:text-muted-foreground transition-colors"
+                    className="text-white/50 hover:text-white/80 transition-colors"
                     aria-label="toggle password"
                   >
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -299,7 +331,7 @@ export default function MobileAuthIntro({
                   <button
                     type="button"
                     onClick={onForgotPassword}
-                    className="text-[12px] text-muted-foreground hover:text-muted-foreground underline underline-offset-4 decoration-white/25 transition-colors"
+                    className="text-[12px] text-white/60 hover:text-white/85 underline underline-offset-4 decoration-white/25 transition-colors"
                   >
                     {t.forgot}
                   </button>
@@ -309,28 +341,35 @@ export default function MobileAuthIntro({
           </AnimatePresence>
 
           {/* Primary Continue / Sign in button — only when expanded */}
+          <AnimatePresence initial={false}>
             {expanded && (
-              <button
+              <motion.button
+                key="primary"
                 type="submit"
                 disabled={isSubmitting || !primaryReady}
-                className={`mt-2.5 h-[52px] w-full rounded-full flex items-center justify-center gap-2 active:scale-[0.985] transition-colors duration-300 disabled:opacity-50 overflow-hidden ${
+                initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                animate={{ opacity: 1, height: 52, marginTop: 10 }}
+                exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1], delay: 0.05 }}
+                className={`w-full rounded-full flex items-center justify-center gap-2 active:scale-[0.985] transition-colors duration-300 disabled:opacity-50 overflow-hidden ${
                   primaryReady
-                    ? "theme-fixed bg-primary text-[#0b0d12] border border-border"
-                    : "bg-transparent text-foreground border border-border/30"
+                    ? "theme-fixed bg-white text-[#0b0d12] border border-white"
+                    : "bg-transparent text-white border border-white/30"
                 }`}
                 style={{ fontSize: "15px", fontWeight: 600, letterSpacing: "0.1px" }}
               >
                 {isSubmitting ? (
-                  <Spinner className="size-4" />
+                  <span className={`w-4 h-4 border-2 ${primaryReady ? "border-[#0b0d12]" : "border-white"} border-t-transparent rounded-full animate-spin`} />
                 ) : (
                   <>
                     {showPasswordField ? t.signIn : t.continue}
                     <ArrowRight className="w-4 h-4" strokeWidth={2} />
                   </>
                 )}
-              </button>
+              </motion.button>
 
             )}
+          </AnimatePresence>
 
           {/* Tertiary — Telegram (only when collapsed) */}
           {!expanded && onTelegram && (

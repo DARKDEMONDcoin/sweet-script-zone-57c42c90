@@ -3,8 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { RefreshCw, Plus, Trash2, Play } from "lucide-react";
-import { Spinner } from "@/components/ui/spinner";
+import { Loader2, RefreshCw, Plus, Trash2, Play } from "lucide-react";
 
 type Row = {
   id: string;
@@ -102,7 +101,7 @@ export default function AgentGoldenPanel() {
             <Plus className="h-4 w-4 mr-1" /> إضافة
           </Button>
           <Button size="sm" variant="outline" onClick={runGolden} disabled={running}>
-            {running ? <Spinner className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+            {running ? <Loader2 className="h-4 w-4 animate-spin" /> : <Play className="h-4 w-4" />}
             <span className="mr-2">شغّل الـ Golden Set</span>
           </Button>
           <Button size="sm" variant="ghost" onClick={load} disabled={loading}>

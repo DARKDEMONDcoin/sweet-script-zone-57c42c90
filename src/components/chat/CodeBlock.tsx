@@ -148,7 +148,7 @@ export default function CodeBlock({ code, lang, className, onPreview }: Props) {
           >
             {copied ? (
               <>
-                <Check className="w-3.5 h-3.5 text-primary" /> Copied
+                <Check className="w-3.5 h-3.5 text-emerald-400" /> Copied
               </>
             ) : (
               <>

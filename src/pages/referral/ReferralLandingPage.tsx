@@ -2,10 +2,8 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Spinner } from "@/components/ui/spinner";
 import {
   Sparkles,
-
   Gift,
   ShieldCheck,
   Zap,
@@ -66,17 +64,17 @@ const ReferralLandingPage = () => {
 
   if (loading) {
     return (
-      <div className="flex min-h-[100dvh] items-center justify-center bg-background">
+      <div className="flex min-h-[100dvh] items-center justify-center bg-black">
         <div className="flex flex-col items-center gap-3">
-          <Spinner className="size-10 text-foreground/70" />
-          <p className="text-xs uppercase tracking-[0.24em] text-muted-foreground">Megsy AI</p>
+          <div className="h-10 w-10 rounded-full border-2 border-white/10 border-t-white/70 animate-spin" />
+          <p className="text-xs uppercase tracking-[0.24em] text-white/40">Megsy AI</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div dir="auto" className="relative min-h-[100dvh] overflow-hidden bg-background text-foreground">
+    <div dir="auto" className="relative min-h-[100dvh] overflow-hidden bg-black text-white">
       {/* Cinematic ambient — gold + violet on jet black */}
       <div
         aria-hidden
@@ -107,14 +105,14 @@ const ReferralLandingPage = () => {
                 boxShadow: "0 4px 18px -6px rgba(212,175,110,0.55)",
               }}
             >
-              <Sparkles className="h-3.5 w-3.5 text-primary-foreground" strokeWidth={2.6} />
+              <Sparkles className="h-3.5 w-3.5 text-black" strokeWidth={2.6} />
             </span>
-            <span className="text-[13px] font-semibold tracking-tight text-foreground">
-              Megsy <span className="text-muted-foreground">AI</span>
+            <span className="text-[13px] font-semibold tracking-tight text-white/90">
+              Megsy <span className="text-white/50">AI</span>
             </span>
           </div>
           <span
-            className="inline-flex items-center gap-1 rounded-full border border-border/10 bg-muted/40 px-2.5 py-1 text-[10.5px] font-medium uppercase tracking-[0.16em] text-muted-foreground"
+            className="inline-flex items-center gap-1 rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[10.5px] font-medium uppercase tracking-[0.16em] text-white/70 backdrop-blur"
           >
             <Crown className="h-3 w-3" style={{ color: "#D4AF6E" }} />
             Private invite
@@ -132,7 +130,7 @@ const ReferralLandingPage = () => {
             }}
           />
           <div
-            className="relative overflow-hidden rounded-[28px] border border-border/10 p-6 text-center"
+            className="relative overflow-hidden rounded-[28px] border border-white/10 p-6 text-center backdrop-blur-xl"
             style={{
               background:
                 "linear-gradient(180deg, var(--overlay-white-06) 0%, rgba(255,255,255,0.02) 100%)",
@@ -152,7 +150,7 @@ const ReferralLandingPage = () => {
                   }}
                 />
                 <div
-                  className="relative flex h-[76px] w-[76px] items-center justify-center overflow-hidden rounded-full bg-background text-2xl font-semibold text-foreground"
+                  className="relative flex h-[76px] w-[76px] items-center justify-center overflow-hidden rounded-full bg-black text-2xl font-semibold text-white"
                   style={{ border: "2px solid #0a0a0a" }}
                 >
                   {info?.avatarUrl ? (
@@ -180,15 +178,15 @@ const ReferralLandingPage = () => {
                     border: "2px solid #000",
                   }}
                 >
-                  <Check className="h-3 w-3 text-primary-foreground" strokeWidth={3} />
+                  <Check className="h-3 w-3 text-black" strokeWidth={3} />
                 </span>
               </div>
             </div>
 
-            <p className="text-[12px] uppercase tracking-[0.22em] text-muted-foreground">
+            <p className="text-[12px] uppercase tracking-[0.22em] text-white/45">
               You've been invited by
             </p>
-            <p className="mt-1 text-[18px] font-semibold tracking-tight text-foreground">
+            <p className="mt-1 text-[18px] font-semibold tracking-tight text-white">
               {info?.displayName}
             </p>
 
@@ -204,7 +202,7 @@ const ReferralLandingPage = () => {
               Your seat at the world's
               <br /> most complete AI suite.
             </h1>
-            <p className="mx-auto mt-3 max-w-[300px] text-[13.5px] leading-relaxed text-muted-foreground">
+            <p className="mx-auto mt-3 max-w-[300px] text-[13.5px] leading-relaxed text-white/65">
               Chat, image, video, deep research, slides, code and agents — all inside one calm,
               premium workspace.
             </p>
@@ -219,13 +217,13 @@ const ReferralLandingPage = () => {
               }}
             >
               <Gift className="h-3.5 w-3.5" style={{ color: "#F6E7B7" }} />
-              <span className="text-[12.5px] font-semibold text-foreground">
+              <span className="text-[12.5px] font-semibold text-white">
                 +15 free credits inside
               </span>
               {code && (
                 <span
                   dir="ltr"
-                  className="ml-1 rounded-full bg-background/50 px-2 py-0.5 font-mono text-[10.5px] tracking-wider"
+                  className="ml-1 rounded-full bg-black/50 px-2 py-0.5 font-mono text-[10.5px] tracking-wider"
                   style={{ color: "#F6E7B7", border: "1px solid rgba(212,175,110,0.3)" }}
                 >
                   {code}
@@ -256,7 +254,7 @@ const ReferralLandingPage = () => {
           ].map((f) => (
             <li
               key={f.title}
-              className="flex items-start gap-3 rounded-2xl border border-border/50 bg-muted/40 p-3.5"
+              className="flex items-start gap-3 rounded-2xl border border-white/[0.07] bg-white/[0.03] p-3.5 backdrop-blur-sm"
             >
               <span
                 className="mt-0.5 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl"
@@ -269,8 +267,8 @@ const ReferralLandingPage = () => {
                 <f.icon className="h-4 w-4" style={{ color: "#F6E7B7" }} />
               </span>
               <div className="min-w-0">
-                <p className="text-[13.5px] font-semibold text-foreground">{f.title}</p>
-                <p className="mt-0.5 text-[12.5px] leading-relaxed text-muted-foreground">{f.body}</p>
+                <p className="text-[13.5px] font-semibold text-white">{f.title}</p>
+                <p className="mt-0.5 text-[12.5px] leading-relaxed text-white/55">{f.body}</p>
               </div>
             </li>
           ))}
@@ -285,10 +283,10 @@ const ReferralLandingPage = () => {
           ].map((t) => (
             <div
               key={t.label}
-              className="rounded-2xl border border-border/50 bg-muted/40 px-2 py-3"
+              className="rounded-2xl border border-white/[0.06] bg-white/[0.025] px-2 py-3"
             >
               <t.icon className="mx-auto h-4 w-4" style={{ color: "#D4AF6E" }} />
-              <p className="mt-1.5 text-[10.5px] font-medium leading-tight text-muted-foreground">
+              <p className="mt-1.5 text-[10.5px] font-medium leading-tight text-white/70">
                 {t.label}
               </p>
             </div>
@@ -299,7 +297,7 @@ const ReferralLandingPage = () => {
         <div className="mt-8 space-y-3">
           <button
             onClick={join}
-            className="group relative w-full overflow-hidden rounded-2xl py-4 text-[15px] font-semibold text-primary-foreground transition active:scale-[0.985]"
+            className="group relative w-full overflow-hidden rounded-2xl py-4 text-[15px] font-semibold text-black transition active:scale-[0.985]"
             style={{
               background:
                 "linear-gradient(180deg,#F6E7B7 0%,#D4AF6E 55%,#B0894B 100%)",
@@ -313,7 +311,7 @@ const ReferralLandingPage = () => {
             </span>
           </button>
 
-          <p className="text-center text-[11px] leading-relaxed text-muted-foreground">
+          <p className="text-center text-[11px] leading-relaxed text-white/40">
             No credit card required · Cancel anytime · Takes 20 seconds
           </p>
         </div>

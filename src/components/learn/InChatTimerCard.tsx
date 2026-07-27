@@ -59,13 +59,13 @@ const InChatTimerCard = ({
   const style = {
     focus: {
       label: "Focus",
-      ring: "text-primary",
-      bg: "text-primary/15",
-      chip: "text-primary/80 dark:text-primary/80",
-      border: "border-primary/25",
+      ring: "text-emerald-500",
+      bg: "text-emerald-500/15",
+      chip: "text-emerald-700/80 dark:text-emerald-400/80",
+      border: "border-emerald-500/25",
       shadow: "shadow-[0_8px_24px_-10px_rgba(5,150,105,0.4)]",
-      icon: "text-primary dark:text-primary",
-      btn: "bg-primary/10 hover:bg-primary/20 text-primary dark:text-primary",
+      icon: "text-emerald-600 dark:text-emerald-400",
+      btn: "bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300",
     },
     warn: {
       label: "Focus",
@@ -99,13 +99,13 @@ const InChatTimerCard = ({
     },
     done: {
       label: "Complete",
-      ring: "text-primary",
-      bg: "text-primary/15",
-      chip: "text-primary dark:text-primary",
-      border: "border-primary/40",
+      ring: "text-emerald-500",
+      bg: "text-emerald-500/15",
+      chip: "text-emerald-700 dark:text-emerald-300",
+      border: "border-emerald-500/40",
       shadow: "shadow-[0_10px_30px_-8px_rgba(16,185,129,0.55)]",
-      icon: "text-primary dark:text-primary",
-      btn: "bg-primary/15 hover:bg-primary/25 text-primary dark:text-primary",
+      icon: "text-emerald-600 dark:text-emerald-300",
+      btn: "bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-700 dark:text-emerald-200",
     },
   }[tone];
 
@@ -148,7 +148,7 @@ const InChatTimerCard = ({
       }
       exit={{ opacity: 0, y: -8, scale: 0.94 }}
       transition={{ type: "spring", stiffness: 320, damping: 24 }}
-      className={`mx-auto w-fit max-w-[92%] rounded-full liquid-glass-milk px-3 py-1.5 border ${style.border} ${style.shadow}`}
+      className={`mx-auto w-fit max-w-[92%] rounded-full liquid-glass-milk px-3 py-1.5 border ${style.border} ${style.shadow} backdrop-blur-xl`}
       role="status"
       aria-live={done ? "polite" : "off"}
       aria-label={

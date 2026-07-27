@@ -26,7 +26,6 @@ import {
   firstError,
 } from "@/lib/validation/schemas";
 import { useRateLimit } from "@/lib/guards/rateLimiter";
-import { Spinner } from "@/components/ui/spinner";
 
 const AUTH_MOBILE_VIDEO_URL =
   "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260424_064411_9e9d7f84-9277-41f4-ab10-59172d89e6be.mp4";
@@ -43,23 +42,6 @@ type Step =
   | "reset-password";
 type ClipboardField = { name: "email" | "password" | "newPassword" | "otp"; otpIndex?: number };
 type ClipboardMenuState = { x: number; y: number; field: ClipboardField; input: HTMLInputElement };
-
-/**
- * Post-auth destination. Honours a `?next=` deep link (set by ProtectedRoute
- * when it bounces a signed-out user), falling back to the chat surface.
- * Only same-origin absolute paths are accepted.
- */
-const nextAfterAuth = () => {
-  try {
-    const next = new URLSearchParams(window.location.search).get("next");
-    if (next && next.startsWith("/") && !next.startsWith("//") && !next.startsWith("/auth")) {
-      return next;
-    }
-  } catch {
-    /* ignore */
-  }
-  return pathForZone("/chat", window.location.pathname);
-};
 
 const AuthPage = () => {
   // Subscribe to language changes so the whole page re-translates live.
@@ -269,13 +251,13 @@ const AuthPage = () => {
       });
 
       if (error) throw error;
-      const mfa = await getMfaRedirect(redirectUrl || nextAfterAuth());
+      const mfa = await getMfaRedirect(redirectUrl || pathForZone("/chat", window.location.pathname));
       if (mfa) {
         navigate(mfa);
         return;
       }
       if (redirectUrl) window.location.href = redirectUrl;
-      else navigate(nextAfterAuth());
+      else navigate(pathForZone("/chat", window.location.pathname));
     } catch (e: any) {
       const msg = String(e?.message || "");
       if (/failed to (send|fetch)|network|load failed|networkerror/i.test(msg)) {
@@ -470,7 +452,7 @@ const AuthPage = () => {
 
       if (step === "otp-2fa") {
         if (redirectUrl) window.location.href = redirectUrl;
-        else navigate(nextAfterAuth());
+        else navigate(pathForZone("/chat", window.location.pathname));
       } else if (step === "otp-reset") {
         setVerifiedResetCode(code);
         setStep("reset-password");
@@ -516,13 +498,13 @@ const AuthPage = () => {
           password: newPassword,
         });
         if (!signInErr) {
-          const mfa = await getMfaRedirect(redirectUrl || nextAfterAuth());
+          const mfa = await getMfaRedirect(redirectUrl || pathForZone("/chat", window.location.pathname));
           if (mfa) {
             navigate(mfa);
             return;
           }
           if (redirectUrl) window.location.href = redirectUrl;
-          else navigate(nextAfterAuth());
+          else navigate(pathForZone("/chat", window.location.pathname));
           return;
         }
         setUserExists(true);
@@ -581,9 +563,7 @@ const AuthPage = () => {
       } catch {}
       toast.success(authT("accountCreated"));
       if (redirectUrl) window.location.href = redirectUrl;
-      else if (typeof window !== "undefined" && window.innerWidth < 900)
-        navigate(pathForZone("/welcome", window.location.pathname));
-      else navigate(nextAfterAuth());
+      else navigate(pathForZone("/chat", window.location.pathname));
     } catch (e: any) {
       toast.error(translateAuthError(e, "couldNotCreate"));
     } finally {
@@ -618,7 +598,7 @@ const AuthPage = () => {
       });
       if (signInErr) throw signInErr;
       toast.success(authT("passwordUpdated"));
-      navigate(nextAfterAuth());
+      navigate(pathForZone("/chat", window.location.pathname));
     } catch (e: any) {
       toast.error(translateAuthError(e, "passwordUpdateFailed"));
     } finally {
@@ -636,13 +616,13 @@ const AuthPage = () => {
   const handleGoogleLogin = async () => {
     await supabase.auth.signInWithOAuth({
       provider: "google",
-      options: { redirectTo: redirectUrl || window.location.origin + nextAfterAuth() },
+      options: { redirectTo: redirectUrl || window.location.origin + pathForZone("/chat", window.location.pathname) },
     });
   };
   const handleGitHubLogin = async () => {
     await supabase.auth.signInWithOAuth({
       provider: "github",
-      options: { redirectTo: redirectUrl || window.location.origin + nextAfterAuth() },
+      options: { redirectTo: redirectUrl || window.location.origin + pathForZone("/chat", window.location.pathname) },
     });
   };
 
@@ -721,25 +701,27 @@ const AuthPage = () => {
   };
   const meta = stepMeta[step];
 
+  const Spinner = () => (
+    <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+  );
 
   // Borderless input — only a thin bottom rule, no fill
   const inputCls =
-    "auth-input-white w-full bg-transparent border-0 border-b border-border/15 rounded-none px-0 py-3 text-[15px] text-start !text-foreground placeholder:!text-muted-foreground outline-none focus:border-border/70 transition-colors duration-200";
+    "auth-input-white w-full bg-transparent border-0 border-b border-white/15 rounded-none px-0 py-3 text-[15px] text-start !text-white placeholder:!text-white/40 outline-none focus:border-white/70 transition-colors duration-200";
 
   // Primary CTA — white only after the related field has text.
   const btnCls = (hasValue: boolean) =>
     `w-full py-3 rounded-full border text-[14px] font-semibold active:scale-[0.97] transition-[transform,border-color,background-color,color,opacity] duration-[280ms] [transition-timing-function:cubic-bezier(0.34,1.35,0.64,1)] disabled:opacity-50 disabled:pointer-events-none will-change-transform ${
       hasValue
-        ? "theme-fixed bg-primary text-primary-foreground border-border hover:bg-muted/90"
-        : "bg-transparent text-foreground border-border/30"
+        ? "theme-fixed bg-white text-black border-white hover:bg-white/90"
+        : "bg-transparent text-white border-white/30"
     }`;
 
   // Secondary — bare outline pill with iOS press
   const socialCls =
-    "w-full flex items-center justify-center gap-2.5 py-3 rounded-full border border-border/15 bg-transparent text-foreground/90 text-[14px] font-medium hover:border-foreground/40 hover:bg-foreground/[0.03] active:scale-[0.97] transition-[transform,border-color,background-color] duration-[280ms] [transition-timing-function:cubic-bezier(0.34,1.35,0.64,1)] will-change-transform";
+    "w-full flex items-center justify-center gap-2.5 py-3 rounded-full border border-white/15 bg-transparent text-foreground/90 text-[14px] font-medium hover:border-foreground/40 hover:bg-foreground/[0.03] active:scale-[0.97] transition-[transform,border-color,background-color] duration-[280ms] [transition-timing-function:cubic-bezier(0.34,1.35,0.64,1)] will-change-transform";
 
   // ─── Mobile intro — inline expandable email/password flow ──
-
   if (isMobile && (step === "intro1" || step === "email" || step === "password")) {
     const isExpanded = step === "email" || step === "password";
     return (
@@ -828,9 +810,9 @@ const AuthPage = () => {
         path="/auth"
         noindex
       />
-      <div className="auth-desktop-split relative min-h-dvh w-full overflow-hidden bg-background text-foreground flex flex-col lg:flex-row">
+      <div className="auth-desktop-split relative min-h-dvh w-full overflow-hidden bg-black text-foreground flex flex-col lg:flex-row">
         {/* Plain black backdrop */}
-        <div className="absolute inset-0 -z-10 bg-background" />
+        <div className="absolute inset-0 -z-10 bg-black" />
 
         {/* Mobile top video with image fallback (hidden on desktop) */}
         <div className="lg:hidden relative w-full h-[38vh] shrink-0 overflow-hidden z-0">
@@ -997,17 +979,17 @@ const AuthPage = () => {
                       </div>
 
                       <div className="flex items-center gap-3 my-5">
-                        <div className="flex-1 h-px bg-muted/10" />
+                        <div className="flex-1 h-px bg-white/10" />
                         <span className="text-[10px] text-foreground/35 uppercase tracking-[0.25em]">
                           {authT("or")}
                         </span>
-                        <div className="flex-1 h-px bg-muted/10" />
+                        <div className="flex-1 h-px bg-white/10" />
                       </div>
 
                       <div className="space-y-2.5">
                         <button
                           onClick={handleGoogleLogin}
-                          className={`theme-fixed ${socialCls} !bg-primary !text-primary-foreground hover:!bg-muted/90 border-border/30`}
+                          className={`theme-fixed ${socialCls} !bg-white !text-black hover:!bg-white/90 border-white/30`}
                         >
                           <svg className="w-[18px] h-[18px]" viewBox="0 0 24 24">
                             <path
@@ -1136,7 +1118,7 @@ const AuthPage = () => {
                               <InputOTPSlot
                                 key={`otp-${step}-${i}`}
                                 index={i}
-                                className="w-11 h-12 sm:w-12 sm:h-14 text-2xl font-display font-bold text-foreground bg-transparent border-0 border-b-2 border-border/15 rounded-none first:rounded-none last:rounded-none focus-within:border-foreground/70 transition-colors"
+                                className="w-11 h-12 sm:w-12 sm:h-14 text-2xl font-display font-bold text-foreground bg-transparent border-0 border-b-2 border-white/15 rounded-none first:rounded-none last:rounded-none focus-within:border-foreground/70 transition-colors"
                               />
                             ))}
                           </InputOTPGroup>
@@ -1296,7 +1278,7 @@ const AuthPage = () => {
                 {clipboardMenu && (
                   <div
                     ref={clipboardMenuRef}
-                    className="fixed z-toast flex overflow-hidden rounded-xl border border-border/15 bg-popover/95 text-popover-foreground shadow-2xl"
+                    className="fixed z-toast flex overflow-hidden rounded-xl border border-white/15 bg-popover/95 text-popover-foreground shadow-2xl backdrop-blur-xl"
                     style={{
                       left: `min(${clipboardMenu.x}px, calc(100vw - 168px))`,
                       top: `max(12px, ${clipboardMenu.y - 52}px)`,
@@ -1312,7 +1294,7 @@ const AuthPage = () => {
                     <button
                       type="button"
                       onClick={handleClipboardPaste}
-                      className="border-s border-border/10 px-4 py-2.5 text-[13px] font-medium hover:bg-foreground/10"
+                      className="border-s border-white/10 px-4 py-2.5 text-[13px] font-medium hover:bg-foreground/10"
                     >
                       {authT("paste")}
                     </button>

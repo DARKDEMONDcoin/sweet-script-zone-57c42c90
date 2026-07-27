@@ -51,7 +51,7 @@ const ModelDetailPage = () => {
         {/* HERO — full-bleed video, parallax, clean centered type */}
         <header
           ref={heroRef}
-          className="relative h-[100svh] min-h-[640px] w-full overflow-hidden border-b border-border/5"
+          className="relative h-[100svh] min-h-[640px] w-full overflow-hidden border-b border-white/5"
         >
           {heroVideo ? (
             <motion.video
@@ -86,9 +86,9 @@ const ModelDetailPage = () => {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-              className="inline-flex items-center gap-2 rounded-full border border-border/25 bg-muted/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.28em] text-foreground"
+              className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.28em] text-white backdrop-blur-md"
             >
-              <span className="h-1.5 w-1.5 rounded-full bg-muted/90" />
+              <span className="h-1.5 w-1.5 rounded-full bg-white/90" />
               {model.vendor}
             </motion.span>
 
@@ -96,7 +96,7 @@ const ModelDetailPage = () => {
               initial={{ opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.9, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
-              className="mt-7 font-display text-[15vw] md:text-[8.5vw] font-black uppercase leading-[0.85] tracking-tighter text-foreground [text-shadow:_0_4px_40px_rgba(0,0,0,0.45)]"
+              className="mt-7 font-display text-[15vw] md:text-[8.5vw] font-black uppercase leading-[0.85] tracking-tighter text-white [text-shadow:_0_4px_40px_rgba(0,0,0,0.45)]"
             >
               {model.name}
             </motion.h1>
@@ -105,7 +105,7 @@ const ModelDetailPage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.9, delay: 0.18, ease: [0.22, 1, 0.36, 1] }}
-              className="mx-auto mt-7 max-w-2xl text-base md:text-xl text-foreground leading-relaxed [text-shadow:_0_2px_20px_rgba(0,0,0,0.45)]"
+              className="mx-auto mt-7 max-w-2xl text-base md:text-xl text-white/95 leading-relaxed [text-shadow:_0_2px_20px_rgba(0,0,0,0.45)]"
             >
               {model.hero}
             </motion.p>
@@ -118,13 +118,13 @@ const ModelDetailPage = () => {
             >
               <Link
                 to="/chat"
-                className="rounded-full bg-primary px-8 py-4 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity"
+                className="rounded-full bg-white px-8 py-4 text-sm font-semibold text-black hover:opacity-90 transition-opacity"
               >
                 Try {model.name} now →
               </Link>
               <Link
                 to="/ai-chat"
-                className="rounded-full border border-border/40 bg-muted/10 px-8 py-4 text-sm font-semibold text-foreground hover:bg-muted/20 transition-colors"
+                className="rounded-full border border-white/40 bg-white/10 backdrop-blur px-8 py-4 text-sm font-semibold text-white hover:bg-white/20 transition-colors"
               >
                 ← All models
               </Link>
@@ -137,14 +137,14 @@ const ModelDetailPage = () => {
             animate={{ opacity: 1 }}
             transition={{ delay: 1, duration: 0.8 }}
             style={{ opacity: contentOpacity }}
-            className="absolute bottom-8 left-1/2 z-10 -translate-x-1/2 text-[10px] font-semibold uppercase tracking-[0.4em] text-muted-foreground"
+            className="absolute bottom-8 left-1/2 z-10 -translate-x-1/2 text-[10px] font-semibold uppercase tracking-[0.4em] text-white/70"
           >
             scroll
           </motion.div>
         </header>
 
         {/* TAGLINE STRIP */}
-        <section className="border-b border-border/5 py-20 md:py-28">
+        <section className="border-b border-white/5 py-20 md:py-28">
           <motion.div {...fadeUp} className="mx-auto max-w-4xl px-6 text-center">
             <p className="text-xs font-semibold uppercase tracking-[0.32em] text-foreground/55">
               Overview
@@ -159,7 +159,7 @@ const ModelDetailPage = () => {
         </section>
 
         {/* SPECS */}
-        <section className="border-b border-border/5 py-20 md:py-28">
+        <section className="border-b border-white/5 py-20 md:py-28">
           <div className="mx-auto max-w-6xl px-6">
             <motion.div {...fadeUp} className="mb-12 flex items-end justify-between gap-6 flex-wrap">
               <h2 className="font-display text-3xl md:text-5xl font-bold tracking-tight">Specs</h2>
@@ -175,7 +175,7 @@ const ModelDetailPage = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-60px" }}
                   transition={{ duration: 0.6, delay: i * 0.05, ease: [0.22, 1, 0.36, 1] }}
-                  className="rounded-2xl border border-border/10 bg-muted/40 p-6"
+                  className="rounded-2xl border border-white/10 bg-white/[0.025] p-6"
                 >
                   <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-foreground/50">
                     {s.label}
@@ -188,7 +188,7 @@ const ModelDetailPage = () => {
         </section>
 
         {/* STRENGTHS */}
-        <section className="border-b border-border/5 py-20 md:py-28">
+        <section className="border-b border-white/5 py-20 md:py-28">
           <div className="mx-auto max-w-6xl px-6">
             <motion.div {...fadeUp} className="mb-12 max-w-2xl">
               <p className="text-xs font-semibold uppercase tracking-[0.32em] text-foreground/55">
@@ -206,7 +206,7 @@ const ModelDetailPage = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-60px" }}
                   transition={{ duration: 0.6, delay: i * 0.06, ease: [0.22, 1, 0.36, 1] }}
-                  className="flex gap-4 rounded-2xl border border-border/10 bg-muted/40 px-6 py-5 text-base text-foreground/85"
+                  className="flex gap-4 rounded-2xl border border-white/10 bg-white/[0.025] px-6 py-5 text-base text-foreground/85"
                 >
                   <span className="mt-2 inline-block h-2 w-2 shrink-0 rounded-full bg-foreground/70" />
                   <span className="leading-relaxed">{s}</span>
@@ -217,7 +217,7 @@ const ModelDetailPage = () => {
         </section>
 
         {/* USE CASES */}
-        <section className="border-b border-border/5 py-20 md:py-28">
+        <section className="border-b border-white/5 py-20 md:py-28">
           <div className="mx-auto max-w-6xl px-6">
             <motion.div {...fadeUp} className="mb-12 max-w-2xl">
               <p className="text-xs font-semibold uppercase tracking-[0.32em] text-foreground/55">
@@ -235,7 +235,7 @@ const ModelDetailPage = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-60px" }}
                   transition={{ duration: 0.7, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }}
-                  className="rounded-2xl border border-border/10 bg-muted/40 p-7 md:p-8"
+                  className="rounded-2xl border border-white/10 bg-white/[0.025] p-7 md:p-8"
                 >
                   <h3 className="font-display text-xl md:text-2xl font-bold tracking-tight">{u.title}</h3>
                   <p className="mt-4 text-sm md:text-base text-foreground/70 leading-relaxed">{u.body}</p>
@@ -246,7 +246,7 @@ const ModelDetailPage = () => {
         </section>
 
         {/* BENCHMARKS */}
-        <section className="border-b border-border/5 py-20 md:py-28">
+        <section className="border-b border-white/5 py-20 md:py-28">
           <div className="mx-auto max-w-6xl px-6">
             <motion.div {...fadeUp} className="mb-12 max-w-2xl">
               <p className="text-xs font-semibold uppercase tracking-[0.32em] text-foreground/55">
@@ -264,7 +264,7 @@ const ModelDetailPage = () => {
                   whileInView={{ opacity: 1, scale: 1, y: 0 }}
                   viewport={{ once: true, margin: "-60px" }}
                   transition={{ duration: 0.65, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }}
-                  className="rounded-2xl border border-border/10 bg-muted/40 p-7"
+                  className="rounded-2xl border border-white/10 bg-white/[0.025] p-7"
                 >
                   <p className="text-sm text-foreground/60">{b.name}</p>
                   <p className="mt-4 font-display text-5xl md:text-6xl font-black text-foreground tracking-tight">
@@ -278,7 +278,7 @@ const ModelDetailPage = () => {
         </section>
 
         {/* PRICING */}
-        <section className="border-b border-border/5 py-20 md:py-28">
+        <section className="border-b border-white/5 py-20 md:py-28">
           <motion.div {...fadeUp} className="mx-auto max-w-3xl px-6 text-center">
             <p className="text-xs font-semibold uppercase tracking-[0.32em] text-foreground/55">
               Pricing
@@ -299,7 +299,7 @@ const ModelDetailPage = () => {
         </section>
 
         {/* FAQ */}
-        <section className="border-b border-border/5 py-20 md:py-28">
+        <section className="border-b border-white/5 py-20 md:py-28">
           <div className="mx-auto max-w-3xl px-6">
             <motion.div {...fadeUp} className="mb-10">
               <p className="text-xs font-semibold uppercase tracking-[0.32em] text-foreground/55">
@@ -317,7 +317,7 @@ const ModelDetailPage = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-60px" }}
                   transition={{ duration: 0.55, delay: i * 0.06, ease: [0.22, 1, 0.36, 1] }}
-                  className="group rounded-2xl border border-border/10 bg-muted/40 p-6"
+                  className="group rounded-2xl border border-white/10 bg-white/[0.025] p-6"
                 >
                   <summary className="cursor-pointer list-none font-semibold text-foreground flex items-center justify-between gap-4">
                     <span>{f.q}</span>
@@ -355,7 +355,7 @@ const ModelDetailPage = () => {
                 >
                   <Link
                     to={`/ai-chat/models/${m.id}`}
-                    className="group relative block overflow-hidden rounded-2xl border border-border/10 aspect-[4/3]"
+                    className="group relative block overflow-hidden rounded-2xl border border-white/10 aspect-[4/3]"
                   >
                     <img
                       src={m.portrait ?? m.image}
@@ -365,10 +365,10 @@ const ModelDetailPage = () => {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent" />
                     <div className="absolute inset-x-0 bottom-0 p-6">
-                      <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">
+                      <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-white/75">
                         {m.vendor}
                       </p>
-                      <p className="mt-2 font-display text-2xl font-bold text-foreground tracking-tight">
+                      <p className="mt-2 font-display text-2xl font-bold text-white tracking-tight">
                         {m.name}
                       </p>
                     </div>

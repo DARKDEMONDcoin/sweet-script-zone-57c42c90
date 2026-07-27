@@ -3,12 +3,27 @@ import { AnimatePresence, m as motion } from "framer-motion";
 
 import { useNavigate } from "react-router-dom";
 import { PrefetchLink as Link } from "@/components/common/PrefetchLink";
-import { ChevronRight, Copy, Globe, Lock, MoreVertical, Plus, Share2, UserPlus, Pencil, Pin, Star, FolderPlus, Send, Trash2 } from "lucide-react";
+import {
+  ChevronRight,
+  Copy,
+  Globe,
+  Loader2,
+  Lock,
+  MoreVertical,
+  Plus,
+  Share2,
+  UserPlus,
+  Pencil,
+  Pin,
+  Star,
+  FolderPlus,
+  Send,
+  Trash2,
+} from "lucide-react";
 import MegsyStar from "@/components/files/MegsyStar";
 import { prefetchRoute } from "@/hooks/usePrefetchRoute";
-import UpgradeCtaButton from "@/components/chat/UpgradeCtaButton";
 import { t as uiT, useUserLang } from "@/lib/authI18n";
-import { Spinner } from "@/components/ui/spinner";
+
 
 type MenuView = "main" | "rename" | "invite" | "share" | "delete";
 
@@ -72,7 +87,7 @@ const NewChatComposeIcon = () => (
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
-    strokeWidth={1.8}
+    strokeWidth={1.5}
     strokeLinecap="round"
     strokeLinejoin="round"
     aria-hidden="true"
@@ -98,8 +113,8 @@ export interface MobileChatHeaderProps {
   rightSlot?: React.ReactNode;
   modelSlot?: React.ReactNode;
   chatUserId?: string | null;
-  userPlan?: string | null;
   scrollContainerRef?: RefObject<HTMLElement | null>;
+
 
   // Inline view props (optional — when present, Share/Invite/Rename open inside the same menu)
   inlineRename?: {
@@ -139,7 +154,6 @@ export default function MobileChatHeader({
   rightSlot,
   modelSlot,
   chatUserId,
-  userPlan,
   scrollContainerRef,
   inlineRename,
 
@@ -231,10 +245,6 @@ export default function MobileChatHeader({
 
         {!scrolled && <div className="flex-1" />}
 
-        {!scrolled && chatUserId && (
-          <UpgradeCtaButton userId={chatUserId} userPlan={userPlan} size="sm" />
-        )}
-
         {!scrolled && !chatUserId && (
           <button
             type="button"
@@ -245,6 +255,7 @@ export default function MobileChatHeader({
           </button>
         )}
       </div>
+
 
       <AnimatePresence>
         {open && (
@@ -396,11 +407,11 @@ export default function MobileChatHeader({
                         type="button"
                         onClick={inlineInvite.onSend}
                         disabled={inlineInvite.loading || !inlineInvite.email.trim()}
-                        className="w-full h-10 rounded-xl text-[13px] font-semibold bg-primary text-primary-foreground shadow-sm active:opacity-90 disabled:opacity-50 inline-flex items-center justify-center whitespace-nowrap theme-fixed"
+                        className="w-full h-10 rounded-xl text-[13px] font-semibold bg-white text-black shadow-sm active:opacity-90 disabled:opacity-50 inline-flex items-center justify-center whitespace-nowrap theme-fixed"
                       >
                         {inlineInvite.loading ? (
                           <>
-                            <Spinner className="w-4 h-4" />
+                            <Loader2 className="w-4 h-4 animate-spin" />
                             Sending…
                           </>
                         ) : (
@@ -528,9 +539,9 @@ export default function MobileChatHeader({
                         type="button"
                         onClick={confirmDelete}
                         disabled={isDeleting}
-                        className="flex-1 rounded-xl px-3 py-2 text-[12px] font-semibold bg-destructive text-foreground transition-opacity active:opacity-90 disabled:opacity-50 flex items-center justify-center gap-1.5"
+                        className="flex-1 rounded-xl px-3 py-2 text-[12px] font-semibold bg-destructive text-white transition-opacity active:opacity-90 disabled:opacity-50 flex items-center justify-center gap-1.5"
                       >
-                        {isDeleting && <Spinner className="w-3.5 h-3.5" />}
+                        {isDeleting && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
                         Delete
                       </button>
                     </div>

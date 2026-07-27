@@ -73,7 +73,7 @@ export default function MegsyModelPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-sm font-medium text-primary"
+              className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-sm font-medium text-primary backdrop-blur"
             >
               <Sparkles className="size-4" />
               Made in-house · Free on every plan
@@ -183,7 +183,7 @@ export default function MegsyModelPage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-80px" }}
                   transition={{ duration: 0.4 }}
-                  className="group relative rounded-2xl border border-border/60 bg-card/50 p-6 transition hover:border-primary/40 hover:bg-card"
+                  className="group relative rounded-2xl border border-border/60 bg-card/50 p-6 backdrop-blur transition hover:border-primary/40 hover:bg-card"
                 >
                   <div className="mb-4 inline-flex size-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
                     <Icon className="size-5" />
@@ -217,7 +217,7 @@ export default function MegsyModelPage() {
                 </div>
               </div>
 
-              <div className="rounded-3xl border border-border/60 bg-card/50 p-8">
+              <div className="rounded-3xl border border-border/60 bg-card/50 p-8 backdrop-blur">
                 <dl className="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
                   {megsy.specs.map((spec) => (
                     <div key={spec.label}>
@@ -247,7 +247,7 @@ export default function MegsyModelPage() {
               {megsy.benchmarks.map((b) => (
                 <div
                   key={b.name}
-                  className="rounded-2xl border border-border/60 bg-card/50 p-8 text-center"
+                  className="rounded-2xl border border-border/60 bg-card/50 p-8 text-center backdrop-blur"
                 >
                   <div className="text-5xl font-bold tracking-tight text-primary">{b.score}</div>
                   <div className="mt-3 text-lg font-semibold">{b.name}</div>
@@ -273,7 +273,7 @@ export default function MegsyModelPage() {
               {megsy.useCases.map((u) => (
                 <div
                   key={u.title}
-                  className="rounded-2xl border border-border/60 bg-card/50 p-8"
+                  className="rounded-2xl border border-border/60 bg-card/50 p-8 backdrop-blur"
                 >
                   <h3 className="text-xl font-semibold">{u.title}</h3>
                   <p className="mt-3 leading-relaxed text-muted-foreground">{u.body}</p>

@@ -3,9 +3,8 @@ import { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Shield, X, Check, ExternalLink } from "lucide-react";
+import { Shield, X, Check, Loader2, ExternalLink } from "lucide-react";
 import { m as motion } from "framer-motion";
-import { Spinner } from "@/components/ui/spinner";
 
 export default function OAuthAuthorizePage() {
   const [searchParams] = useSearchParams();
@@ -102,7 +101,7 @@ export default function OAuthAuthorizePage() {
   if (loading) {
     return (
       <div className="min-h-dvh bg-background flex items-center justify-center">
-        <Spinner className="w-8 h-8 text-primary" />
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
       </div>
     );
   }
@@ -208,7 +207,7 @@ export default function OAuthAuthorizePage() {
             onClick={handleApprove}
             disabled={approving}
           >
-            {approving ? <Spinner className="w-4 h-4" /> : "Authorize"}
+            {approving ? <Loader2 className="w-4 h-4 animate-spin" /> : "Authorize"}
           </Button>
         </motion.div>
 

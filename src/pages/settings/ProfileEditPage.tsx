@@ -1,13 +1,12 @@
 /** @doc Profile editor — full name, nickname, AI instructions. Autosaves. */
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Check, Trash2 } from "lucide-react";
+import { Check, Loader2, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { sanitizeErrorMessage } from "@/lib/sanitizeError";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { SubShell, SubSection, SubCard, DangerCallout } from "@/components/settings/SubShell";
-import { Spinner } from "@/components/ui/spinner";
 
 const ProfileEditPage = () => {
   const navigate = useNavigate();
@@ -124,7 +123,7 @@ const ProfileEditPage = () => {
 
   const statusIcon =
     saveState === "saving" ? (
-      <Spinner className="w-3.5 h-3.5" />
+      <Loader2 className="w-3.5 h-3.5 animate-spin" />
     ) : saveState === "saved" ? (
       <Check className="w-3.5 h-3.5" />
     ) : null;
@@ -240,7 +239,7 @@ const ProfileEditPage = () => {
       backTo="/settings"
       action={
         <span className="inline-flex items-center gap-1.5 text-[12px] text-muted-foreground">
-          {saveState === "saving" && (<><Spinner className="w-3.5 h-3.5" /> Saving…</>)}
+          {saveState === "saving" && (<><Loader2 className="w-3.5 h-3.5 animate-spin" /> Saving…</>)}
           {saveState === "saved" && (<><Check className="w-3.5 h-3.5 text-primary" /> Saved</>)}
         </span>
       }
@@ -356,6 +355,7 @@ const pepCss = `
   overflow: hidden;
 }
 .pep-card-tight { padding: 4px; }
+
 
 .pep-row {
   display: flex; align-items: center; gap: 12px;

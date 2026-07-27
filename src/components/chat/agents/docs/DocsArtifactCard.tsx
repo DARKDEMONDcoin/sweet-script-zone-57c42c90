@@ -181,7 +181,7 @@ export default function DocsArtifactCard({ artifactId, title, docType, html: inl
             <>
               {isStreaming && (
                 <div className="absolute inset-0 flex items-end justify-center p-4">
-                  <div className="inline-flex h-8 items-center gap-2 rounded-full border border-border/70 bg-card/90 px-4 text-[11.5px] font-medium text-foreground shadow-sm">
+                  <div className="inline-flex h-8 items-center gap-2 rounded-full border border-border/70 bg-card/90 px-4 text-[11.5px] font-medium text-foreground shadow-sm backdrop-blur-sm">
                     <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
                     <span>Generating live…</span>
                   </div>

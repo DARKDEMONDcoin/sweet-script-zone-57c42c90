@@ -52,6 +52,7 @@ export default function CompareForIndustryPage() {
       </Helmet>
 
       <section className="px-6 pt-20 pb-10 max-w-5xl mx-auto text-center">
+        <div className="text-5xl mb-3">⚖️ {ind.emoji}</div>
         <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-4">
           Megsy AI vs {comp.name}
         </h1>
@@ -182,7 +183,7 @@ export default function CompareForIndustryPage() {
                 to={`/compare/megsy-vs-${comp.slug}/for/${i.slug}`}
                 className="text-sm px-3 py-1.5 rounded-full border hover:bg-accent"
               >
-                {i.name}
+                {i.emoji} {i.name}
               </Link>
             ))}
           </div>

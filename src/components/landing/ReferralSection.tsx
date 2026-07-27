@@ -137,7 +137,7 @@ const ReferralSection = () => {
         >
           <Link
             to="/referrals"
-            className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-[#FFD700] to-[#FFA500] text-primary-foreground font-bold text-sm hover:opacity-90 transition-opacity"
+            className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-[#FFD700] to-[#FFA500] text-black font-bold text-sm hover:opacity-90 transition-opacity"
           >
             Join the Referral Program
             <ArrowRight className="w-4 h-4" />

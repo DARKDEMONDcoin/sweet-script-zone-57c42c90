@@ -1,64 +1,88 @@
-/** @doc Inline paywall line shown inside the chat thread (no big card) when a
- *  free user asks for a premium feature. Reads like a normal assistant reply,
- *  written in the user's own language / dialect. */
+/** @doc Upgrade-required card shown in chat when a free user requests a premium feature (images, video, code). */
+import { Sparkles, Lock, Check, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { translateExactText, useUserLang, type AuthLang } from "@/lib/authI18n";
+import { translateExactText, useUserLang } from "@/lib/authI18n";
 
 type Feature = "images" | "video" | "code" | "music";
 
-const FEATURE_EN: Record<Feature, string> = {
-  images: "image generation",
-  video: "video generation",
-  code: "building websites & code",
-  music: "music generation",
-};
-
-/** Natural, hand-written lines for the languages we care most about. */
-const LINES: Partial<Record<AuthLang, Record<Feature, string>>> = {
-  "ar-eg": {
-    images: "دي ميزة بريميوم يا صاحبي 🙏 عشان أعملك صور بالذكاء الاصطناعي لازم تكون مشترك. اشترك وابدأ على طول.",
-    video: "عمل الفيديوهات متاح للمشتركين بس 🙏 اشترك في بريميوم وهعملك الفيديو في ثواني.",
-    code: "بناء المواقع والأكواد ميزة بريميوم 🙏 اشترك وهبنيلك المشروع كامل جوه الشات.",
-    music: "عمل الموسيقى للمشتركين بس 🙏 اشترك في بريميوم وهعملك التراك اللي انت عايزه.",
+const COPY: Record<Feature, { title: string; sub: string; perks: string[] }> = {
+  images: {
+    title: "Image generation is a Premium feature",
+    sub: "Create stunning AI images with the best models — unlocked on any paid plan.",
+    perks: ["Unlimited image generations", "All premium image models", "HD exports"],
   },
-  ar: {
-    images: "توليد الصور ميزة مخصّصة للمشتركين. اشترك في بريميوم وسأبدأ فورًا.",
-    video: "توليد الفيديو متاح للمشتركين فقط. اشترك في بريميوم لتفعيله.",
-    code: "بناء المواقع والأكواد ميزة بريميوم. اشترك لأبني لك المشروع كاملًا داخل المحادثة.",
-    music: "توليد الموسيقى متاح للمشتركين فقط. اشترك في بريميوم لتفعيله.",
+  video: {
+    title: "Video generation is a Premium feature",
+    sub: "Generate cinematic AI videos in seconds — included with every paid plan.",
+    perks: ["Veo, Kling, Sora & more", "Up to 4K rendering", "No watermarks"],
   },
-  en: {
-    images: "Image generation is a Premium feature. Upgrade and I'll start right away.",
-    video: "Video generation is for subscribers only. Upgrade to Premium and I'll render it in seconds.",
-    code: "Building websites and code is Premium. Upgrade and I'll build the whole project here in chat.",
-    music: "Music generation is for subscribers only. Upgrade to Premium to unlock it.",
+  code: {
+    title: "Code & website builds are Premium",
+    sub: "Ship full websites, apps and code projects with Megsy — paid plans only.",
+    perks: ["Unlimited builds", "Live preview & deploy", "Pro models for code"],
+  },
+  music: {
+    title: "Music generation is Premium",
+    sub: "Create full AI songs, beats and soundtracks with studio audio models — paid plans only.",
+    perks: ["Full song generation", "Longer audio renders", "Commercial-ready exports"],
   },
 };
 
 export default function UpgradeRequiredCard({ feature }: { feature: Feature }) {
   const navigate = useNavigate();
   const lang = useUserLang();
-
-  const line =
-    LINES[lang]?.[feature] ??
-    translateExactText(LINES.en![feature], lang) ??
-    LINES.en![feature];
-  const cta = lang.startsWith("ar")
-    ? "اشترك الآن"
-    : translateExactText("Upgrade now", lang) || "Upgrade now";
+  const tx = (text: string) => translateExactText(text, lang);
+  const copy = COPY[feature];
 
   return (
-    <p className="text-[15px] leading-relaxed text-foreground">
-      {line}{" "}
-      <button
-        type="button"
-        onClick={() => navigate("/pricing")}
-        className="font-semibold text-primary underline underline-offset-4 hover:opacity-80"
-      >
-        {cta}
-      </button>
-    </p>
+    <div className="relative w-full overflow-hidden rounded-2xl border border-primary/25 bg-gradient-to-br from-primary/10 via-background to-background p-5 shadow-[0_10px_40px_-12px_hsl(var(--primary)/0.35)]">
+      {/* Glow accent */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full blur-3xl"
+        style={{ background: "hsl(var(--primary) / 0.25)" }}
+      />
+
+      <div className="relative flex items-start gap-3">
+        <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-primary/15 ring-1 ring-primary/30">
+          <Lock className="h-5 w-5 text-primary" strokeWidth={2.4} />
+        </div>
+        <div className="min-w-0 flex-1">
+          <h3 className="text-[15px] font-semibold leading-tight text-foreground">{tx(copy.title)}</h3>
+          <p className="mt-1 text-[13px] leading-relaxed text-muted-foreground">{tx(copy.sub)}</p>
+        </div>
+      </div>
+
+      <ul className="relative mt-4 space-y-1.5">
+        {copy.perks.map((p) => (
+          <li key={p} className="flex items-center gap-2 text-[13px] text-foreground/85">
+            <Check className="h-3.5 w-3.5 shrink-0 text-primary" strokeWidth={3} />
+            <span>{tx(p)}</span>
+          </li>
+        ))}
+      </ul>
+
+      <div className="relative mt-5 flex items-center gap-2">
+        <button
+          type="button"
+          onClick={() => navigate("/pricing")}
+          className="group inline-flex h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-primary px-4 text-[14px] font-semibold text-primary-foreground shadow-[0_8px_24px_-8px_hsl(var(--primary)/0.6)] transition active:scale-[0.98]"
+        >
+          <Sparkles className="h-4 w-4" strokeWidth={2.4} />
+          <span>{tx("Upgrade now")}</span>
+          <ArrowRight
+            className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
+            strokeWidth={2.4}
+          />
+        </button>
+        <button
+          type="button"
+          onClick={() => navigate("/pricing")}
+          className="inline-flex h-11 items-center justify-center rounded-xl border border-border bg-background px-4 text-[13px] font-medium text-foreground transition hover:bg-muted"
+        >
+          {tx("See plans")}
+        </button>
+      </div>
+    </div>
   );
 }
-
-export { FEATURE_EN };

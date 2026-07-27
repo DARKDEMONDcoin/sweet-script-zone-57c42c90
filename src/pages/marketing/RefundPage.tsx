@@ -93,7 +93,7 @@ const RefundPage = () => (
     eyebrow="Legal"
     title="Refund Policy"
     subtitle="Clear, fair rules for refunds on subscriptions, credit packs, and failed generations."
-    lastUpdated="27 July 2026"
+    lastUpdated="19 May 2026"
     sections={sections}
     seoTitle="Refund Policy"
     seoDescription="Megsy AI refund rules for subscriptions, credit packs, and failed generations — how to request a refund and what's eligible."

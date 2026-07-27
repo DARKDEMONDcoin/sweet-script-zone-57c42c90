@@ -41,20 +41,7 @@ export interface RunSlidesTurnArgs {
   clearSlidesTimeout: (jobId: string) => void;
   slidesTimeoutsRef: React.MutableRefObject<Record<string, number>>;
   slidesGenerationTokenRef: React.MutableRefObject<number>;
-  /** Stop after the planning step and wait for the user to approve the plan. */
-  planOnly?: boolean;
-  /** Skip persisting the user message (used when resuming from the plan card). */
-  skipUserSave?: boolean;
-  /** Enriched brief (plan + research + imported data) sent to the generator. */
-  brief?: string;
-  /** The approved plan; when present the deck is built from its reviewed content. */
-  plan?: import("@/lib/slides/planTypes").SlidesPlanState;
-  /** Extracted text from files the user attached to this turn. */
-  attachedFilesText?: string;
-  /** Names/sizes of imported files, shown on the plan card. */
-  attachedFileMeta?: { name: string; chars: number }[];
 }
-
 
 /**
  * Returns true if the slides turn was started successfully and the caller
@@ -82,14 +69,7 @@ export async function runSlidesTurn(args: RunSlidesTurnArgs): Promise<void> {
     clearSlidesTimeout,
     slidesTimeoutsRef,
     slidesGenerationTokenRef,
-    planOnly,
-    skipUserSave,
-    brief,
-    plan,
-    attachedFilesText,
-    attachedFileMeta,
   } = args;
-
 
   const slidesRequestToken = ++slidesGenerationTokenRef.current;
   const isSlidesRequestCancelled = () => slidesGenerationTokenRef.current !== slidesRequestToken;
@@ -116,7 +96,6 @@ export async function runSlidesTurn(args: RunSlidesTurnArgs): Promise<void> {
 
   const conversationPromise = createOrUpdateConversation(userInput || "Slides").catch(() => null);
   const userSavePromise = conversationPromise.then(async (cid) => {
-    if (skipUserSave) return;
     if (!cid) return;
     const insertedId = await saveMessage(cid, "user", userInput);
     if (insertedId) {
@@ -147,85 +126,32 @@ export async function runSlidesTurn(args: RunSlidesTurnArgs): Promise<void> {
     await userSavePromise.catch(() => {});
 
     const isArabic = /[\u0600-\u06FF]/.test(userInput) || !!navigator?.language?.startsWith("ar");
-
-    // ── Step 1: planning (+ imported file data) ──────────────────────────
-    if (planOnly) {
-      const { generateSlidesOutline } = await import("@/lib/slides/generateOutline");
-      const [narration, plan] = await Promise.all([
-        fetchSlidesNarration({
-          mode: "plan",
-          topic: slidesTopic,
-          kind: "slides",
-          title: slidesTopic.slice(0, 80),
-          language: isArabic ? "ar" : "en",
-        }).catch(() => null),
-        generateSlidesOutline({
-          topic: slidesTopic,
-          language: isArabic ? "ar" : "en",
-          userId: chatUserId || undefined,
-          sourceText: attachedFilesText,
-        }).catch(() => null),
-      ]);
-
-      if (isSlidesRequestCancelled()) return;
-
-      if (!plan) {
-        const msg = isArabic
-          ? "تعذّر تجهيز مخطط العرض. جرّب توضيح الموضوع مرة أخرى."
-          : "Could not draft the outline. Please describe the topic again.";
-        await insertAssistantNarration(cid, msg, `assistant-${localTurnId}`);
-        setIsLoading(false);
-        setIsThinking(false);
-        resetToolUi();
-        return;
-      }
-
-      const planState: import("@/lib/slides/planTypes").SlidesPlanState = {
+    const { generateSlidesOutline } = await import("@/lib/slides/generateOutline");
+    const [narration, plan] = await Promise.all([
+      fetchSlidesNarration({
+        mode: "plan",
         topic: slidesTopic,
-        templateId: slidesTemplate,
+        kind: "slides",
+        title: slidesTopic.slice(0, 80),
         language: isArabic ? "ar" : "en",
-        outline: plan.outline,
-        stage: "planning",
-        sourceText: attachedFilesText || undefined,
-        sourceFiles: attachedFileMeta?.length ? attachedFileMeta : undefined,
-      };
-
-      const introText =
-        narration ||
-        (isArabic
-          ? "جهّزت مخطط العرض التقديمي — راجعه أو عدّله ثم اضغط توليد العرض."
-          : "Here's the outline — review or edit it, then press Generate slides.");
-
-      let planMessageId: string | undefined;
-      if (cid) {
-        planMessageId = await saveMessage(cid, "assistant", introText, undefined, {
-          kind: "slidesPlan",
-          slidesPlan: planState,
-        });
-        if (planMessageId) ownInsertedIdsRef.current.add(planMessageId);
-        await supabase
-          .from("conversations")
-          .update({ updated_at: new Date().toISOString(), mode: "slides" } as any)
-          .eq("id", cid);
-      }
-      setMessages((prev) =>
-        prev.map((m) =>
-          m.clientId === `assistant-${localTurnId}`
-            ? {
-                ...m,
-                id: planMessageId ?? m.id,
-                content: introText,
-                slidesPlan: planState,
-                slidesOutline: plan.outline,
-                mode: "slides",
-              }
-            : m,
-        ),
-      );
-      setIsLoading(false);
-      setIsThinking(false);
-      resetToolUi();
-      return;
+      }).catch(() => null),
+      generateSlidesOutline({
+        topic: slidesTopic,
+        language: isArabic ? "ar" : "en",
+        userId: chatUserId || undefined,
+      }).catch(() => null),
+    ]);
+    const introText =
+      narration ||
+      (isArabic
+        ? "جهّزت مخطط العرض التقديمي، وسأبدأ التوليد الآن."
+        : "Here's the outline for your presentation — starting generation now.");
+    if (plan) {
+      await insertAssistantNarration(cid, introText, `assistant-${localTurnId}`, {
+        slidesOutline: plan.outline,
+      });
+    } else if (narration) {
+      await insertAssistantNarration(cid, narration, `assistant-${localTurnId}`);
     }
 
     if (isSlidesRequestCancelled()) return;
@@ -255,64 +181,11 @@ export async function runSlidesTurn(args: RunSlidesTurnArgs): Promise<void> {
     }
     if (isSlidesRequestCancelled()) return;
 
-    // When the user approved a plan, the deck is built from that exact
-    // outline + reviewed content so nothing shown in the plan is lost.
-    if (plan?.outline?.steps?.length) {
-      const { buildDeckFromPlan } = await import("@/lib/slides/localDeck");
-      const planDeck = buildDeckFromPlan(plan);
-      if (planDeck) {
-        const tpl = findSlidesTemplate(planDeck.templateId || slidesTemplate);
-        const enrichedDeck: SlideDeck & { htmlSlug?: string; variant?: string } = tpl.htmlSlug
-          ? { ...planDeck, templateId: tpl.id, htmlSlug: tpl.htmlSlug, variant: tpl.variant }
-          : planDeck;
-        const finalContent =
-          plan.language === "ar"
-            ? `تم إنشاء العرض (${enrichedDeck.slides.length} شرائح) حسب الخطة المعتمدة.`
-            : `Generated ${enrichedDeck.slides.length} slides from your approved plan.`;
-        if (placeholderId) {
-          try {
-            await supabase
-              .from("messages")
-              .update({
-                content: finalContent,
-                metadata: { kind: "slidesDeck", slidesDeck: enrichedDeck } as any,
-              })
-              .eq("id", placeholderId);
-          } catch {
-            /* best-effort */
-          }
-        }
-        setMessages((prev) =>
-          prev.map((m) =>
-            m.clientId === `assistant-${localTurnId}` ||
-            (!!placeholderId && m.id === placeholderId)
-              ? {
-                  ...m,
-                  id: placeholderId ?? m.id,
-                  content: finalContent,
-                  slidesDeck: enrichedDeck,
-                  slidesJobId: undefined,
-                  slidesPendingTopic: undefined,
-                  mode: "slides",
-                }
-              : m,
-          ),
-        );
-        setIsLoading(false);
-        setIsThinking(false);
-        resetToolUi();
-        return;
-      }
-    }
-
-
-
-
     // All slide generation is routed through Plus AI Presentations API now.
     const { subscribeJob, startPlusAIPresentation } = await import("@/lib/jobs/client");
     void isStandardSlides; // kept import for tree-shake friendliness; no longer used to branch
     const { jobId } = await startPlusAIPresentation({
-      topic: brief || userInput,
+      topic: userInput,
       templateId: slidesTemplate,
       conversation_id: cid,
       message_id: placeholderId,
@@ -567,7 +440,7 @@ export async function runSlidesTurn(args: RunSlidesTurnArgs): Promise<void> {
           unsub?.();
           resolve();
         },
-        onError: async (msg) => {
+        onError: (msg) => {
           if (isSlidesRequestCancelled()) {
             clearSlidesTimeout(jobId);
             unsub?.();
@@ -575,63 +448,6 @@ export async function runSlidesTurn(args: RunSlidesTurnArgs): Promise<void> {
             return;
           }
           clearSlidesTimeout(jobId);
-
-          // The external presentation provider can be unavailable (401 / quota).
-          // Fall back to rendering the approved plan locally so the user still
-          // gets a deck instead of a dead end.
-          let fallbackDeck: SlideDeck | null = null;
-          try {
-            const { buildLocalDeck } = await import("@/lib/slides/localDeck");
-            fallbackDeck = await buildLocalDeck({
-              topic: slidesTopic,
-              brief,
-              templateId: slidesTemplate,
-              language: isArabic ? "ar" : "en",
-              userId: chatUserId || undefined,
-            });
-          } catch {
-            fallbackDeck = null;
-          }
-
-          if (fallbackDeck) {
-            const tpl = findSlidesTemplate(fallbackDeck.templateId || slidesTemplate);
-            const enrichedDeck: SlideDeck & { htmlSlug?: string; variant?: string } = tpl.htmlSlug
-              ? { ...fallbackDeck, templateId: tpl.id, htmlSlug: tpl.htmlSlug, variant: tpl.variant }
-              : fallbackDeck;
-            const finalContent = (
-              narrative ||
-              (isArabic
-                ? `تم إنشاء العرض (${enrichedDeck.slides.length} شرائح).`
-                : `Generated ${enrichedDeck.slides.length} slides.`)
-            ).trim();
-            if (placeholderId) {
-              void supabase
-                .from("messages")
-                .update({
-                  content: finalContent,
-                  metadata: { kind: "slidesDeck", slidesDeck: enrichedDeck } as any,
-                })
-                .eq("id", placeholderId);
-            }
-            setMessages((prev) =>
-              prev.map((m) =>
-                m.clientId === `assistant-${localTurnId}` ||
-                (!!placeholderId && m.id === placeholderId)
-                  ? {
-                      ...m,
-                      content: finalContent,
-                      slidesDeck: enrichedDeck,
-                      slidesJobId: undefined,
-                      mode: "slides",
-                    }
-                  : m,
-              ),
-            );
-            unsub?.();
-            resolve();
-            return;
-          }
-
           if (placeholderId) {
             void supabase
               .from("messages")
@@ -662,7 +478,6 @@ export async function runSlidesTurn(args: RunSlidesTurnArgs): Promise<void> {
           unsub?.();
           resolve();
         },
-
         onStale: async (row) => {
           if (isSlidesRequestCancelled()) {
             clearSlidesTimeout(jobId);
