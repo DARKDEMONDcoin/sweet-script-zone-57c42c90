@@ -32,7 +32,6 @@ import ErrorBoundary, { RouteErrorBoundary } from "@/components/common/ErrorBoun
 // shared chunks. Loading them lazily keeps the `icons` (~595 KB) and
 // `motion` (~265 KB) chunks OUT of the initial landing-page preload
 // waterfall — they only download after the app becomes interactive.
-import PwaSplash from "./components/common/PwaSplash";
 import PWAUpdater from "./components/pwa/PWAUpdater";
 import InstallPrompt from "./components/pwa/InstallPrompt";
 
@@ -783,7 +782,6 @@ const App = () => {
               <ZoneProvider>
               <PromoBannerProvider>
                 <ConfirmProvider>
-                  <PwaSplash />
                   <PWAUpdater />
                   <InstallPrompt />
 

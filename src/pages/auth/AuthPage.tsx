@@ -1,5 +1,5 @@
 /** @doc Sign in / sign up — email, Google, Apple and MFA challenge entry. */
-import { useState, useRef, useEffect, lazy, Suspense } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { m as motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
@@ -30,10 +30,6 @@ import { Spinner } from "@/components/ui/spinner";
 
 const AUTH_MOBILE_VIDEO_URL =
   "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260424_064411_9e9d7f84-9277-41f4-ab10-59172d89e6be.mp4";
-
-const WELCOME_SEEN_KEY = "megsy_welcome_showcase_v1";
-const FeatureShowcase = lazy(() => import("@/components/onboarding/FeatureShowcase"));
-
 
 type Step =
   | "intro1"
@@ -81,17 +77,6 @@ const AuthPage = () => {
   const [otpValues, setOtpValues] = useState(["", "", "", "", "", ""]);
   const [verifiedResetCode, setVerifiedResetCode] = useState("");
   const isMobile = useIsMobile();
-  // Mobile-only welcome showcase — always shown before sign in / sign up
-  // until the user has seen it once.
-  const [showWelcome, setShowWelcome] = useState(() => {
-    if (typeof window === "undefined") return false;
-    try {
-      return !localStorage.getItem(WELCOME_SEEN_KEY);
-    } catch {
-      return false;
-    }
-  });
-
   const [step, setStep] = useState<Step>(() =>
     typeof window !== "undefined" && window.innerWidth < 768 ? "intro1" : "email",
   );
@@ -752,24 +737,6 @@ const AuthPage = () => {
   // Secondary — bare outline pill with iOS press
   const socialCls =
     "w-full flex items-center justify-center gap-2.5 py-3 rounded-full border border-border/15 bg-transparent text-foreground/90 text-[14px] font-medium hover:border-foreground/40 hover:bg-foreground/[0.03] active:scale-[0.97] transition-[transform,border-color,background-color] duration-[280ms] [transition-timing-function:cubic-bezier(0.34,1.35,0.64,1)] will-change-transform";
-
-  // ─── Mobile-only welcome showcase, shown before sign in / sign up ──
-  if (isMobile && showWelcome) {
-    return (
-      <Suspense fallback={<div className="fixed inset-0 bg-background" />}>
-        <FeatureShowcase
-          onFinish={() => {
-            try {
-              localStorage.setItem(WELCOME_SEEN_KEY, "1");
-            } catch {
-              /* ignore */
-            }
-            setShowWelcome(false);
-          }}
-        />
-      </Suspense>
-    );
-  }
 
   // ─── Mobile intro — inline expandable email/password flow ──
 
