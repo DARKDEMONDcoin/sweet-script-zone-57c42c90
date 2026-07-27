@@ -35,7 +35,7 @@ export const AGENTS: Record<AgentId, AgentDefinition> = {
     description: "Focused on gathering, comparing and citing web information.",
     model: "google/gemini-3.6-flash",
     systemPrompt: `You are Megsy Research. Investigate thoroughly using search tools. Always cite sources. ${BASE_STYLE}`,
-    tools: ["web_search", "get_current_time"],
+    tools: ["web_search", "get_current_time", "list_my_integrations"],
     maxSteps: 50,
   },
   code: {
@@ -44,7 +44,7 @@ export const AGENTS: Record<AgentId, AgentDefinition> = {
     description: "Reads and writes code, runs quick sandboxes.",
     model: "google/gemini-3.6-flash",
     systemPrompt: `You are Megsy Code. Reason step by step, prefer runnable code and small diffs. ${BASE_STYLE}`,
-    tools: ["get_current_time"],
+    tools: ["get_current_time", "list_my_integrations"],
     maxSteps: 50,
   },
   media: {
@@ -53,7 +53,7 @@ export const AGENTS: Record<AgentId, AgentDefinition> = {
     description: "Generates and edits images, video, audio.",
     model: "google/gemini-3.6-flash",
     systemPrompt: `You are Megsy Media. Focus on visual generation quality; ask for missing constraints only when critical. ${BASE_STYLE}`,
-    tools: ["get_current_time"],
+    tools: ["get_current_time", "list_my_integrations"],
     maxSteps: 30,
   },
   data: {
@@ -62,7 +62,7 @@ export const AGENTS: Record<AgentId, AgentDefinition> = {
     description: "Queries and summarizes workspace/user data.",
     model: "google/gemini-3.6-flash",
     systemPrompt: `You are Megsy Data. Query cautiously; ask before destructive actions. ${BASE_STYLE}`,
-    tools: ["get_current_time", "delete_conversation"],
+    tools: ["get_current_time", "delete_conversation", "list_my_integrations"],
     maxSteps: 30,
   },
   orchestrator: {
