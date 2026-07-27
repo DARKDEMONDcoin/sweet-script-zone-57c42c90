@@ -163,6 +163,20 @@ const AccessibilityPage = lazy(() => import("./pages/marketing/AccessibilityPage
 const CompliancePage = lazy(() => import("./pages/marketing/CompliancePage"));
 const ContentPolicyPage = lazy(() => import("./pages/marketing/ContentPolicyPage"));
 const TrustCenterPage = lazy(() => import("./pages/marketing/TrustCenterPage"));
+const ImprintPage = lazy(() => import("./pages/marketing/ImprintPage"));
+const DoNotSellPage = lazy(() => import("./pages/marketing/DoNotSellPage"));
+const TransparencyReportPage = lazy(() => import("./pages/marketing/TransparencyReportPage"));
+const LawEnforcementPage = lazy(() => import("./pages/marketing/LawEnforcementPage"));
+const ResponsibleDisclosurePage = lazy(() => import("./pages/marketing/ResponsibleDisclosurePage"));
+const ChildrenPrivacyPage = lazy(() => import("./pages/marketing/ChildrenPrivacyPage"));
+const EULAPage = lazy(() => import("./pages/marketing/EULAPage"));
+const SLAPage = lazy(() => import("./pages/marketing/SLAPage"));
+const DataRetentionPage = lazy(() => import("./pages/marketing/DataRetentionPage"));
+const DataDeletionPage = lazy(() => import("./pages/marketing/DataDeletionPage"));
+const CommunityGuidelinesPage = lazy(() => import("./pages/marketing/CommunityGuidelinesPage"));
+const ModernSlaveryPage = lazy(() => import("./pages/marketing/ModernSlaveryPage"));
+const AITrainingPage = lazy(() => import("./pages/marketing/AITrainingPage"));
+const BetaTermsPage = lazy(() => import("./pages/marketing/BetaTermsPage"));
 const SecurityPage = lazy(() => import("./pages/settings/SecurityPage"));
 const SupportPage = lazy(() => import("./pages/marketing/SupportPage"));
 const EnterprisePage = lazy(() => import("./pages/marketing/EnterprisePage"));
@@ -898,6 +912,20 @@ const App = () => {
                           <Route path="/legal/subprocessors-full" element={<SubprocessorsPage />} />
                           <Route path="/legal/accessibility-full" element={<AccessibilityPage />} />
                           <Route path="/legal/compliance-full" element={<CompliancePage />} />
+                          <Route path="/legal/imprint" element={<ImprintPage />} />
+                          <Route path="/legal/do-not-sell" element={<DoNotSellPage />} />
+                          <Route path="/legal/transparency" element={<TransparencyReportPage />} />
+                          <Route path="/legal/law-enforcement" element={<LawEnforcementPage />} />
+                          <Route path="/legal/responsible-disclosure" element={<ResponsibleDisclosurePage />} />
+                          <Route path="/legal/children" element={<ChildrenPrivacyPage />} />
+                          <Route path="/legal/eula" element={<EULAPage />} />
+                          <Route path="/legal/sla" element={<SLAPage />} />
+                          <Route path="/legal/retention" element={<DataRetentionPage />} />
+                          <Route path="/legal/data-deletion" element={<DataDeletionPage />} />
+                          <Route path="/legal/community" element={<CommunityGuidelinesPage />} />
+                          <Route path="/legal/modern-slavery" element={<ModernSlaveryPage />} />
+                          <Route path="/legal/ai-training" element={<AITrainingPage />} />
+                          <Route path="/legal/beta" element={<BetaTermsPage />} />
                           <Route path="/support" element={<SupportPage />} />
                           <Route path="/security" element={<SecurityPage />} />
                           <Route path="/enterprise" element={<EnterprisePage />} />
