@@ -40,8 +40,7 @@ export const integrations: Integration[] = [
     description: "Push code, create repos, and read repositories.",
     category: "Development",
     app: "github",
-    type: "pipedream",
-    pipedreamSlug: "github",
+    type: "oauth",
     domain: "github.com",
   },
   {
@@ -51,7 +50,7 @@ export const integrations: Integration[] = [
     category: "Development",
     app: "supabase",
     type: "pipedream",
-    pipedreamSlug: "supabase_management_api",
+    pipedreamSlug: "supabase",
     domain: "supabase.com",
   },
   {
