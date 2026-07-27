@@ -7090,49 +7090,74 @@ html[dir="rtl"] .keep-ltr {
   }
 }
 
-/* Chat upgrade CTA — brand gradient pill with slow shine sweep */
+/* Chat upgrade CTA — premium amber→gold pill.
+   Research: gold/amber = universal "premium" cue on dark UIs
+   (LinkedIn Premium, Tinder Gold, Reddit Premium, YouTube Premium tier).
+   Crown icon + short verb (Upgrade/ترقية) beats icon-only or text-only. */
 .upgrade-cta {
-  background-image: linear-gradient(135deg, hsl(330 78% 56%), hsl(288 70% 48%));
-  color: #fff;
+  background-image:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.14), rgba(0, 0, 0, 0) 55%),
+    linear-gradient(135deg, #f5c249 0%, #e8a534 42%, #b8791f 100%);
+  color: #1a1205;
+  border: 1px solid rgba(255, 224, 150, 0.55);
   box-shadow:
-    0 1px 0 0 rgba(255, 255, 255, 0.22) inset,
-    0 6px 18px -6px hsl(330 78% 56% / 0.55);
+    0 1px 0 0 rgba(255, 255, 255, 0.55) inset,
+    0 0 0 1px rgba(0, 0, 0, 0.25),
+    0 8px 20px -8px rgba(232, 165, 52, 0.55),
+    0 2px 6px -2px rgba(0, 0, 0, 0.4);
 }
 .upgrade-cta:hover {
   box-shadow:
-    0 1px 0 0 rgba(255, 255, 255, 0.28) inset,
-    0 10px 24px -8px hsl(330 78% 56% / 0.65);
+    0 1px 0 0 rgba(255, 255, 255, 0.7) inset,
+    0 0 0 1px rgba(0, 0, 0, 0.25),
+    0 14px 28px -10px rgba(245, 194, 73, 0.75),
+    0 2px 6px -2px rgba(0, 0, 0, 0.4);
 }
 .upgrade-cta:focus-visible {
-  outline: 2px solid hsl(330 78% 56%);
+  outline: 2px solid #f5c249;
   outline-offset: 2px;
 }
+/* Soft breathing halo — draws the eye without shouting */
+.upgrade-cta__halo {
+  position: absolute;
+  inset: -4px;
+  border-radius: 9999px;
+  background: radial-gradient(closest-side, rgba(245, 194, 73, 0.45), transparent 70%);
+  filter: blur(6px);
+  opacity: 0.55;
+  animation: upgrade-cta-halo 3.2s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+@keyframes upgrade-cta-halo {
+  0%, 100% { opacity: 0.35; transform: scale(0.98); }
+  50%      { opacity: 0.75; transform: scale(1.04); }
+}
+/* Slow diagonal shine sweep across the pill */
 .upgrade-cta__shine {
   position: absolute;
   inset: 0;
   background: linear-gradient(
     100deg,
     transparent 20%,
-    rgba(255, 255, 255, 0.42) 45%,
+    rgba(255, 255, 255, 0.6) 45%,
     transparent 70%
   );
   transform: translateX(-120%);
   animation: upgrade-cta-shine 4.5s ease-in-out infinite;
   pointer-events: none;
+  mix-blend-mode: overlay;
+  z-index: 1;
 }
 @keyframes upgrade-cta-shine {
-  0%,
-  55% {
-    transform: translateX(-120%);
-  }
-  85%,
-  100% {
-    transform: translateX(120%);
-  }
+  0%, 55%   { transform: translateX(-120%); }
+  85%, 100% { transform: translateX(120%); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .upgrade-cta__shine {
+  .upgrade-cta__shine,
+  .upgrade-cta__halo {
     animation: none;
-    opacity: 0;
   }
+  .upgrade-cta__shine { opacity: 0; }
+  .upgrade-cta__halo  { opacity: 0.4; }
 }
