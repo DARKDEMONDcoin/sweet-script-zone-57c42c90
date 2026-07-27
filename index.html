@@ -2,31 +2,10 @@
 <html lang="en" translate="no">
   <head>
     <meta charset="UTF-8" />
-    <!-- Claude-style splash: clean centered logo + subtle breathing pulse.
-         Paints before React or the main JS loads. Auto-disappears the moment
-         #root receives its first child (React's first commit). Byte-small. -->
     <style>
       :root { color-scheme: dark; }
       html, body { background-color: #0a0a0a; margin: 0; }
       #root { min-height: 100dvh; background-color: #0a0a0a; }
-      @keyframes megsy-splash-pulse {
-        0%, 100% { opacity: .55; transform: scale(1); }
-        50%      { opacity: 1;   transform: scale(1.06); }
-      }
-      @keyframes megsy-splash-fadein {
-        from { opacity: 0; } to { opacity: 1; }
-      }
-      #root:empty::before {
-        content: "";
-        position: fixed; inset: 0;
-        background:
-          url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='72' height='72' viewBox='0 0 72 72'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23ffffff' stop-opacity='.98'/><stop offset='1' stop-color='%23ffffff' stop-opacity='.6'/></linearGradient></defs><path fill='url(%23g)' d='M36 6c2.4 8.6 7.4 14 16.5 16.5C43.4 25 38 30.4 36 39c-2-8.6-7.4-14-16.5-16.5C28.6 20 34 14.6 36 6Zm22 30c1.4 5.2 4.4 8.4 9.5 9.9-5.1 1.5-8.1 4.7-9.5 9.9-1.4-5.2-4.4-8.4-9.5-9.9 5.1-1.5 8.1-4.7 9.5-9.9ZM18 46c1.4 5.2 4.4 8.4 9.5 9.9-5.1 1.5-8.1 4.7-9.5 9.9-1.4-5.2-4.4-8.4-9.5-9.9C13.6 54.4 16.6 51.2 18 46Z'/></svg>")
-            no-repeat center center / 72px 72px,
-          radial-gradient(1200px 800px at 50% 40%, rgba(255,255,255,.04), transparent 60%),
-          #0a0a0a;
-        animation: megsy-splash-fadein .25s ease-out both, megsy-splash-pulse 1.6s ease-in-out .25s infinite;
-        z-index: 0;
-      }
     </style>
     <meta name="google" content="notranslate" />
 

@@ -1,5 +1,4 @@
 /** @doc Mobile /auth intro — Screen 1 showcase design with inline email/password expansion. */
-import { useEffect, useRef, useState } from "react";
 import { m as motion, AnimatePresence } from "framer-motion";
 import { AlertCircle, ArrowRight, Eye, EyeOff } from "lucide-react";
 import { useBrandLogo } from "@/hooks/useBrandLogo";
@@ -51,23 +50,6 @@ export default function MobileAuthIntro({
   const lang = useUserLang();
   const isAr = lang === "ar";
   const logo = useBrandLogo();
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-  const [ready, setReady] = useState(false);
-
-  useEffect(() => {
-    const t = setTimeout(() => setReady(true), 5000);
-    const v = videoRef.current;
-    if (!v) return () => clearTimeout(t);
-    const on = () => setReady(true);
-    v.addEventListener("loadeddata", on);
-    v.addEventListener("canplay", on);
-    return () => {
-      v.removeEventListener("loadeddata", on);
-      v.removeEventListener("canplay", on);
-      clearTimeout(t);
-    };
-  }, []);
-
   const t = isAr
     ? {
         title1: "منصة الذكاء",
@@ -118,7 +100,7 @@ export default function MobileAuthIntro({
   return (
     <div
       dir={isAr ? "rtl" : "ltr"}
-      className="relative min-h-[100dvh] w-full overflow-hidden bg-[#02040c] text-foreground"
+      className="fixed inset-0 min-h-[100svh] w-full overflow-hidden bg-[#02040c] text-foreground"
       style={{ fontFamily: 'Inter, -apple-system, "SF Pro Text", system-ui, sans-serif' }}
     >
       {/* Hero video */}
@@ -127,17 +109,17 @@ export default function MobileAuthIntro({
         alt=""
         aria-hidden="true"
         className="absolute inset-0 h-full w-full object-cover"
-        style={{ objectPosition: "center 48%", zIndex: 0, opacity: ready ? 0 : 1, transition: "opacity 1.2s ease-out" }}
+        style={{ objectPosition: "center 48%", zIndex: 0 }}
       />
       <video
-        ref={videoRef}
         autoPlay
         loop
         muted
         playsInline
         preload="auto"
+        poster="/auth/auth-mobile-fallback.webp"
         className="absolute inset-0 h-full w-full object-cover"
-        style={{ objectPosition: "center 48%", zIndex: 0, opacity: ready ? 1 : 0, transition: "opacity 1.2s ease-out" }}
+        style={{ objectPosition: "center 48%", zIndex: 0 }}
         src={AUTH_MOBILE_VIDEO_URL}
       />
 
@@ -153,8 +135,8 @@ export default function MobileAuthIntro({
 
       {/* Content pinned to bottom */}
       <div
-        className="absolute inset-x-0 bottom-0 px-6 pb-10"
-        style={{ zIndex: 4, paddingBottom: "max(2.25rem, env(safe-area-inset-bottom, 0px))" }}
+        className="absolute inset-0 flex flex-col justify-end overflow-y-auto px-6 pb-10"
+        style={{ zIndex: 4, paddingTop: "max(1rem, env(safe-area-inset-top, 0px))", paddingBottom: "max(2.25rem, env(safe-area-inset-bottom, 0px))" }}
       >
         {/* Title */}
         <h1
@@ -280,7 +262,6 @@ export default function MobileAuthIntro({
                     value={email}
                     onChange={(e) => setEmail?.(e.target.value)}
                     disabled={showPasswordField}
-                    autoFocus
                     className="w-full bg-transparent outline-none text-[15px] text-foreground placeholder:text-muted-foreground disabled:opacity-70"
                     dir="ltr"
                   />
