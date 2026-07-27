@@ -363,7 +363,7 @@ export const integrations: Integration[] = [
     category: "Marketing",
     app: "salesforce",
     type: "pipedream",
-    pipedreamSlug: "salesforce_rest_api",
+    pipedreamSlug: "salesforce",
     domain: "salesforce.com",
   },
   {
@@ -463,9 +463,9 @@ export const integrations: Integration[] = [
     name: "Shopify",
     description: "Manage products, orders, and customers.",
     category: "Payments",
-    app: "shopify_developer_app",
+    app: "shopify",
     type: "pipedream",
-    pipedreamSlug: "shopify_developer_app",
+    pipedreamSlug: "shopify",
     domain: "shopify.com",
   },
   {
@@ -776,9 +776,9 @@ export const integrations: Integration[] = [
     name: "YouTube",
     description: "Upload videos and read channel stats.",
     category: "Social",
-    app: "youtube_data_api",
+    app: "youtube",
     type: "pipedream",
-    pipedreamSlug: "youtube_data_api",
+    pipedreamSlug: "youtube",
     domain: "youtube.com",
   },
   {
