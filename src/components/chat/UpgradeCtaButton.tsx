@@ -25,9 +25,9 @@ export default function UpgradeCtaButton({
 }: UpgradeCtaButtonProps) {
   const navigate = useNavigate();
   const lang = useUserLang();
-  const { isPaid, loading } = useUserPlan();
+  const { loading } = useUserPlan();
 
-  if (!userId || loading || isPaid) return null;
+  if (!userId || loading) return null;
 
   const label = lang === "ar" ? "ترقية" : "Upgrade";
   const prefetch = () => {
