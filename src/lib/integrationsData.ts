@@ -261,7 +261,7 @@ export const integrations: Integration[] = [
     category: "Communication",
     app: "whatsapp_business",
     type: "pipedream",
-    pipedreamSlug: "whatsapp_business",
+    pipedreamSlug: "whatsapp_business_account",
     domain: "whatsapp.com",
   },
   {
@@ -293,16 +293,6 @@ export const integrations: Integration[] = [
     type: "pipedream",
     pipedreamSlug: "zoom",
     domain: "zoom.us",
-  },
-  {
-    id: "google_meet",
-    name: "Google Meet",
-    description: "Create and manage Meet links.",
-    category: "Communication",
-    app: "google_meet",
-    type: "pipedream",
-    pipedreamSlug: "google_meet",
-    domain: "meet.google.com",
   },
   {
     id: "twilio",
