@@ -5,7 +5,7 @@ const sections: LegalSection[] = [
   {
     heading: "Data Controller",
     paragraphs: [
-      "The data controller is Megsy for Digital Platforms & E-Commerce Development LLC, registered in the Arab Republic of Egypt (CR 248691 · Tax 774034785).",
+      "The data controller is Megsy for Digital Platforms & E-Commerce Development LLC, registered in the Arab Republic of Egypt (CR 284691 · Tax 774034785).",
       "For any cookie or data-protection question, write to privacy@megsyai.com.",
     ],
   },

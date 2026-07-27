@@ -45,7 +45,7 @@ const sections: LegalSection[] = [
     paragraphs: [
       "Copyright Agent — Megsy for Digital Platforms & E-Commerce Development LLC",
       "Email: copyright@megsyai.com",
-      "Address: 58 El-Hegaz St., Amoun Tower, Unit 84, Floor 8, Sheraton Al-Matar, Al-Nozha District, Cairo Governorate, Arab Republic of Egypt · CR 248691 · Tax 774034785",
+      "Address: 58 El-Hegaz St., Amoun Tower, Unit 84, Floor 8, Sheraton Al-Matar, Al-Nozha District, Cairo Governorate, Arab Republic of Egypt · CR 284691 · Tax 774034785",
     ],
   },
 ];

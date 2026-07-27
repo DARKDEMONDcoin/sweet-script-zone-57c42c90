@@ -5,7 +5,7 @@ const sections: LegalSection[] = [
   {
     heading: "Agreement to Terms",
     paragraphs: [
-      'These Terms of Service form a legally binding agreement between you and Megsy for Digital Platforms & E-Commerce Development LLC, a limited liability company registered in the Arab Republic of Egypt (Commercial Registry No. 248691, Tax ID 774034785) ("Megsy", "we", "us").',
+      'These Terms of Service form a legally binding agreement between you and Megsy for Digital Platforms & E-Commerce Development LLC, a limited liability company registered in the Arab Republic of Egypt (Commercial Registry No. 284691, Tax ID 774034785) ("Megsy", "we", "us").',
       'By creating an account, accessing, or using any part of Megsy AI (the "Service") you agree to be bound by these Terms together with our Privacy Policy, Acceptable Use Policy, Refund Policy and Cookie Policy, which are incorporated by reference.',
       "If you do not agree to any part of these Terms, you must not access or use the Service.",
     ],

@@ -5,7 +5,7 @@ const sections: LegalSection[] = [
   {
     heading: "Who We Are",
     paragraphs: [
-      "Megsy for Digital Platforms & E-Commerce Development LLC (Commercial Registry 248691, Tax ID 774034785), incorporated in the Arab Republic of Egypt, is the data controller for personal data processed through the Megsy AI platform.",
+      "Megsy for Digital Platforms & E-Commerce Development LLC (Commercial Registry 284691, Tax ID 774034785), incorporated in the Arab Republic of Egypt, is the data controller for personal data processed through the Megsy AI platform.",
       "This Privacy Policy explains what personal data we collect, why we collect it, how we use and protect it, and the rights you have over your data.",
     ],
   },

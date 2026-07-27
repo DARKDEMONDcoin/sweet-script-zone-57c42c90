@@ -31,7 +31,7 @@ const sections: LegalSection[] = [
   {
     heading: "Tax Compliance",
     paragraphs: [
-      "Megsy collects and remits VAT, GST, or sales tax where required by the laws of the country of consumption, either directly or through a merchant-of-record sub-processor. Egyptian tax registration number 774034785 and commercial registry number 248691 apply to invoices issued from our headquarters.",
+      "Megsy collects and remits VAT, GST, or sales tax where required by the laws of the country of consumption, either directly or through a merchant-of-record sub-processor. Egyptian tax registration number 774034785 and commercial registry number 284691 apply to invoices issued from our headquarters.",
     ],
   },
   {
