@@ -7090,74 +7090,77 @@ html[dir="rtl"] .keep-ltr {
   }
 }
 
-/* Chat upgrade CTA — premium amber→gold pill.
-   Research: gold/amber = universal "premium" cue on dark UIs
-   (LinkedIn Premium, Tinder Gold, Reddit Premium, YouTube Premium tier).
-   Crown icon + short verb (Upgrade/ترقية) beats icon-only or text-only. */
+/* Chat upgrade CTA — "Emerald glow glass".
+   Refined dark-native pill: hairline border, glass surface, emerald accent.
+   Aligns with Linear/Vercel/Arc/Raycast style of quietly premium marks. */
 .upgrade-cta {
-  background-image:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.14), rgba(0, 0, 0, 0) 55%),
-    linear-gradient(135deg, #f5c249 0%, #e8a534 42%, #b8791f 100%);
-  color: #1a1205;
-  border: 1px solid rgba(255, 224, 150, 0.55);
-  box-shadow:
-    0 1px 0 0 rgba(255, 255, 255, 0.55) inset,
-    0 0 0 1px rgba(0, 0, 0, 0.25),
-    0 8px 20px -8px rgba(232, 165, 52, 0.55),
-    0 2px 6px -2px rgba(0, 0, 0, 0.4);
+  background: rgba(255, 255, 255, 0.03);
+  color: rgb(244, 244, 245); /* zinc-100 */
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition:
+    background-color 300ms ease,
+    border-color 300ms ease,
+    transform 200ms ease,
+    box-shadow 300ms ease;
 }
 .upgrade-cta:hover {
-  box-shadow:
-    0 1px 0 0 rgba(255, 255, 255, 0.7) inset,
-    0 0 0 1px rgba(0, 0, 0, 0.25),
-    0 14px 28px -10px rgba(245, 194, 73, 0.75),
-    0 2px 6px -2px rgba(0, 0, 0, 0.4);
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(16, 185, 129, 0.35); /* emerald-500/35 */
+  color: #ffffff;
+  box-shadow: 0 6px 20px -10px rgba(16, 185, 129, 0.45);
 }
 .upgrade-cta:focus-visible {
-  outline: 2px solid #f5c249;
+  outline: 2px solid rgba(16, 185, 129, 0.6);
   outline-offset: 2px;
 }
-/* Soft breathing halo — draws the eye without shouting */
+.upgrade-cta__icon {
+  color: rgb(52, 211, 153); /* emerald-400 */
+  transition: color 300ms ease;
+}
+.upgrade-cta:hover .upgrade-cta__icon {
+  color: rgb(110, 231, 183); /* emerald-300 */
+}
+/* Soft emerald underglow — appears on hover only */
 .upgrade-cta__halo {
   position: absolute;
-  inset: -4px;
+  inset: 0;
   border-radius: 9999px;
-  background: radial-gradient(closest-side, rgba(245, 194, 73, 0.45), transparent 70%);
-  filter: blur(6px);
-  opacity: 0.55;
-  animation: upgrade-cta-halo 3.2s ease-in-out infinite;
+  background: rgba(16, 185, 129, 0.10);
+  filter: blur(10px);
+  opacity: 0;
+  transition: opacity 500ms ease;
   pointer-events: none;
   z-index: 0;
 }
-@keyframes upgrade-cta-halo {
-  0%, 100% { opacity: 0.35; transform: scale(0.98); }
-  50%      { opacity: 0.75; transform: scale(1.04); }
-}
-/* Slow diagonal shine sweep across the pill */
-.upgrade-cta__shine {
+.upgrade-cta:hover .upgrade-cta__halo { opacity: 1; }
+/* Sophisticated single-pass shine sweep on hover */
+.upgrade-cta__shine-wrap {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    100deg,
-    transparent 20%,
-    rgba(255, 255, 255, 0.6) 45%,
-    transparent 70%
-  );
-  transform: translateX(-120%);
-  animation: upgrade-cta-shine 4.5s ease-in-out infinite;
+  border-radius: 9999px;
+  overflow: hidden;
   pointer-events: none;
-  mix-blend-mode: overlay;
   z-index: 1;
 }
-@keyframes upgrade-cta-shine {
-  0%, 55%   { transform: translateX(-120%); }
-  85%, 100% { transform: translateX(120%); }
+.upgrade-cta__shine {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  height: 100%;
+  width: 50%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.08) 50%,
+    transparent 100%
+  );
+  transform: skewX(-25deg);
+  transition: left 1000ms ease-in-out;
 }
+.upgrade-cta:hover .upgrade-cta__shine { left: 150%; }
 @media (prefers-reduced-motion: reduce) {
-  .upgrade-cta__shine,
-  .upgrade-cta__halo {
-    animation: none;
-  }
-  .upgrade-cta__shine { opacity: 0; }
-  .upgrade-cta__halo  { opacity: 0.4; }
+  .upgrade-cta__shine { transition: none; left: -100%; }
+  .upgrade-cta__halo { transition: none; }
 }
