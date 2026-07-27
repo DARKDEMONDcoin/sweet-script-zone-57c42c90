@@ -1,0 +1,144 @@
+/* Clean icon-only premium trigger: sparkle stars + plus badge */
+.premium-sparkle-button {
+  --premium-surface: hsla(0 0% 18% / 1);
+  --premium-glow: hsla(260 97% 61% / 0.75);
+  --border_radius: 9999px;
+  --transtion: 0.3s ease-in-out;
+
+  cursor: pointer;
+  position: relative;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 2.25rem;
+  height: 2.25rem;
+
+  transform-origin: center;
+  transform: scale(calc(1 + (var(--active, 0) * 0.06)));
+
+  padding: 0;
+  background-color: transparent;
+
+  border: none;
+  border-radius: var(--border_radius);
+  box-shadow: 0 0 0 1px hsla(0 0% 100% / 0.08) inset;
+
+  transition: transform var(--transtion), box-shadow var(--transtion);
+
+  text-decoration: none;
+  line-height: 1;
+  color: hsl(0 0% 100%);
+}
+
+.premium-sparkle-button::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  width: 100%;
+  height: 100%;
+  background-color: var(--premium-surface);
+
+  border-radius: var(--border_radius);
+  transition: all var(--transtion);
+  z-index: 0;
+}
+
+.premium-sparkle-button::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  width: 100%;
+  height: 100%;
+  background-color: var(--premium-glow);
+  background-image:
+    radial-gradient(at 51% 89%, hsla(266, 45%, 74%, 1) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, hsla(266, 36%, 60%, 1) 0px, transparent 50%),
+    radial-gradient(at 22% 91%, hsla(266, 36%, 60%, 1) 0px, transparent 50%);
+  background-position: top;
+
+  opacity: var(--active, 0);
+  border-radius: var(--border_radius);
+  transition: opacity var(--transtion);
+  z-index: 2;
+}
+
+.premium-sparkle-button:is(:hover, :focus-visible) {
+  --active: 1;
+  box-shadow: 0 0 0 1px hsla(0 0% 100% / 0.14) inset;
+}
+
+.premium-sparkle-button:active {
+  transform: scale(1);
+}
+
+.premium-sparkle-button .sparkle {
+  position: relative;
+  z-index: 10;
+  width: 1.15rem;
+  height: 1.15rem;
+}
+
+.premium-sparkle-button .sparkle .path {
+  fill: currentColor;
+  stroke: currentColor;
+  transform-origin: center;
+  color: hsl(0, 0%, 100%);
+}
+
+.premium-sparkle-button:is(:hover, :focus) .sparkle .path {
+  animation: premium-sparkle-path 1.5s linear 0.5s infinite;
+}
+
+.premium-sparkle-button .sparkle .path:nth-child(1) {
+  --scale_path_1: 1.2;
+}
+.premium-sparkle-button .sparkle .path:nth-child(2) {
+  --scale_path_2: 1.2;
+}
+.premium-sparkle-button .sparkle .path:nth-child(3) {
+  --scale_path_3: 1.2;
+}
+
+@keyframes premium-sparkle-path {
+  0%, 34%, 71%, 100% {
+    transform: scale(1);
+  }
+  17% {
+    transform: scale(var(--scale_path_1, 1));
+  }
+  49% {
+    transform: scale(var(--scale_path_2, 1));
+  }
+  83% {
+    transform: scale(var(--scale_path_3, 1));
+  }
+}
+
+.premium-sparkle-button .plus-badge {
+  position: absolute;
+  z-index: 11;
+  bottom: -0.2rem;
+  right: -0.2rem;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 0.95rem;
+  height: 0.95rem;
+
+  background-color: hsl(0 0% 100%);
+  color: hsl(0 0% 12%);
+  border-radius: 9999px;
+  box-shadow: 0 1px 3px hsla(0 0% 0% / 0.25);
+
+  pointer-events: none;
+}

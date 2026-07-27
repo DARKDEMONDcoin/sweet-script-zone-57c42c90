@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <sitemap>
+    <loc>https://megsyai.com/sitemaps/sitemap-static.xml</loc>
+  </sitemap>
+  <sitemap>
+    <loc>https://megsyai.com/sitemaps/sitemap-locales.xml</loc>
+  </sitemap>
+  <sitemap>
+    <loc>https://megsyai.com/sitemaps/sitemap-blog.xml</loc>
+  </sitemap>
+  <sitemap>
+    <loc>https://megsyai.com/sitemaps/sitemap-versus-1.xml</loc>
+  </sitemap>
+  <sitemap>
+    <loc>https://megsyai.com/sitemaps/sitemap-versus-2.xml</loc>
+  </sitemap>
+  <sitemap>
+    <loc>https://megsyai.com/sitemaps/sitemap-models.xml</loc>
+  </sitemap>
+  <sitemap>
+    <loc>https://megsyai.com/sitemaps/sitemap-solutions-1.xml</loc>
+  </sitemap>
+  <sitemap>
+    <loc>https://megsyai.com/sitemaps/sitemap-solutions-2.xml</loc>
+  </sitemap>
+  <sitemap>
+    <loc>https://megsyai.com/sitemaps/sitemap-compare.xml</loc>
+  </sitemap>
+  <sitemap>
+    <loc>https://megsyai.com/sitemaps/sitemap-industries.xml</loc>
+  </sitemap>
+  <sitemap>
+    <loc>https://megsyai.com/sitemaps/sitemap-templates.xml</loc>
+  </sitemap>
+</sitemapindex>
