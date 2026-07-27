@@ -391,9 +391,9 @@ const PIPEDREAM_SLUGS: Record<string, string> = {
   stripe: "stripe",
   x: "twitter",
   instagram: "instagram_business",
-  youtube: "youtube_data_api",
+  youtube: "youtube",
   telegram: "telegram_bot_api",
-  supabase: "supabase_management_api",
+  supabase: "supabase",
 };
 
 // Inline brand SVG paths (white, single-color) for icons where CDN fails or for reliability.
