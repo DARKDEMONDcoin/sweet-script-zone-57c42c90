@@ -1,6 +1,6 @@
 /** @doc Mobile /auth intro — Screen 1 showcase design with inline email/password expansion. */
 import { useEffect, useRef, useState } from "react";
-import { m as motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { AlertCircle, ArrowRight, Eye, EyeOff } from "lucide-react";
 import { useBrandLogo } from "@/hooks/useBrandLogo";
 import { t as authT, useUserLang } from "@/lib/authI18n";
